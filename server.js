@@ -467,7 +467,10 @@ io.on('connection', (socket) => {
   socket.on('host:start-game', () => {
     if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
     if (currentRoom.state !== STATES.LOBBY) return;
-    io.to(currentRoom.roomCode).emit('game:started');
+    const activeGroups = Object.entries(currentRoom.groups)
+      .filter(([, d]) => d.members.size > 0)
+      .map(([name]) => name);
+    io.to(currentRoom.roomCode).emit('game:started', { activeGroups });
     currentRoom.startQuestion();
   });
 

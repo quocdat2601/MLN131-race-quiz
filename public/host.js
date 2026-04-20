@@ -48,7 +48,8 @@ const btnRestart     = $('btn-restart');
 function $(id) { return document.getElementById(id); }
 
 // ── Build race track ─────────────────────────────────────────
-function buildTrack() {
+function buildTrack(activeGroups) {
+  const groupList = activeGroups || GROUPS;
   // Keep start-line
   const startLine = raceTrack.querySelector('.start-line');
   raceTrack.innerHTML = '';
@@ -79,21 +80,22 @@ function buildTrack() {
     'Giảng Viên': 'assets/duck.png'
   };
 
-  GROUPS.forEach((group, index) => {
+  groupList.forEach((group, index) => {
     totalSteps[group] = 0;
-    // Organic positioning: staggered vertical offsets across the whole water area
-    // Starting from 24% height to avoid being covered by the question panel
-    const verticalOffset = 24 + (index * (68 / (GROUPS.length - 1))) + (Math.random() * 4 - 2);
-    
+    // Spread ducks evenly across the vertical track area
+    const verticalOffset = groupList.length === 1
+      ? 50
+      : 24 + (index * (68 / (groupList.length - 1))) + (Math.random() * 4 - 2);
+
     const duckData = document.createElement('div');
     duckData.className = 'duck';
     duckData.id = `duck-${group.replace(' ','')}`;
     duckData.style.left = '5%';
     duckData.style.top = verticalOffset + '%';
     duckData.style.zIndex = 10 + index;
-    
+
     const charImg = CHARACTER_IMAGES[group] || 'assets/duck.png';
-    
+
     duckData.innerHTML = `
       <img src="${charImg}" alt="${group}">
       <div class="duck-name-tag">${group}</div>
@@ -219,7 +221,9 @@ socket.on('lobby:member-counts', (counts) => {
   btnStartGame.disabled = active.length < 1;
 });
 
-socket.on('game:started', () => {
+socket.on('game:started', ({ activeGroups } = {}) => {
+  // Rebuild track with only groups that have members
+  if (activeGroups && activeGroups.length > 0) buildTrack(activeGroups);
   showScreen('game');
   questionPanel.style.display = 'none';
   itemPhaseBanner.style.display = 'none';
