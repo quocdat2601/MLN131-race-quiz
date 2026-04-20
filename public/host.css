@@ -624,6 +624,37 @@ body {
   filter: drop-shadow(0 0 10px #7ef) drop-shadow(0 0 22px #3af);
 }
 
+/* ── PROJECTILE ANIMATION ─────────────────────────────────── */
+.projectile {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  font-size: 2.8rem;
+  filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5));
+  will-change: transform, left, top;
+}
+
+.explosion {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: sparkFly 0.6s ease-out forwards;
+}
+
+@keyframes sparkFly {
+  to {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
 /* ── TOAST ────────────────────────────────────────────────── */
 .toast-container {
   position: fixed;

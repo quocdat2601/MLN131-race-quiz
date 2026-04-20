@@ -182,6 +182,88 @@ function toast(html) {
   setTimeout(() => el.remove(), 4100);
 }
 
+// ── Projectile Animation ─────────────────────────────────────
+function animateProjectile(fromGroup, targetGroup, itemEmoji) {
+  if (fromGroup === targetGroup || fromGroup === 'Dev') return;
+
+  const fromEl = document.getElementById('duck-' + fromGroup.replace(' ', ''));
+  const targetEl = document.getElementById('duck-' + targetGroup.replace(' ', ''));
+
+  if (!fromEl || !targetEl) return;
+
+  const fromRect = fromEl.getBoundingClientRect();
+  const targetRect = targetEl.getBoundingClientRect();
+
+  const projectile = document.createElement('div');
+  projectile.className = 'projectile';
+  projectile.textContent = itemEmoji;
+
+  // Center points
+  const startX = fromRect.left + fromRect.width / 2;
+  const startY = fromRect.top + fromRect.height / 2;
+  const endX = targetRect.left + targetRect.width / 2;
+  const endY = targetRect.top + targetRect.height / 2;
+
+  projectile.style.left = `${startX}px`;
+  projectile.style.top = `${startY}px`;
+  projectile.style.transform = 'translate(-50%, -50%)';
+  document.body.appendChild(projectile);
+
+  const duration = 1000;
+  const startTime = performance.now();
+  const arcHeight = -150;
+
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    const curX = startX + (endX - startX) * progress;
+    const curY = startY + (endY - startY) * progress + Math.sin(progress * Math.PI) * arcHeight;
+
+    // Rotate as it flies
+    const rotation = progress * 720;
+    const scale = 1 + Math.sin(progress * Math.PI) * 0.8;
+
+    projectile.style.left = `${curX}px`;
+    projectile.style.top = `${curY}px`;
+    projectile.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      projectile.remove();
+      // On impact
+      targetEl.classList.add('shake');
+      setTimeout(() => targetEl.classList.remove('shake'), 600);
+      
+      // Explosion effect at impact
+      createExplosion(endX, endY);
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+function createExplosion(x, y) {
+  const container = document.createElement('div');
+  container.className = 'explosion';
+  container.style.left = `${x}px`;
+  container.style.top = `${y}px`;
+  document.body.appendChild(container);
+
+  for (let i = 0; i < 8; i++) {
+    const spark = document.createElement('div');
+    spark.className = 'spark';
+    const angle = (i / 8) * Math.PI * 2;
+    const dist = 40 + Math.random() * 40;
+    spark.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+    spark.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+    spark.style.background = `hsl(${Math.random() * 60 + 20}, 100%, 60%)`;
+    container.appendChild(spark);
+  }
+
+  setTimeout(() => container.remove(), 1000);
+}
+
 // ── Controls state ────────────────────────────────────────────
 function setControlState(state) {
   gameState = state;
@@ -325,12 +407,17 @@ socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect, sha
     : `${itemEmoji} <strong>${byGroup}</strong> quăng ${itemName} vào <strong>${targetGroup}</strong>! ${effect}`;
   toast(msg);
 
-  // Duck shake
-  if (shake) {
-    const duckEl = document.getElementById('duck-' + shake.replace(' ',''));
-    if (duckEl) {
-      duckEl.classList.add('shake');
-      setTimeout(() => duckEl.classList.remove('shake'), 600);
+  // Projectile animation if target is different
+  if (targetGroup && byGroup !== targetGroup) {
+    animateProjectile(byGroup, targetGroup, itemEmoji);
+  } else {
+    // Duck shake (immediate if same group or no animation)
+    if (shake) {
+      const duckEl = document.getElementById('duck-' + shake.replace(' ',''));
+      if (duckEl) {
+        duckEl.classList.add('shake');
+        setTimeout(() => duckEl.classList.remove('shake'), 600);
+      }
     }
   }
   // Shield aura
