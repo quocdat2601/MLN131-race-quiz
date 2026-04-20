@@ -70,6 +70,15 @@ function buildTrack() {
   }
   raceTrack.appendChild(bubblesDiv);
 
+  const CHARACTER_IMAGES = {
+    'Nhóm 1': 'assets/aot.png',
+    'Nhóm 2': 'assets/kimet.png',
+    'Nhóm 3': 'assets/naruto.png',
+    'Nhóm 5': 'assets/senku.png',
+    'Nhóm 6': 'assets/songoku.png',
+    'Nhóm 7': 'assets/duck.png' // Default for missing character
+  };
+
   GROUPS.forEach((group, index) => {
     totalSteps[group] = 0;
     // Organic positioning: staggered vertical offsets across the whole water area
@@ -82,11 +91,11 @@ function buildTrack() {
     duckData.style.left = '5%';
     duckData.style.top = verticalOffset + '%';
     duckData.style.zIndex = 10 + index;
-    // Add variations in color
-    const hueRotation = (index * (360 / GROUPS.length)) % 360;
+    
+    const charImg = CHARACTER_IMAGES[group] || 'assets/duck.png';
     
     duckData.innerHTML = `
-      <img src="assets/duck.png" alt="duck" style="filter: hue-rotate(${hueRotation}deg)">
+      <img src="${charImg}" alt="${group}">
       <div class="duck-name-tag">${group}</div>
       <span class="duck-steps" id="steps-${group.replace(' ','')}">0</span>
     `;
@@ -148,7 +157,20 @@ function setTimerUI(remaining, max) {
   timerDisplay.textContent = remaining;
   const pct = (remaining / max) * 100;
   timerBar.style.width = pct + '%';
-  timerBar.style.background = pct > 50 ? '#27ae60' : pct > 25 ? '#e6b800' : '#c0392b';
+  
+  let color = '#2ecc71';
+  let glow = 'rgba(46, 204, 113, 0.5)';
+  
+  if (pct <= 25) {
+    color = '#e74c3c';
+    glow = 'rgba(231, 76, 60, 0.5)';
+  } else if (pct <= 50) {
+    color = '#f1c40f';
+    glow = 'rgba(241, 196, 15, 0.5)';
+  }
+  
+  timerBar.style.background = color;
+  timerBar.style.boxShadow  = `0 0 12px ${glow}`;
 }
 
 // ── Toast ─────────────────────────────────────────────────────
