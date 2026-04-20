@@ -25,6 +25,7 @@
       <button class="group-btn" data-group="Nhóm 5">Nhóm 5<span class="member-count">(0/4)</span></button>
       <button class="group-btn" data-group="Nhóm 6">Nhóm 6<span class="member-count">(0/4)</span></button>
       <button class="group-btn" data-group="Nhóm 7">Nhóm 7<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Giảng Viên">👨‍🏫 Giảng Viên<span class="member-count">(0/1)</span></button>
     </div>
 
     <div id="join-error" class="error-msg" style="display:none"></div>
@@ -47,7 +48,7 @@
   <div class="question-top">
     <span id="client-q-badge" class="q-badge"></span>
     <div id="client-timer-wrap"><div id="client-timer-bar"></div></div>
-    <span id="client-timer-text" class="timer-text">20</span>
+    <span id="client-timer-text" class="timer-text">25</span>
   </div>
   <div id="client-q-text" class="client-q-text"></div>
   <div id="options-container" class="options-container">
@@ -74,32 +75,22 @@
     <div id="result-steps" class="result-steps"></div>
     <div id="result-item" class="result-item"></div>
     <div id="frozen-msg" class="frozen-msg" style="display:none">❄️ Câu tới bạn bị đóng băng!</div>
-    <p class="dim">Chờ giai đoạn vật phẩm...</p>
+    <p class="dim">Chờ câu hỏi tiếp theo...</p>
   </div>
 </div>
 
-<!-- ── ITEM PHASE ────────────────────────────────────────────── -->
-<div id="screen-item-phase" class="screen">
-  <div class="item-phase-header">
-    <span>🎮 Giai Đoạn Vật Phẩm</span>
-    <span id="item-phase-timer" class="item-phase-timer">15</span>
-  </div>
+<!-- ── FLOATING INVENTORY PANEL ──────────────────────────────── -->
+<div id="inv-panel" class="inv-panel" style="display:none">
+  <p class="inventory-label">🎒 Vật phẩm của bạn:</p>
+  <div id="inventory-list" class="inventory-list"></div>
+  <p id="no-items-msg" class="dim" style="display:none">Bạn không có vật phẩm nào.</p>
 
-  <div id="inventory-section">
-    <p class="inventory-label">Kho vật phẩm của bạn:</p>
-    <div id="inventory-list" class="inventory-list"></div>
-    <p id="no-items-msg" class="dim" style="display:none">Bạn không có vật phẩm nào.</p>
-  </div>
-
-  <!-- Use-item panel -->
   <div id="use-item-panel" class="use-item-panel" style="display:none">
     <p id="use-item-title" class="use-item-title"></p>
-
     <div id="target-picker" class="target-picker" style="display:none">
       <p class="dim">Chọn mục tiêu:</p>
       <div id="target-list" class="target-list"></div>
     </div>
-
     <button id="btn-confirm-use" class="btn-primary" style="display:none">Xác Nhận</button>
     <button id="btn-cancel-use" class="btn-secondary">Huỷ</button>
   </div>
@@ -107,9 +98,13 @@
   <div id="item-used-msg" class="item-used-msg" style="display:none"></div>
 </div>
 
+<!-- Floating inventory button (visible during game) -->
+<button id="btn-show-inventory" class="btn-inventory-float" style="display:none">🎒 <span id="inv-count">0</span></button>
+
 <!-- ── BETWEEN ROUNDS ────────────────────────────────────────── -->
 <div id="screen-between" class="screen">
   <div class="center-card">
+    <p id="between-countdown" class="dim" style="font-size:1.1rem;font-weight:700"></p>
     <p class="dim">Chờ câu hỏi tiếp theo...</p>
     <div id="between-inventory" style="margin-top:1rem"></div>
   </div>
@@ -123,6 +118,7 @@
   </div>
 </div>
 
+<div id="blooper-overlay" class="blooper-overlay" style="display:none">👋️</div>
 <div id="client-toast-container" class="client-toast-container"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="client.js"></script>

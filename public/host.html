@@ -18,7 +18,7 @@
     <div id="lobby-room-info" style="display:none">
       <div class="room-code-label">Mã Phòng</div>
       <div id="lobby-room-code" class="room-code-big"></div>
-      <div class="groups-joined-label">Nhóm đã vào: <span id="lobby-groups-count">0</span>/6</div>
+      <div class="groups-joined-label">Nhóm đã vào: <span id="lobby-groups-count">0</span>/7</div>
       <ul id="lobby-groups-list" class="groups-list"></ul>
       <button id="btn-start-game" class="btn-success" disabled>Bắt Đầu Game</button>
     </div>
@@ -35,7 +35,6 @@
     <div class="controls">
       <button id="btn-pause-resume" class="btn-ctrl btn-yellow">⏸ Pause</button>
       <button id="btn-reveal"       class="btn-ctrl btn-blue"  >👁 Reveal</button>
-      <button id="btn-skip-items"   class="btn-ctrl btn-purple" style="display:none">⏭ Skip Items</button>
       <button id="btn-next-q"       class="btn-ctrl btn-green"  style="display:none">▶ Câu Tiếp</button>
       <button id="btn-end-game"     class="btn-ctrl btn-red"   >⛔ Kết Thúc</button>
     </div>
@@ -73,6 +72,78 @@
 
   <!-- Toast container -->
   <div id="toast-container" class="toast-container"></div>
+</div>
+
+<!-- ── DEV TOOL PANEL ────────────────────────────────────────── -->
+<div id="dev-panel" class="dev-panel" style="display:none">
+  <div class="dev-header">
+    <span>🛠️ Dev Tools</span>
+    <button class="dev-close" onclick="document.getElementById('dev-panel').style.display='none'">✕</button>
+  </div>
+
+  <div class="dev-section">
+    <div class="dev-section-title">🎁 Trao Vật Phẩm</div>
+    <div class="dev-row">
+      <select id="dev-give-group" class="dev-select"></select>
+      <select id="dev-give-item" class="dev-select">
+        <option value="blooper">🦑 Mực Che Mắt</option>
+        <option value="banana">🍌 Vỏ Chuối</option>
+        <option value="magnet">🧲 Nam Châm</option>
+        <option value="brick">🧱 Gạch</option>
+        <option value="shield">🛡️ Khiên</option>
+      </select>
+      <button class="dev-btn" id="dev-btn-give">Trao</button>
+    </div>
+  </div>
+
+  <div class="dev-section">
+    <div class="dev-section-title">📊 Điều Chỉnh Điểm</div>
+    <div class="dev-row">
+      <select id="dev-score-group" class="dev-select"></select>
+      <input id="dev-score-delta" type="number" value="25" class="dev-input" min="0" max="625">
+      <button class="dev-btn dev-btn-green" id="dev-btn-add">+Cộng</button>
+      <button class="dev-btn dev-btn-red"   id="dev-btn-sub">−Trừ</button>
+      <button class="dev-btn dev-btn-orange" id="dev-btn-set">Đặt</button>
+    </div>
+  </div>
+
+  <div class="dev-section">
+    <div class="dev-section-title">✏️ Submit Đáp Án</div>
+    <div class="dev-row">
+      <select id="dev-ans-group" class="dev-select"></select>
+      <select id="dev-ans-choice" class="dev-select" style="width:60px">
+        <option>A</option><option>B</option><option>C</option><option>D</option>
+      </select>
+      <button class="dev-btn" id="dev-btn-submit-ans">Submit</button>
+      <button class="dev-btn dev-btn-green" id="dev-btn-correct-ans">✅ Đúng</button>
+    </div>
+  </div>
+
+  <div class="dev-section">
+    <div class="dev-section-title">⚙️ Game Controls</div>
+    <div class="dev-row">
+      <button class="dev-btn" id="dev-btn-reveal">👁 Reveal Now</button>
+      <button class="dev-btn dev-btn-green" id="dev-btn-next-q">▶ Next Q</button>
+      <button class="dev-btn dev-btn-orange" id="dev-btn-all-correct">All Correct</button>
+    </div>
+  </div>
+
+  <div class="dev-section">
+    <div class="dev-section-title">🧪 Test Hiệu Ứng Item</div>
+    <div class="dev-row">
+      <select id="dev-from-group" class="dev-select"></select>
+      <select id="dev-effect-item" class="dev-select">
+        <option value="blooper">🦑 Mực Che Mắt</option>
+        <option value="banana">🍌 Vỏ Chuối</option>
+        <option value="brick">🧱 Gạch (−5đ)</option>
+      </select>
+      <span style="color:#333;font-weight:700;padding:0 .1rem">→</span>
+      <select id="dev-to-group" class="dev-select"></select>
+      <button class="dev-btn" id="dev-btn-use-effect">Dùng</button>
+    </div>
+  </div>
+
+  <div id="dev-log" class="dev-log"></div>
 </div>
 
 <!-- ── GAME OVER ──────────────────────────────────────────────── -->

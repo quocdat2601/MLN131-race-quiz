@@ -252,9 +252,12 @@ input:focus { border-color: #3a7eff; }
   transform: scale(1.02);
 }
 .opt-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.opt-btn.selected { background: rgba(58,126,255,.3); border-color: #3a7eff; }
-.opt-btn.correct  { background: rgba(39,174,96,.3);  border-color: #27ae60; }
-.opt-btn.wrong    { background: rgba(192,57,43,.25);  border-color: #c0392b; }
+.opt-btn.selected { background: rgba(58,126,255,.35); border-color: #3a7eff; color: #fff; }
+.opt-btn.correct  { background: rgba(39,174,96,.45);  border-color: #27ae60; color: #fff; }
+.opt-btn.wrong    { background: rgba(192,57,43,.4);   border-color: #c0392b; color: #fff; }
+.opt-btn:disabled.correct { opacity: 1; }
+.opt-btn:disabled.wrong   { opacity: 1; }
+.opt-btn:disabled.selected { opacity: 0.85; }
 
 .opt-letter {
   font-weight: 900;
@@ -276,11 +279,61 @@ input:focus { border-color: #3a7eff; }
 .result-item  { font-size: 1.1rem; color: #9cf; }
 .frozen-msg   { background: rgba(0,180,220,.15); border: 1px solid #7ef; border-radius: 10px; padding: .5rem 1rem; font-size: .95rem; color: #7ef; }
 
-/* ── ITEM PHASE ───────────────────────────────────────────── */
-#screen-item-phase {
-  padding: .8rem;
-  gap: .8rem;
+/* ── BLOOPER OVERLAY ──────────────────────────────────────── */
+.blooper-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.96);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: white;
 }
+
+/* ── FLOATING INVENTORY BUTTON ────────────────────────────── */
+.btn-inventory-float {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1rem;
+  background: rgba(155,89,182,.85);
+  color: #fff;
+  border: 2px solid rgba(191,111,255,.7);
+  border-radius: 30px;
+  padding: .55rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 9000;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+}
+.btn-inventory-float:hover { background: rgba(155,89,182,1); }
+
+/* ── FLOATING INVENTORY PANEL ─────────────────────────────── */
+.inv-panel {
+  position: fixed;
+  bottom: 5rem;
+  right: .8rem;
+  width: min(340px, 92vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: rgba(15, 25, 50, .97);
+  border: 1px solid rgba(155,89,182,.5);
+  border-radius: 16px;
+  padding: 1rem;
+  z-index: 9001;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+
+/* ── ITEM PHASE (legacy styles kept for item chips) ─────────── */
+#screen-item-phase { padding: .8rem; gap: .8rem; }
+
+
 
 .item-phase-header {
   display: flex;

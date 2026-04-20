@@ -596,8 +596,9 @@ body {
 
 .duck-steps {
   position: absolute;
-  bottom: -5px;
-  right: -5px;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #ffe066;
   color: #000;
   font-size: 0.7rem;
@@ -607,6 +608,20 @@ body {
   border: 1px solid #000;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   z-index: 6;
+  white-space: nowrap;
+}
+
+/* Duck shake animation */
+@keyframes duckShake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%       { transform: translateX(-8px) rotate(-5deg); }
+  75%       { transform: translateX(8px) rotate(5deg); }
+}
+.duck.shake { animation: duckShake 0.5s ease; }
+
+/* Shield aura */
+.duck.shielded img {
+  filter: drop-shadow(0 0 10px #7ef) drop-shadow(0 0 22px #3af);
 }
 
 /* ── TOAST ────────────────────────────────────────────────── */
@@ -722,4 +737,129 @@ body {
 .rank-steps {
   margin-left: auto;
   color: #ffe066;
+}
+
+/* ── DEV TOOL PANEL ───────────────────────────────────────── */
+.dev-panel {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  width: 400px;
+  max-height: 78vh;
+  overflow-y: auto;
+  background: #f5f7ff;
+  border: 2px solid #3a6fd8;
+  border-radius: 12px;
+  padding: .75rem;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-size: .82rem;
+  color: #111;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+
+.dev-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: .92rem;
+  color: #1a3a8f;
+  border-bottom: 1px solid #c5cfe8;
+  padding-bottom: .4rem;
+  margin-bottom: .2rem;
+}
+
+.dev-close {
+  background: none;
+  border: none;
+  color: #c0392b;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 .2rem;
+  font-weight: 700;
+}
+
+.dev-section {
+  background: rgba(0,0,0,.04);
+  border-radius: 6px;
+  padding: .4rem .5rem;
+  border: 1px solid #dde3f0;
+}
+
+.dev-section-title {
+  color: #1a3a8f;
+  font-size: .75rem;
+  font-weight: 700;
+  margin-bottom: .3rem;
+}
+
+.dev-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  align-items: center;
+}
+
+.dev-select {
+  background: #fff;
+  color: #111;
+  border: 1px solid #aab;
+  border-radius: 4px;
+  padding: .2rem .3rem;
+  font-size: .78rem;
+  flex: 1;
+  min-width: 80px;
+}
+
+.dev-input {
+  background: #fff;
+  color: #111;
+  border: 1px solid #aab;
+  border-radius: 4px;
+  padding: .2rem .4rem;
+  font-size: .78rem;
+  width: 64px;
+  text-align: center;
+}
+
+.dev-btn {
+  background: #dce8ff;
+  color: #0d2a6e;
+  border: 1px solid #7aa0e0;
+  border-radius: 4px;
+  padding: .2rem .5rem;
+  font-size: .76rem;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.dev-btn:hover { background: #b8d0ff; }
+
+.dev-btn-green  { background: #d4f4e0; color: #1a5c2e; border-color: #5cb87a; }
+.dev-btn-green:hover  { background: #b0e8c4; }
+
+.dev-btn-red    { background: #fde8e8; color: #8b1a1a; border-color: #e07a7a; }
+.dev-btn-red:hover    { background: #f9c5c5; }
+
+.dev-btn-orange { background: #fef0d4; color: #6b3a00; border-color: #e0a050; }
+.dev-btn-orange:hover { background: #fde0a8; }
+
+.dev-log {
+  font-size: .72rem;
+  color: #333;
+  max-height: 110px;
+  overflow-y: auto;
+  font-family: monospace;
+  background: #fff;
+  border: 1px solid #dde;
+  border-radius: 4px;
+  padding: .3rem .4rem;
+}
+.dev-log div {
+  padding: .1rem 0;
+  border-bottom: 1px solid #eee;
+  color: #222;
 }

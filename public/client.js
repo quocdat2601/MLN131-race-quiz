@@ -5,8 +5,8 @@ let myGroup           = '';
 let selectedGroup     = '';      // chosen group before joining
 let mySubmittedAnswer = null;    // tracks which answer this client submitted
 let inventory         = [];      // Array of item objects
-let timerMax          = 20;
-let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | ITEM_PHASE | BETWEEN | GAMEOVER
+let timerMax          = 25;
+let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | BETWEEN | GAMEOVER
 let isFrozen          = false;
 
 // Item-use selection state
@@ -14,8 +14,8 @@ let selectedItemId    = null;
 let selectedItemType  = null;
 let selectedTarget    = null;
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7'];
-const MEDALS  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
+const MEDALS  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
 
 // ── DOM helpers ───────────────────────────────────────────────
 function $(id)       { return document.getElementById(id); }
@@ -36,7 +36,6 @@ const screens = {
   question:   $('screen-question'),
   answered:   $('screen-answered'),
   result:     $('screen-result'),
-  itemPhase:  $('screen-item-phase'),
   between:    $('screen-between'),
   gameover:   $('screen-gameover'),
 };
@@ -73,6 +72,9 @@ function renderInventory() {
   const list     = $('inventory-list');
   const noItems  = $('no-items-msg');
   const between  = $('between-inventory');
+  const invCount = $('inv-count');
+
+  if (invCount) invCount.textContent = inventory.length;
 
   if (list) {
     if (inventory.length === 0) {
@@ -99,8 +101,6 @@ function renderInventory() {
 }
 
 function selectItem(itemId, itemType) {
-  if ($('item-used-msg') && $('item-used-msg').style.display !== 'none') return;
-
   selectedItemId   = itemId;
   selectedItemType = itemType;
   selectedTarget   = null;
@@ -145,11 +145,11 @@ function selectItem(itemId, itemType) {
 
 function itemDescription(id) {
   const desc = {
-    bug:    'Đối thủ lùi 2 bước',
-    rocket: 'Tiến thêm 3 bước',
-    shield: 'Chặn 1 đòn tấn công',
-    freeze: 'Đối thủ bị đóng băng 1 câu',
-    swap:   'Đổi vị trí với đối thủ',
+    blooper: 'Đối thủ bị che mắt 4 giây',
+    banana:  'Đáp án đối thủ bị xáo trộn',
+    magnet:  'Hút điểm từ đối thủ phía trước',
+    brick:   'Đối thủ mất 5 điểm',
+    shield:  'Chặn 1 đòn tấn công',
   };
   return desc[id] || '';
 }
@@ -169,8 +169,9 @@ socket.on('lobby:member-counts', (counts) => {
   document.querySelectorAll('.group-btn').forEach(btn => {
     const g = btn.dataset.group;
     const n = counts[g] || 0;
-    const full = n >= 4;
-    btn.querySelector('.member-count').textContent = `(${n}/4)`;
+    const maxSize = g === 'Giảng Viên' ? 1 : 4;
+    const full = n >= maxSize;
+    btn.querySelector('.member-count').textContent = `(${n}/${maxSize})`;
     btn.disabled = full;
     if (full && selectedGroup === g) {
       selectedGroup = '';
@@ -196,6 +197,8 @@ socket.on('join:error', ({ message }) => {
 socket.on('game:started', () => {
   showScreen('waiting');
   $('waiting-group-name').textContent = myGroup;
+  const btn = $('btn-show-inventory');
+  if (btn) btn.style.display = '';
 });
 
 socket.on('question:shown', ({ number, total, text, options }) => {
@@ -211,22 +214,19 @@ socket.on('question:shown', ({ number, total, text, options }) => {
   });
   mySubmittedAnswer = null;
 
-  timerMax = 20;
-  setTimerUI(20, 20);
+  timerMax = 25;
+  setTimerUI(25, 25);
   showScreen('question');
 });
 
 socket.on('timer:tick', ({ remaining }) => {
   if (gamePhase === 'question') {
     setTimerUI(remaining, timerMax);
-  } else if (gamePhase === 'itemPhase') {
-    const t = $('item-phase-timer');
-    if (t) t.textContent = remaining;
   }
 });
 
 socket.on('team:locked', ({ answer }) => {
-  // Lock all option buttons and highlight chosen answer
+  // Lock buttons, keep question screen visible with blue highlight
   document.querySelectorAll('.opt-btn').forEach(btn => {
     btn.disabled = true;
     if (btn.dataset.answer === answer) btn.classList.add('selected');
@@ -236,30 +236,36 @@ socket.on('team:locked', ({ answer }) => {
   showToast(isMine
     ? `✅ Bạn đã chốt: ${answer}!`
     : `🤝 Đồng đội đã chốt: ${answer}!`);
-
-  $('answered-icon').textContent = '✅';
-  $('answered-msg').textContent  = isMine ? 'Đã gửi đáp án!' : `Nhóm đã chọn: ${answer}`;
-  setTimeout(() => { if (gamePhase === 'question') showScreen('answered'); }, 700);
 });
 
 socket.on('answer:result', ({ correct, stepsGained, itemReceived }) => {
-  $('result-icon').textContent  = correct ? '✅' : '❌';
-  $('result-steps').textContent = correct && stepsGained > 0
-    ? `+${stepsGained} bước`
-    : correct && stepsGained === 0
-      ? 'Đúng nhưng bị đóng băng!'
-      : 'Sai — không có điểm';
-  $('result-item').textContent  = itemReceived
-    ? `Nhận được: ${itemReceived.emoji} ${itemReceived.name}`
-    : '';
-
-  if (isFrozen) {
-    $('frozen-msg').style.display = '';
+  // Show result as toast — stay on question screen
+  if (correct && stepsGained > 0) {
+    showToast(`✅ Đúng! +${typeof stepsGained === 'number' ? stepsGained.toFixed(2) : stepsGained} điểm`);
+  } else if (correct) {
+    showToast('✅ Đúng nhưng bị đóng băng! ❌0 điểm');
   } else {
-    $('frozen-msg').style.display = 'none';
+    showToast('❌ Sai — không có điểm');
   }
+  if (itemReceived) showToast(`🎁 Nhận: ${itemReceived.emoji} ${itemReceived.name}`);
+});
 
-  showScreen('result');
+socket.on('answer:revealed', ({ correctAnswer }) => {
+  // Highlight correct = green, locked wrong = red
+  const lockedBtn = document.querySelector('.opt-btn.selected');
+  const lockedAnswer = lockedBtn ? lockedBtn.dataset.answer : null;
+
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    const ans = btn.dataset.answer;
+    btn.disabled = true;
+    if (ans === correctAnswer) {
+      btn.classList.remove('selected', 'wrong');
+      btn.classList.add('correct');
+    } else if (lockedAnswer && ans === lockedAnswer && ans !== correctAnswer) {
+      btn.classList.remove('selected');
+      btn.classList.add('wrong');
+    }
+  });
 });
 
 socket.on('inventory:update', ({ items }) => {
@@ -267,30 +273,37 @@ socket.on('inventory:update', ({ items }) => {
   renderInventory();
 });
 
-socket.on('item-phase:started', () => {
-  resetItemPanel();
-  const usedMsg = $('item-used-msg');
-  if (usedMsg) usedMsg.style.display = 'none';
+socket.on('round:between', () => {
   renderInventory();
-  showScreen('itemPhase');
+  // Stay on question screen — next question will auto-arrive
 });
 
-socket.on('item-phase:ended', () => {
-  isFrozen = false;
-  renderInventory();
-  showScreen('between');
+socket.on('effect:blooper', () => {
+  const overlay = $('blooper-overlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  setTimeout(() => { overlay.style.display = 'none'; }, 4000);
 });
 
-socket.on('frozen:notified', () => {
-  isFrozen = true;
+socket.on('effect:banana', () => {
+  const container = $('options-container');
+  if (!container) return;
+  const btns = [...container.querySelectorAll('.opt-btn')];
+  // Shuffle order
+  for (let i = btns.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    container.appendChild(btns[j]);
+    btns.splice(j, 1);
+  }
+  showToast('🍌 Vỏ chuối! Đáp án bị xáo!');
+});
+
+socket.on('effect:shield-gained', () => {
+  showToast('🛡️ Khiên hoạt động! Bạn được bảo vệ khỏi 1 đòn tấn công.');
 });
 
 socket.on('shield:blocked', () => {
-  const usedMsg = $('item-used-msg');
-  if (usedMsg) {
-    usedMsg.style.display = '';
-    usedMsg.textContent   = '🛡️ Shield của bạn đã chặn một đòn tấn công!';
-  }
+  showToast('🛡️ Khiên đã chặn một đòn tấn công!');
 });
 
 socket.on('item:error', ({ message }) => {
@@ -302,7 +315,7 @@ socket.on('game:over', ({ rankings }) => {
   list.innerHTML = rankings.map((r, i) => `
     <li>
       <span>${MEDALS[i] || (i+1)+'.'}  ${r.group}</span>
-      <span class="cr-steps">${r.steps} bước</span>
+      <span class="cr-steps">${typeof r.steps === 'number' ? r.steps.toFixed(1) : r.steps} điểm</span>
     </li>
   `).join('');
   showScreen('gameover');
@@ -372,6 +385,16 @@ document.querySelectorAll('.opt-btn').forEach(btn => {
   });
 });
 
+// Floating inventory button
+const btnShowInventory = $('btn-show-inventory');
+const invPanel = $('inv-panel');
+if (btnShowInventory && invPanel) {
+  btnShowInventory.addEventListener('click', () => {
+    invPanel.style.display = invPanel.style.display === 'none' ? 'flex' : 'none';
+    if (invPanel.style.display === 'flex') renderInventory();
+  });
+}
+
 // Item confirm
 $('btn-confirm-use').addEventListener('click', () => {
   if (!selectedItemId) return;
@@ -382,16 +405,10 @@ $('btn-confirm-use').addEventListener('click', () => {
 
   socket.emit('client:use-item', { itemId: selectedItemId, targetGroup: selectedTarget || undefined });
 
-  const usedMsg = $('item-used-msg');
   const item = inventory.find(i => i.id === selectedItemId);
-  if (usedMsg && item) {
-    usedMsg.style.display = '';
-    usedMsg.textContent   = `${item.emoji} Đã dùng ${item.name}${selectedTarget ? ` vào ${selectedTarget}` : ''}!`;
-  }
+  if (item) showToast(`${item.emoji} Dùng ${item.name}${selectedTarget ? ` → ${selectedTarget}` : ''}!`);
 
-  // Disable all chips
-  document.querySelectorAll('.item-chip').forEach(c => c.classList.add('disabled'));
-  $('use-item-panel').style.display = 'none';
+  resetItemPanel();
 });
 
 $('btn-cancel-use').addEventListener('click', () => {

@@ -9,12 +9,12 @@ let timerRemaining = 20;
 let isPaused       = false;
 let frozenGroups   = new Set();
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
 const DUCK_EMOJIS = {
   'Nhóm 1': '🦆', 'Nhóm 2': '🐤', 'Nhóm 3': '🦜',
-  'Nhóm 5': '🐧', 'Nhóm 6': '🦩', 'Nhóm 7': '🦚'
+  'Nhóm 5': '🐧', 'Nhóm 6': '🦩', 'Nhóm 7': '🦚', 'Giảng Viên': '👨‍🏫'
 };
-const MEDALS = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
+const MEDALS = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
 
 // ── DOM ──────────────────────────────────────────────────────
 const screens        = { lobby: $('screen-lobby'), game: $('screen-game'), gameover: $('screen-gameover') };
@@ -29,7 +29,6 @@ const topbarCode     = $('topbar-code');
 const qCounter       = $('question-counter');
 const btnPauseResume = $('btn-pause-resume');
 const btnReveal      = $('btn-reveal');
-const btnSkipItems   = $('btn-skip-items');
 const btnNextQ       = $('btn-next-q');
 const btnEndGame     = $('btn-end-game');
 
@@ -76,7 +75,8 @@ function buildTrack() {
     'Nhóm 3': 'assets/naruto.png',
     'Nhóm 5': 'assets/senku.png',
     'Nhóm 6': 'assets/songoku.png',
-    'Nhóm 7': 'assets/duck.png' // Default for missing character
+    'Nhóm 7': 'assets/duck.png',
+    'Giảng Viên': 'assets/duck.png'
   };
 
   GROUPS.forEach((group, index) => {
@@ -105,38 +105,36 @@ function buildTrack() {
 buildTrack();
 
 // ── Duck position ─────────────────────────────────────────────
-// No finish line. max visual = 80 steps fills 90% of track.
-const MAX_VISUAL_STEPS = 80;
+// Absolute scale: max possible = 25pts * 25q = 625
+const MAX_TOTAL_SCORE = 25 * 25;
 function duckLeft(steps) {
-  const pct = 5 + (Math.min(steps, MAX_VISUAL_STEPS) / MAX_VISUAL_STEPS) * 88;
-  return pct + '%';
+  return (5 + (steps / MAX_TOTAL_SCORE) * 88) + '%';
 }
 
 function updateDucks(positions) {
-  let leader = { group: '', steps: -1 };
+  let leaderSteps = 0;
+  let leaderGroup = '';
 
   for (const [group, steps] of Object.entries(positions)) {
     totalSteps[group] = steps;
-    if (steps > leader.steps) {
-      leader = { group, steps };
-    }
+    if (steps > leaderSteps) { leaderSteps = steps; leaderGroup = group; }
+  }
 
+  for (const [group, steps] of Object.entries(positions)) {
     const key = group.replace(' ','');
     const duckEl  = document.getElementById(`duck-${key}`);
     const stepsEl = document.getElementById(`steps-${key}`);
-    
+
     if (duckEl) {
       duckEl.style.left = duckLeft(steps);
       duckEl.classList.toggle('frozen', frozenGroups.has(group));
-      // Remove leader class initially
       duckEl.classList.remove('leader');
     }
-    if (stepsEl) stepsEl.textContent = steps;
+    if (stepsEl) stepsEl.textContent = typeof steps === 'number' ? steps.toFixed(1) : steps;
   }
 
-  // Highlight leader if they have at least 1 step
-  if (leader.steps > 0) {
-    const leaderDuck = document.getElementById(`duck-${leader.group.replace(' ','')}`);
+  if (leaderSteps > 0) {
+    const leaderDuck = document.getElementById(`duck-${leaderGroup.replace(' ','')}`);
     if (leaderDuck) leaderDuck.classList.add('leader');
   }
 }
@@ -187,7 +185,6 @@ function setControlState(state) {
   gameState = state;
   btnReveal.style.display      = (state === 'QUESTION' || state === 'PAUSED') ? '' : 'none';
   btnPauseResume.style.display = (state === 'QUESTION' || state === 'PAUSED') ? '' : 'none';
-  btnSkipItems.style.display   = (state === 'ITEM_PHASE') ? '' : 'none';
   btnNextQ.style.display       = (state === 'BETWEEN_ROUNDS') ? '' : 'none';
 
   if (state === 'PAUSED') {
@@ -215,7 +212,10 @@ socket.on('lobby:member-counts', (counts) => {
   if (!counts) return;
   const active = Object.entries(counts).filter(([, n]) => n > 0);
   lobbyGroupCount.textContent = active.length;
-  lobbyGroupList.innerHTML = active.map(([g, n]) => `<li>${g} (${n}/4)</li>`).join('');
+  lobbyGroupList.innerHTML = active.map(([g, n]) => {
+    const max = g === 'Giảng Viên' ? 1 : 4;
+    return `<li>${g} (${n}/${max})</li>`;
+  }).join('');
   btnStartGame.disabled = active.length < 1;
 });
 
@@ -223,8 +223,7 @@ socket.on('game:started', () => {
   showScreen('game');
   questionPanel.style.display = 'none';
   itemPhaseBanner.style.display = 'none';
-  btnSkipItems.style.display = 'none';
-  btnNextQ.style.display     = 'none';
+  btnNextQ.style.display = 'none';
 });
 
 socket.on('question:shown', ({ number, total, text, options }) => {
@@ -236,8 +235,8 @@ socket.on('question:shown', ({ number, total, text, options }) => {
     const card = document.getElementById(`opt-${l}`);
     card.classList.remove('correct','revealed');
   });
-  timerMax = 20;
-  setTimerUI(20, 20);
+  timerMax = 25;
+  setTimerUI(25, 25);
   answerCountBadge.textContent = '0 nhóm đã trả lời';
   questionPanel.style.display = 'block';
   itemPhaseBanner.style.display = 'none';
@@ -247,9 +246,6 @@ socket.on('question:shown', ({ number, total, text, options }) => {
 socket.on('timer:tick', ({ remaining }) => {
   timerRemaining = remaining;
   setTimerUI(remaining, timerMax);
-  if (gameState === 'ITEM_PHASE') {
-    itemTimer.textContent = remaining;
-  }
 });
 
 socket.on('timer:paused', ({ remaining }) => {
@@ -271,17 +267,16 @@ socket.on('answer:revealed', ({ correctAnswer, explanation, movements }) => {
   btnReveal.style.display = 'none';
   btnPauseResume.style.display = 'none';
 
-  // Highlight correct option
   ['A','B','C','D'].forEach(l => {
     const card = document.getElementById(`opt-${l}`);
     if (l === correctAnswer) card.classList.add('correct');
     else card.classList.add('revealed');
   });
 
-  // Announce movements
   movements.forEach(m => {
     if (m.correct && m.stepsGained > 0) {
-      toast(`✅ <strong>${m.groupName}</strong> đúng! +${m.stepsGained} bước${m.itemReceived ? ` + ${m.itemReceived.emoji} ${m.itemReceived.name}` : ''}`);
+      const pts = typeof m.stepsGained === 'number' ? m.stepsGained.toFixed(2) : m.stepsGained;
+      toast(`✅ <strong>${m.groupName}</strong> đúng! +${pts} điểm${m.itemReceived ? ` + ${m.itemReceived.emoji} ${m.itemReceived.name}` : ''}`);
     } else if (m.correct && m.frozen) {
       toast(`❄️ <strong>${m.groupName}</strong> đúng nhưng đang bị đóng băng!`);
     }
@@ -296,30 +291,52 @@ socket.on('ducks:updated', ({ positions }) => {
   updateDucks(positions);
 });
 
-socket.on('item-phase:started', ({ timeLimit }) => {
-  setControlState('ITEM_PHASE');
-  btnReveal.style.display = 'none';
-  btnPauseResume.style.display = 'none';
-  timerMax = timeLimit;
-  itemPhaseBanner.style.display = 'flex';
-  itemTimer.textContent = timeLimit;
+socket.on('round:between', ({ autoAdvanceIn, isLast } = {}) => {
+  itemPhaseBanner.style.display = 'none';
+  if (isLast) {
+    btnNextQ.style.display = 'none';
+    setControlState('BETWEEN_ROUNDS');
+  } else {
+    setControlState('BETWEEN_ROUNDS');
+    btnNextQ.textContent = `▶ Câu Tiếp (${autoAdvanceIn}s)`;
+  }
 });
 
-socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect }) => {
+socket.on('between:countdown', ({ remaining }) => {
+  if (remaining > 0) {
+    btnNextQ.textContent = `▶ Câu Tiếp (${remaining}s)`;
+  } else {
+    btnNextQ.textContent = '▶ Câu Tiếp';
+  }
+});
+
+socket.on('item:gained', ({ groupName, item }) => {
+  toast(`🎁 <strong>${groupName}</strong> đạt mốc — nhận ${item.emoji} ${item.name}!`);
+});
+
+socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect, shake }) => {
   const self = targetGroup === byGroup;
   const msg  = self
     ? `${itemEmoji} <strong>${byGroup}</strong> dùng ${itemName}! ${effect}`
     : `${itemEmoji} <strong>${byGroup}</strong> quăng ${itemName} vào <strong>${targetGroup}</strong>! ${effect}`;
   toast(msg);
 
-  // Track frozen visually
-  if (itemName === 'Freeze') frozenGroups.add(targetGroup);
-});
-
-socket.on('item-phase:ended', () => {
-  itemPhaseBanner.style.display = 'none';
-  frozenGroups.clear();
-  setControlState('BETWEEN_ROUNDS');
+  // Duck shake
+  if (shake) {
+    const duckEl = document.getElementById('duck-' + shake.replace(' ',''));
+    if (duckEl) {
+      duckEl.classList.add('shake');
+      setTimeout(() => duckEl.classList.remove('shake'), 600);
+    }
+  }
+  // Shield aura
+  if (itemName === 'Khiên') {
+    const duckEl = document.getElementById('duck-' + byGroup.replace(' ',''));
+    if (duckEl) {
+      duckEl.classList.add('shielded');
+      setTimeout(() => duckEl.classList.remove('shielded'), 5000);
+    }
+  }
 });
 
 socket.on('game:over', ({ rankings }) => {
@@ -327,7 +344,7 @@ socket.on('game:over', ({ rankings }) => {
     <li>
       <span class="rank-medal">${MEDALS[i] || (i+1)+'.'}</span>
       <span>${r.group}</span>
-      <span class="rank-steps">${r.steps} bước</span>
+      <span class="rank-steps">${typeof r.steps === 'number' ? r.steps.toFixed(1) : r.steps} điểm</span>
     </li>
   `).join('');
   setTimeout(() => showScreen('gameover'), 1200);
@@ -356,10 +373,6 @@ btnReveal.addEventListener('click', () => {
   socket.emit('host:reveal-answer');
 });
 
-btnSkipItems.addEventListener('click', () => {
-  socket.emit('host:skip-item-phase');
-});
-
 btnNextQ.addEventListener('click', () => {
   socket.emit('host:next-question');
   btnNextQ.style.display = 'none';
@@ -374,3 +387,99 @@ btnEndGame.addEventListener('click', () => {
 btnRestart.addEventListener('click', () => {
   location.reload();
 });
+
+// ── DEV TOOL PANEL ────────────────────────────────────────────
+(function initDevPanel() {
+  const devPanel   = $('dev-panel');
+  const devLog     = $('dev-log');
+  if (!devPanel) return;
+
+  // Ctrl + Alt + D to toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && (e.key === 'd' || e.key === 'D')) {
+      e.preventDefault();
+      devPanel.style.display = devPanel.style.display === 'none' ? 'flex' : 'none';
+    }
+  });
+
+  // Populate group selects
+  ['dev-give-group', 'dev-score-group', 'dev-ans-group', 'dev-from-group', 'dev-to-group'].forEach(id => {
+    const sel = $(id);
+    if (!sel) return;
+    GROUPS.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g;
+      opt.textContent = g;
+      sel.appendChild(opt);
+    });
+  });
+
+  function logDev(msg) {
+    const line = document.createElement('div');
+    line.textContent = new Date().toLocaleTimeString('vi-VN') + ' ' + msg;
+    devLog.prepend(line);
+    if (devLog.children.length > 30) devLog.lastChild.remove();
+  }
+
+  socket.on('dev:log', ({ msg }) => logDev(msg));
+
+  $('dev-btn-give').addEventListener('click', () => {
+    socket.emit('dev:give-item', {
+      groupName: $('dev-give-group').value,
+      itemId:    $('dev-give-item').value,
+    });
+  });
+
+  $('dev-btn-add').addEventListener('click', () => {
+    socket.emit('dev:adjust-score', {
+      groupName: $('dev-score-group').value,
+      delta:     +$('dev-score-delta').value,
+    });
+  });
+
+  $('dev-btn-sub').addEventListener('click', () => {
+    socket.emit('dev:adjust-score', {
+      groupName: $('dev-score-group').value,
+      delta:     -$('dev-score-delta').value,
+    });
+  });
+
+  $('dev-btn-set').addEventListener('click', () => {
+    socket.emit('dev:set-score', {
+      groupName: $('dev-score-group').value,
+      value:     +$('dev-score-delta').value,
+    });
+  });
+
+  $('dev-btn-submit-ans').addEventListener('click', () => {
+    socket.emit('dev:submit-answer', {
+      groupName: $('dev-ans-group').value,
+      answer:    $('dev-ans-choice').value,
+    });
+  });
+
+  $('dev-btn-correct-ans').addEventListener('click', () => {
+    socket.emit('dev:submit-correct', { groupName: $('dev-ans-group').value });
+  });
+
+  $('dev-btn-reveal').addEventListener('click', () => {
+    socket.emit('dev:reveal');
+  });
+
+  $('dev-btn-next-q').addEventListener('click', () => {
+    socket.emit('dev:next-question');
+  });
+
+  $('dev-btn-all-correct').addEventListener('click', () => {
+    GROUPS.forEach(g => socket.emit('dev:submit-correct', { groupName: g }));
+    logDev('Sent correct answer for all groups');
+  });
+
+  $('dev-btn-use-effect').addEventListener('click', () => {
+    socket.emit('dev:apply-item', {
+      fromGroup:   $('dev-from-group').value,
+      itemId:      $('dev-effect-item').value,
+      targetGroup: $('dev-to-group').value,
+    });
+  });
+})();

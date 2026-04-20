@@ -13,21 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Load questions
 const QUESTIONS = JSON.parse(fs.readFileSync(path.join(__dirname, 'questions.json'), 'utf-8'));
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
 const ITEMS = [
-  { id: 'bug',    emoji: '🐛', name: 'Bug',    type: 'offensive' },
-  { id: 'rocket', emoji: '🚀', name: 'Rocket', type: 'self'      },
-  { id: 'shield', emoji: '🛡️', name: 'Shield', type: 'self'      },
-  { id: 'freeze', emoji: '❄️', name: 'Freeze', type: 'offensive' },
-  { id: 'swap',   emoji: '🔄', name: 'Swap',   type: 'offensive' },
+  { id: 'blooper', emoji: '🦑', name: 'Mực Che Mắt', type: 'offensive' },
+  { id: 'banana',  emoji: '🍌', name: 'Vỏ Chuối',    type: 'offensive' },
+  { id: 'magnet',  emoji: '🧲', name: 'Nam Châm',     type: 'auto'      },
+  { id: 'brick',   emoji: '🧱', name: 'Gạch',         type: 'offensive' },
+  { id: 'shield',  emoji: '🛡️', name: 'Khiên',        type: 'self'      },
 ];
+const MILESTONES = [50, 100, 150, 200, 250];
 
 const STATES = {
   LOBBY:          'LOBBY',
   QUESTION:       'QUESTION',
   PAUSED:         'PAUSED',
   REVEAL:         'REVEAL',
-  ITEM_PHASE:     'ITEM_PHASE',
   BETWEEN_ROUNDS: 'BETWEEN_ROUNDS',
   GAME_OVER:      'GAME_OVER',
 };
@@ -78,17 +78,19 @@ class GameRoom {
     this.state        = STATES.LOBBY;
     this.hostSocketId = null;
 
-    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, usedItemThisPhase }
+    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, lastMilestone }
     this.groups = {};
     GROUPS.forEach(g => {
-      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, usedItemThisPhase: false };
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, lastMilestone: 0 };
     });
 
-    this.questions     = [...QUESTIONS];
-    this.currentQ      = -1;
-    this.timer         = null;
-    this.roundAnswers  = []; // { groupName, answer, serverTime }[]
-    this.itemsThisPhase = {}; // groupName → item queued { itemId, targetGroup }
+    this.questions      = [...QUESTIONS].slice(0, 25);
+    this.currentQ        = -1;
+    this.timer           = null;
+    this.startTime       = null;
+    this.roundAnswers    = [];
+    this.betweenTimer    = null;
+    this.betweenCountdown = null;
   }
 
   getMemberCounts() {
@@ -102,7 +104,8 @@ class GameRoom {
   addMember(socketId, groupName) {
     const group = this.groups[groupName];
     if (!group) return { error: 'invalid' };
-    if (group.members.size >= 4) return { error: 'full' };
+    const maxSize = groupName === 'Giảng Viên' ? 1 : 4;
+    if (group.members.size >= maxSize) return { error: 'full', maxSize };
     group.members.add(socketId);
     return { ok: true };
   }
@@ -142,19 +145,51 @@ class GameRoom {
     return item;
   }
 
+  giveCatchupItem(groupName) {
+    const rankings = this.getRankings();
+    const rank = rankings.findIndex(r => r.group === groupName); // 0 = leader
+    const total = rankings.length;
+    let item;
+    if (rank === 0) {
+      // Leader gets shield only
+      item = ITEMS.find(i => i.id === 'shield');
+    } else if (rank >= total - 2) {
+      // Last or second-to-last: 70% offensive, 30% shield
+      const offensiveItems = ITEMS.filter(i => i.type === 'offensive' || i.type === 'auto');
+      item = Math.random() < 0.7
+        ? offensiveItems[Math.floor(Math.random() * offensiveItems.length)]
+        : ITEMS.find(i => i.id === 'shield');
+    } else {
+      item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+    }
+    if (!item) item = ITEMS[0];
+    this.groups[groupName].inventory.push(item);
+    io.to(this.roomCode + '_' + groupName).emit('inventory:update', { items: this.groups[groupName].inventory });
+    io.to(this.hostSocketId).emit('item:gained', { groupName, item });
+    return item;
+  }
+
+  checkMilestone(groupName) {
+    const group = this.groups[groupName];
+    const nextMilestone = MILESTONES[group.lastMilestone];
+    if (nextMilestone !== undefined && group.steps >= nextMilestone) {
+      group.lastMilestone++;
+      this.giveCatchupItem(groupName);
+    }
+  }
+
   startQuestion() {
     this.currentQ++;
     if (this.currentQ >= this.questions.length) {
       this.endGame();
       return;
     }
-    this.state       = STATES.QUESTION;
+    // Cancel any pending between-rounds auto-advance
+    if (this.betweenTimer) { clearTimeout(this.betweenTimer); this.betweenTimer = null; }
+    if (this.betweenCountdown) { clearInterval(this.betweenCountdown); this.betweenCountdown = null; }
+    this.state        = STATES.QUESTION;
     this.roundAnswers = [];
-
-    // Reset per-round flags
-    for (const data of Object.values(this.groups)) {
-      data.usedItemThisPhase = false;
-    }
+    this.startTime    = Date.now();
 
     const q = this.questions[this.currentQ];
     io.to(this.roomCode).emit('question:shown', {
@@ -162,11 +197,11 @@ class GameRoom {
       total:     this.questions.length,
       text:      q.text,
       options:   q.options,
-      timeLimit: 20,
+      timeLimit: 25,
     });
 
     this.timer = new Timer(
-      20,
+      25,
       (remaining) => {
         io.to(this.roomCode).emit('timer:tick', { remaining });
       },
@@ -216,6 +251,7 @@ class GameRoom {
 
     const q = this.questions[this.currentQ];
     const correct = q.correct;
+    const now = Date.now();
 
     // Sort correct answers by submission time
     const correctAnswers = this.roundAnswers
@@ -224,39 +260,44 @@ class GameRoom {
 
     const movements = [];
 
-    // Apply frozen state BEFORE awarding steps (frozen = skip this round's steps)
+    // Apply frozen state BEFORE awarding steps
     const frozenGroups = Object.entries(this.groups)
       .filter(([, d]) => d.frozen)
       .map(([name]) => name);
 
     correctAnswers.forEach((a, idx) => {
       const group = this.groups[a.groupName];
-      let steps = 0;
-      let item  = null;
+      let pts  = 0;
+      let item = null;
 
       if (frozenGroups.includes(a.groupName)) {
-        steps = 0; // frozen this round
+        pts = 0;
       } else if (idx === 0 || idx === 1) {
-        steps = 3;
-        item  = this.giveRandomItem(a.groupName);
-        group.steps += steps;
+        // Time-based: max 25 pts minus elapsed seconds
+        const elapsed = (a.serverTime - this.startTime) / 1000;
+        pts = Math.max(0, parseFloat((25 - elapsed).toFixed(2)));
+        item = this.giveRandomItem(a.groupName);
+        group.steps = parseFloat((group.steps + pts).toFixed(2));
       } else {
-        steps = 1;
-        group.steps += steps;
+        const elapsed = (a.serverTime - this.startTime) / 1000;
+        pts = Math.max(0, parseFloat((Math.min(10, 25 - elapsed)).toFixed(2)));
+        group.steps = parseFloat((group.steps + pts).toFixed(2));
       }
+
+      // Check milestone after updating steps
+      this.checkMilestone(a.groupName);
 
       movements.push({
         groupName:    a.groupName,
         correct:      true,
-        stepsGained:  steps,
+        stepsGained:  pts,
         itemReceived: item,
         frozen:       frozenGroups.includes(a.groupName),
       });
 
-      // Notify team of result
       io.to(this.roomCode + '_' + a.groupName).emit('answer:result', {
         correct:      true,
-        stepsGained:  steps,
+        stepsGained:  pts,
         itemReceived: item,
       });
       if (item) {
@@ -274,7 +315,7 @@ class GameRoom {
       }
     }
 
-    // Unfreeze groups (freeze lasts exactly 1 question)
+    // Unfreeze
     for (const [, data] of Object.entries(this.groups)) {
       data.frozen = false;
     }
@@ -286,44 +327,40 @@ class GameRoom {
     });
     io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
 
-    // Start item phase
-    this.startItemPhase();
-  }
+    this.state = STATES.BETWEEN_ROUNDS;
 
-  startItemPhase() {
-    this.state          = STATES.ITEM_PHASE;
-    this.itemsThisPhase = {};
-
-    // Check if any group has items
-    const anyItems = Object.values(this.groups).some(d => d.inventory.length > 0);
-
-    io.to(this.roomCode).emit('item-phase:started', { timeLimit: 15, anyItems });
-
-    this.timer = new Timer(
-      15,
-      (remaining) => {
-        io.to(this.roomCode).emit('timer:tick', { remaining });
-      },
-      () => this.resolveItemPhase()
-    );
-    this.timer.start();
+    // Auto-advance or end game
+    if (this.currentQ + 1 >= this.questions.length) {
+      io.to(this.roomCode).emit('round:between', { autoAdvanceIn: 0, isLast: true });
+      setTimeout(() => this.endGame(), 3000);
+    } else {
+      let autoSec = 5;
+      io.to(this.roomCode).emit('round:between', { autoAdvanceIn: autoSec });
+      this.betweenCountdown = setInterval(() => {
+        autoSec--;
+        io.to(this.roomCode).emit('between:countdown', { remaining: autoSec });
+        if (autoSec <= 0) { clearInterval(this.betweenCountdown); this.betweenCountdown = null; }
+      }, 1000);
+      this.betweenTimer = setTimeout(() => {
+        this.betweenTimer = null;
+        if (this.state === STATES.BETWEEN_ROUNDS) this.startQuestion();
+      }, 5000);
+    }
   }
 
   useItem(socketId, itemId, targetGroup) {
-    if (this.state !== STATES.ITEM_PHASE) return { error: 'Not in item phase' };
+    if (this.state === STATES.LOBBY || this.state === STATES.GAME_OVER) return { error: 'Game not active' };
 
     const entry = this.getGroupBySocket(socketId);
     if (!entry) return { error: 'Not a player' };
     const [groupName, groupData] = entry;
-
-    if (groupData.usedItemThisPhase) return { error: 'Already used item this phase' };
 
     const itemIdx = groupData.inventory.findIndex(i => i.id === itemId);
     if (itemIdx === -1) return { error: 'Item not in inventory' };
 
     const item = groupData.inventory[itemIdx];
 
-    // Validate target
+    // Validate target for offensive items
     if (item.type === 'offensive') {
       if (!targetGroup || !this.groups[targetGroup]) return { error: 'Invalid target' };
       if (targetGroup === groupName) return { error: 'Cannot target yourself' };
@@ -331,103 +368,71 @@ class GameRoom {
 
     // Remove from inventory
     groupData.inventory.splice(itemIdx, 1);
-    groupData.usedItemThisPhase = true;
-
-    // Queue item for resolution
-    this.itemsThisPhase[groupName] = { itemId, targetGroup, item };
-
     io.to(this.roomCode + '_' + groupName).emit('inventory:update', { items: groupData.inventory });
-    return { ok: true };
-  }
 
-  resolveItemPhase() {
-    if (this.timer) this.timer.stop();
-    this.state = STATES.BETWEEN_ROUNDS;
-
-    // Process queued items
-    // Shields first (so they can block)
-    const shieldUsers = Object.entries(this.itemsThisPhase)
-      .filter(([, q]) => q.itemId === 'shield');
-    for (const [groupName] of shieldUsers) {
-      this.groups[groupName].shielded = true;
+    if (item.id === 'shield') {
+      groupData.shielded = true;
+      io.to(this.roomCode + '_' + groupName).emit('effect:shield-gained');
+      io.to(this.roomCode).emit('item:used', {
+        byGroup: groupName, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup: groupName, effect: `${groupName} trang bị Khiên!`, shake: null,
+      });
+      return { ok: true };
     }
 
-    // Offensive items
-    const offensiveItems = Object.entries(this.itemsThisPhase)
-      .filter(([, q]) => q.item.type === 'offensive');
-
-    for (const [byGroup, q] of offensiveItems) {
-      const { item, targetGroup } = q;
-      const target = this.groups[targetGroup];
-      if (!target) continue;
-
-      // Check shield
-      if (target.shielded) {
-        target.shielded = false;
-        io.to(this.roomCode + '_' + targetGroup).emit('shield:blocked');
+    if (item.id === 'magnet') {
+      // Find group ranked just above this one
+      const rankings = this.getRankings();
+      const myRank = rankings.findIndex(r => r.group === groupName);
+      const aboveIdx = myRank > 0 ? myRank - 1 : null;
+      const autoTarget = aboveIdx !== null ? rankings[aboveIdx].group : null;
+      if (autoTarget) {
+        const target = this.groups[autoTarget];
+        const steal = Math.min(5, target.steps);
+        target.steps = parseFloat((target.steps - steal).toFixed(2));
+        groupData.steps = parseFloat((groupData.steps + steal).toFixed(2));
+        io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
         io.to(this.roomCode).emit('item:used', {
-          byGroup,
-          itemEmoji: item.emoji,
-          itemName:  item.name,
-          targetGroup,
-          effect:    `${item.name} bị chặn bởi Shield của ${targetGroup}!`,
+          byGroup: groupName, itemEmoji: item.emoji, itemName: item.name,
+          targetGroup: autoTarget, effect: `${groupName} hút ${steal.toFixed(2)} điểm từ ${autoTarget}!`, shake: autoTarget,
         });
-        continue;
       }
+      return { ok: true };
+    }
 
-      let effect = '';
-      if (item.id === 'bug') {
-        const loss = Math.min(2, target.steps);
-        target.steps -= loss;
-        effect = `${targetGroup} mất ${loss} bước!`;
-      } else if (item.id === 'freeze') {
-        target.frozen = true;
-        effect = `${targetGroup} bị đóng băng 1 câu!`;
-        io.to(this.roomCode + '_' + targetGroup).emit('frozen:notified');
-      } else if (item.id === 'swap') {
-        const bySteps         = this.groups[byGroup].steps;
-        this.groups[byGroup].steps = target.steps;
-        target.steps          = bySteps;
-        effect = `${byGroup} và ${targetGroup} đổi vị trí!`;
-      }
+    // Offensive: blooper, banana, brick
+    const target = this.groups[targetGroup];
+    if (!target) return { error: 'Invalid target' };
 
+    if (target.shielded) {
+      target.shielded = false;
+      io.to(this.roomCode + '_' + targetGroup).emit('shield:blocked');
       io.to(this.roomCode).emit('item:used', {
-        byGroup,
-        itemEmoji: item.emoji,
-        itemName:  item.name,
-        targetGroup,
-        effect,
+        byGroup: groupName, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `${item.name} bị chặn bởi Khiên của ${targetGroup}!`, shake: null,
       });
+      return { ok: true };
     }
 
-    // Rocket (self)
-    const rocketUsers = Object.entries(this.itemsThisPhase)
-      .filter(([, q]) => q.itemId === 'rocket');
-    for (const [groupName] of rocketUsers) {
-      this.groups[groupName].steps += 3;
-      io.to(this.roomCode).emit('item:used', {
-        byGroup:    groupName,
-        itemEmoji:  '🚀',
-        itemName:   'Rocket',
-        targetGroup: groupName,
-        effect:     `${groupName} dùng Rocket, tiến thêm 3 bước!`,
-      });
+    let effect = '';
+    if (item.id === 'blooper') {
+      io.to(this.roomCode + '_' + targetGroup).emit('effect:blooper');
+      effect = `${targetGroup} bị che mắt 4 giây!`;
+    } else if (item.id === 'banana') {
+      io.to(this.roomCode + '_' + targetGroup).emit('effect:banana');
+      effect = `Đáp án của ${targetGroup} bị xáo trộn!`;
+    } else if (item.id === 'brick') {
+      const loss = Math.min(5, target.steps);
+      target.steps = parseFloat((target.steps - loss).toFixed(2));
+      io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
+      effect = `${targetGroup} mất ${loss.toFixed(2)} điểm!`;
     }
 
-    io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
-    io.to(this.roomCode).emit('item-phase:ended');
-
-    // If last question → game over; else wait for host
-    if (this.currentQ + 1 >= this.questions.length) {
-      this.endGame();
-    }
-    // else host presses next-question
-  }
-
-  skipItemPhase() {
-    if (this.state !== STATES.ITEM_PHASE) return;
-    if (this.timer) this.timer.stop();
-    this.resolveItemPhase();
+    io.to(this.roomCode).emit('item:used', {
+      byGroup: groupName, itemEmoji: item.emoji, itemName: item.name,
+      targetGroup, effect, shake: targetGroup,
+    });
+    return { ok: true };
   }
 
   endGame() {
@@ -482,14 +487,11 @@ io.on('connection', (socket) => {
     currentRoom.revealAnswer();
   });
 
-  socket.on('host:skip-item-phase', () => {
-    if (!currentRoom) return;
-    currentRoom.skipItemPhase();
-  });
-
   socket.on('host:next-question', () => {
     if (!currentRoom) return;
     if (currentRoom.state !== STATES.BETWEEN_ROUNDS) return;
+    if (currentRoom.betweenTimer) { clearTimeout(currentRoom.betweenTimer); currentRoom.betweenTimer = null; }
+    if (currentRoom.betweenCountdown) { clearInterval(currentRoom.betweenCountdown); currentRoom.betweenCountdown = null; }
     currentRoom.startQuestion();
   });
 
@@ -529,7 +531,8 @@ io.on('connection', (socket) => {
 
     const result = currentRoom.addMember(socket.id, groupName);
     if (result.error === 'full') {
-      socket.emit('join:error', { message: `${groupName} đã đủ 4 thành viên.` });
+      const max = result.maxSize || 4;
+      socket.emit('join:error', { message: `${groupName} đã đủ ${max} thành viên.` });
       return;
     }
 
@@ -551,6 +554,107 @@ io.on('connection', (socket) => {
     if (result && result.error) {
       socket.emit('item:error', { message: result.error });
     }
+  });
+
+  // ── DEV TOOLS ──────────────────────────────────────────────
+  socket.on('dev:give-item', ({ groupName, itemId }) => {
+    if (!currentRoom || !currentRoom.groups[groupName]) return;
+    const item = ITEMS.find(i => i.id === itemId);
+    if (!item) return;
+    currentRoom.groups[groupName].inventory.push(item);
+    io.to(currentRoom.roomCode + '_' + groupName).emit('inventory:update', { items: currentRoom.groups[groupName].inventory });
+    socket.emit('dev:log', { msg: `✅ Gave ${item.emoji} ${item.name} → ${groupName}` });
+  });
+
+  socket.on('dev:adjust-score', ({ groupName, delta }) => {
+    if (!currentRoom || !currentRoom.groups[groupName]) return;
+    const g = currentRoom.groups[groupName];
+    g.steps = Math.max(0, parseFloat((g.steps + delta).toFixed(2)));
+    io.to(currentRoom.roomCode).emit('ducks:updated', { positions: currentRoom.getPositions() });
+    socket.emit('dev:log', { msg: `✅ ${groupName}: score ${delta >= 0 ? '+' : ''}${delta} → ${g.steps}` });
+  });
+
+  socket.on('dev:submit-answer', ({ groupName, answer }) => {
+    if (!currentRoom || !currentRoom.groups[groupName]) return;
+    if (currentRoom.state !== STATES.QUESTION && currentRoom.state !== STATES.PAUSED) {
+      socket.emit('dev:log', { msg: '⚠️ Not in QUESTION state' }); return;
+    }
+    if (currentRoom.roundAnswers.find(a => a.groupName === groupName)) {
+      socket.emit('dev:log', { msg: `⚠️ ${groupName} already answered` }); return;
+    }
+    currentRoom.roundAnswers.push({ groupName, answer, serverTime: Date.now() });
+    io.to(currentRoom.hostSocketId).emit('answers:count', { count: currentRoom.roundAnswers.length });
+    io.to(currentRoom.roomCode + '_' + groupName).emit('team:locked', { answer });
+    socket.emit('dev:log', { msg: `✅ ${groupName} answered ${answer}` });
+  });
+
+  socket.on('dev:submit-correct', ({ groupName }) => {
+    if (!currentRoom || !currentRoom.groups[groupName]) return;
+    if (currentRoom.state !== STATES.QUESTION && currentRoom.state !== STATES.PAUSED) {
+      socket.emit('dev:log', { msg: '⚠️ Not in QUESTION state' }); return;
+    }
+    if (currentRoom.roundAnswers.find(a => a.groupName === groupName)) {
+      socket.emit('dev:log', { msg: `⚠️ ${groupName} already answered` }); return;
+    }
+    const correct = currentRoom.questions[currentRoom.currentQ].correct;
+    currentRoom.roundAnswers.push({ groupName, answer: correct, serverTime: Date.now() });
+    io.to(currentRoom.hostSocketId).emit('answers:count', { count: currentRoom.roundAnswers.length });
+    io.to(currentRoom.roomCode + '_' + groupName).emit('team:locked', { answer: correct });
+    socket.emit('dev:log', { msg: `✅ ${groupName} auto-correct (${correct})` });
+  });
+
+  socket.on('dev:reveal', () => {
+    if (!currentRoom) return;
+    if (currentRoom.state !== STATES.QUESTION && currentRoom.state !== STATES.PAUSED) return;
+    currentRoom.revealAnswer();
+    socket.emit('dev:log', { msg: '✅ Revealed answer' });
+  });
+
+  socket.on('dev:next-question', () => {
+    if (!currentRoom || currentRoom.state !== STATES.BETWEEN_ROUNDS) return;
+    if (currentRoom.betweenTimer) { clearTimeout(currentRoom.betweenTimer); currentRoom.betweenTimer = null; }
+    if (currentRoom.betweenCountdown) { clearInterval(currentRoom.betweenCountdown); currentRoom.betweenCountdown = null; }
+    currentRoom.startQuestion();
+    socket.emit('dev:log', { msg: '✅ Forced next question' });
+  });
+
+  socket.on('dev:set-score', ({ groupName, value }) => {
+    if (!currentRoom || !currentRoom.groups[groupName]) return;
+    currentRoom.groups[groupName].steps = Math.max(0, parseFloat(parseFloat(value).toFixed(2)));
+    io.to(currentRoom.roomCode).emit('ducks:updated', { positions: currentRoom.getPositions() });
+    socket.emit('dev:log', { msg: `✅ ${groupName} score set to ${value}` });
+  });
+
+  socket.on('dev:apply-item', ({ fromGroup, itemId, targetGroup }) => {
+    if (!currentRoom) return;
+    const item = ITEMS.find(i => i.id === itemId);
+    if (!item) return;
+    const target = currentRoom.groups[targetGroup];
+    if (!target) { socket.emit('dev:log', { msg: `⚠️ Invalid target: ${targetGroup}` }); return; }
+
+    const label = fromGroup || 'Dev';
+    if (itemId === 'blooper') {
+      io.to(currentRoom.roomCode + '_' + targetGroup).emit('effect:blooper');
+      io.to(currentRoom.roomCode).emit('item:used', {
+        byGroup: label, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `[DEV] ${targetGroup} bị che mắt!`, shake: targetGroup,
+      });
+    } else if (itemId === 'banana') {
+      io.to(currentRoom.roomCode + '_' + targetGroup).emit('effect:banana');
+      io.to(currentRoom.roomCode).emit('item:used', {
+        byGroup: label, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `[DEV] Đáp án ${targetGroup} bị xáo trộn!`, shake: targetGroup,
+      });
+    } else if (itemId === 'brick') {
+      const loss = Math.min(5, target.steps);
+      target.steps = parseFloat((target.steps - loss).toFixed(2));
+      io.to(currentRoom.roomCode).emit('ducks:updated', { positions: currentRoom.getPositions() });
+      io.to(currentRoom.roomCode).emit('item:used', {
+        byGroup: label, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `[DEV] ${targetGroup} mất ${loss.toFixed(2)} điểm!`, shake: targetGroup,
+      });
+    }
+    socket.emit('dev:log', { msg: `✅ [DEV] ${item.emoji} ${item.name} → ${targetGroup}` });
   });
 
   // ── DISCONNECT ────────────────────────────────────────────
