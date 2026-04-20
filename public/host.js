@@ -55,18 +55,42 @@ function buildTrack() {
   raceTrack.innerHTML = '';
   raceTrack.appendChild(startLine);
 
-  GROUPS.forEach(group => {
+  // Add bubbles container
+  const bubbleCount = 15;
+  const bubblesDiv = document.createElement('div');
+  bubblesDiv.className = 'bubbles';
+  for (let i = 0; i < bubbleCount; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.width = bubble.style.height = (Math.random() * 10 + 5) + 'px';
+    bubble.style.animationDelay = Math.random() * 10 + 's';
+    bubble.style.animationDuration = (Math.random() * 5 + 8) + 's';
+    bubblesDiv.appendChild(bubble);
+  }
+  raceTrack.appendChild(bubblesDiv);
+
+  GROUPS.forEach((group, index) => {
     totalSteps[group] = 0;
-    const lane = document.createElement('div');
-    lane.className = 'lane';
-    lane.id = `lane-${group.replace(' ','')}`;
-    lane.innerHTML = `
-      <span class="lane-label">${group}</span>
-      <div class="lane-road"></div>
-      <div class="duck" id="duck-${group.replace(' ','')}" style="left:5%">${DUCK_EMOJIS[group]}</div>
+    // Organic positioning: staggered vertical offsets across the whole water area
+    // Starting from 24% height to avoid being covered by the question panel
+    const verticalOffset = 24 + (index * (68 / (GROUPS.length - 1))) + (Math.random() * 4 - 2);
+    
+    const duckData = document.createElement('div');
+    duckData.className = 'duck';
+    duckData.id = `duck-${group.replace(' ','')}`;
+    duckData.style.left = '5%';
+    duckData.style.top = verticalOffset + '%';
+    duckData.style.zIndex = 10 + index;
+    // Add variations in color
+    const hueRotation = (index * (360 / GROUPS.length)) % 360;
+    
+    duckData.innerHTML = `
+      <img src="assets/duck.png" alt="duck" style="filter: hue-rotate(${hueRotation}deg)">
+      <div class="duck-name-tag">${group}</div>
       <span class="duck-steps" id="steps-${group.replace(' ','')}">0</span>
     `;
-    raceTrack.appendChild(lane);
+    raceTrack.appendChild(duckData);
   });
 }
 buildTrack();
@@ -80,16 +104,31 @@ function duckLeft(steps) {
 }
 
 function updateDucks(positions) {
+  let leader = { group: '', steps: -1 };
+
   for (const [group, steps] of Object.entries(positions)) {
     totalSteps[group] = steps;
+    if (steps > leader.steps) {
+      leader = { group, steps };
+    }
+
     const key = group.replace(' ','');
     const duckEl  = document.getElementById(`duck-${key}`);
     const stepsEl = document.getElementById(`steps-${key}`);
-    if (duckEl)  duckEl.style.left = duckLeft(steps);
-    if (stepsEl) stepsEl.textContent = steps;
+    
     if (duckEl) {
+      duckEl.style.left = duckLeft(steps);
       duckEl.classList.toggle('frozen', frozenGroups.has(group));
+      // Remove leader class initially
+      duckEl.classList.remove('leader');
     }
+    if (stepsEl) stepsEl.textContent = steps;
+  }
+
+  // Highlight leader if they have at least 1 step
+  if (leader.steps > 0) {
+    const leaderDuck = document.getElementById(`duck-${leader.group.replace(' ','')}`);
+    if (leaderDuck) leaderDuck.classList.add('leader');
   }
 }
 

@@ -156,7 +156,7 @@ function resetItemPanel() {
 // ── Socket events ─────────────────────────────────────────────
 socket.on('join:success', ({ groupName }) => {
   myGroup = groupName;
-  $('waiting-group-name').textContent = `${groupName} 🦆`;
+  $('waiting-group-name').textContent = groupName;
   showScreen('waiting');
 });
 
@@ -169,7 +169,7 @@ socket.on('join:error', ({ message }) => {
 
 socket.on('game:started', () => {
   showScreen('waiting');
-  $('waiting-group-name').textContent = myGroup + ' 🦆';
+  $('waiting-group-name').textContent = myGroup;
 });
 
 socket.on('question:shown', ({ number, total, text, options }) => {

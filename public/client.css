@@ -18,19 +18,22 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #0d1b2a, #1a3a5c);
+  background: linear-gradient(rgba(13, 27, 42, 0.8), rgba(13, 27, 42, 0.8)), url('assets/bg.png') center/cover no-repeat;
 }
 
 .join-card {
   width: 100%;
   max-width: 380px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 20px;
-  padding: 2rem 1.8rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: .8rem;
+  gap: 1.2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 .join-card h1 { font-size: 1.6rem; text-align: center; }
 .subtitle { text-align: center; color: #aac; font-size: .9rem; margin-bottom: .5rem; }
@@ -99,12 +102,14 @@ select option { background: #1a3a5c; }
 #screen-waiting { justify-content: center; }
 
 .duck-anim {
-  font-size: 5rem;
-  animation: waddle 1.2s ease-in-out infinite;
+  height: 120px;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+  animation: waddle 1s ease-in-out infinite;
 }
+
 @keyframes waddle {
-  0%,100% { transform: rotate(-8deg); }
-  50%      { transform: rotate(8deg); }
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50%      { transform: translateY(-10px) rotate(6deg); }
 }
 
 .pulse-dots { display: flex; gap: .5rem; }
