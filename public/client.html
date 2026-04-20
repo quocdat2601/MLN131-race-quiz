@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Nhóm — Đường Đua Xuyên Tuyến</title>
+  <link rel="stylesheet" href="client.css" />
+</head>
+<body>
+
+<!-- ── JOIN ────────────────────────────────────────────────── -->
+<div id="screen-join" class="screen active">
+  <div class="join-card">
+    <h1>🦆 Đường Đua Xuyên Tuyến</h1>
+    <p class="subtitle">Nhập mã phòng và chọn nhóm của bạn</p>
+
+    <label class="field-label">Mã Phòng</label>
+    <input id="input-code" type="text" maxlength="4" placeholder="Ví dụ: 3721" inputmode="numeric" />
+
+    <label class="field-label">Nhóm</label>
+    <select id="select-group">
+      <option value="">-- Chọn nhóm --</option>
+      <option value="Nhóm 1">Nhóm 1</option>
+      <option value="Nhóm 2">Nhóm 2</option>
+      <option value="Nhóm 3">Nhóm 3</option>
+      <option value="Nhóm 5">Nhóm 5</option>
+      <option value="Nhóm 6">Nhóm 6</option>
+      <option value="Nhóm 7">Nhóm 7</option>
+    </select>
+
+    <div id="join-error" class="error-msg" style="display:none"></div>
+    <button id="btn-join" class="btn-primary">Tham Gia</button>
+  </div>
+</div>
+
+<!-- ── WAITING ──────────────────────────────────────────────── -->
+<div id="screen-waiting" class="screen">
+  <div class="center-card">
+    <div class="duck-anim">🦆</div>
+    <h2 id="waiting-group-name"></h2>
+    <p class="dim">Chờ Host bắt đầu game...</p>
+    <div class="pulse-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- ── QUESTION ─────────────────────────────────────────────── -->
+<div id="screen-question" class="screen">
+  <div class="question-top">
+    <span id="client-q-badge" class="q-badge"></span>
+    <div id="client-timer-wrap"><div id="client-timer-bar"></div></div>
+    <span id="client-timer-text" class="timer-text">20</span>
+  </div>
+  <div id="client-q-text" class="client-q-text"></div>
+  <div id="options-container" class="options-container">
+    <button class="opt-btn" data-answer="A"><span class="opt-letter">A</span><span id="client-opt-A"></span></button>
+    <button class="opt-btn" data-answer="B"><span class="opt-letter">B</span><span id="client-opt-B"></span></button>
+    <button class="opt-btn" data-answer="C"><span class="opt-letter">C</span><span id="client-opt-C"></span></button>
+    <button class="opt-btn" data-answer="D"><span class="opt-letter">D</span><span id="client-opt-D"></span></button>
+  </div>
+</div>
+
+<!-- ── ANSWERED (waiting for reveal) ────────────────────────── -->
+<div id="screen-answered" class="screen">
+  <div class="center-card">
+    <div id="answered-icon" class="answered-icon">✅</div>
+    <p id="answered-msg" class="answered-msg">Đã gửi đáp án!</p>
+    <p class="dim">Chờ kết quả...</p>
+  </div>
+</div>
+
+<!-- ── RESULT ────────────────────────────────────────────────── -->
+<div id="screen-result" class="screen">
+  <div class="center-card">
+    <div id="result-icon" class="result-icon"></div>
+    <div id="result-steps" class="result-steps"></div>
+    <div id="result-item" class="result-item"></div>
+    <div id="frozen-msg" class="frozen-msg" style="display:none">❄️ Câu tới bạn bị đóng băng!</div>
+    <p class="dim">Chờ giai đoạn vật phẩm...</p>
+  </div>
+</div>
+
+<!-- ── ITEM PHASE ────────────────────────────────────────────── -->
+<div id="screen-item-phase" class="screen">
+  <div class="item-phase-header">
+    <span>🎮 Giai Đoạn Vật Phẩm</span>
+    <span id="item-phase-timer" class="item-phase-timer">15</span>
+  </div>
+
+  <div id="inventory-section">
+    <p class="inventory-label">Kho vật phẩm của bạn:</p>
+    <div id="inventory-list" class="inventory-list"></div>
+    <p id="no-items-msg" class="dim" style="display:none">Bạn không có vật phẩm nào.</p>
+  </div>
+
+  <!-- Use-item panel -->
+  <div id="use-item-panel" class="use-item-panel" style="display:none">
+    <p id="use-item-title" class="use-item-title"></p>
+
+    <div id="target-picker" class="target-picker" style="display:none">
+      <p class="dim">Chọn mục tiêu:</p>
+      <div id="target-list" class="target-list"></div>
+    </div>
+
+    <button id="btn-confirm-use" class="btn-primary" style="display:none">Xác Nhận</button>
+    <button id="btn-cancel-use" class="btn-secondary">Huỷ</button>
+  </div>
+
+  <div id="item-used-msg" class="item-used-msg" style="display:none"></div>
+</div>
+
+<!-- ── BETWEEN ROUNDS ────────────────────────────────────────── -->
+<div id="screen-between" class="screen">
+  <div class="center-card">
+    <p class="dim">Chờ câu hỏi tiếp theo...</p>
+    <div id="between-inventory" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- ── GAME OVER ─────────────────────────────────────────────── -->
+<div id="screen-gameover" class="screen">
+  <div class="center-card">
+    <h2>🏆 Game Kết Thúc!</h2>
+    <ol id="client-rankings" class="client-rankings"></ol>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

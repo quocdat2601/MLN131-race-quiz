@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "text": "Hiệp định Giơ-ne-vơ (1954) quy định lấy vĩ tuyến bao nhiêu làm ranh giới quân sự tạm thời phân chia hai miền Nam - Bắc Việt Nam?",
+    "options": {
+      "A": "Vĩ tuyến 16",
+      "B": "Vĩ tuyến 17",
+      "C": "Vĩ tuyến 18",
+      "D": "Vĩ tuyến 19"
+    },
+    "correct": "B",
+    "explanation": "Hiệp định Giơ-ne-vơ quy định lấy vĩ tuyến 17 (sông Bến Hải) làm giới tuyến quân sự tạm thời."
+  },
+  {
+    "id": 2,
+    "text": "Hiệp định Giơ-ne-vơ (1954) quy định thời gian bao lâu sẽ tổ chức tổng tuyển cử thống nhất đất nước?",
+    "options": {
+      "A": "1 năm",
+      "B": "18 tháng",
+      "C": "2 năm",
+      "D": "3 năm"
+    },
+    "correct": "C",
+    "explanation": "Hiệp định quy định sau 2 năm (1956) sẽ tổ chức tổng tuyển cử thống nhất hai miền."
+  },
+  {
+    "id": 3,
+    "text": "Sau năm 1954, nhiệm vụ chiến lược của cách mạng miền Bắc Việt Nam là gì?",
+    "options": {
+      "A": "Tiến hành kháng chiến chống Mỹ",
+      "B": "Xây dựng chủ nghĩa xã hội",
+      "C": "Thống nhất đất nước bằng vũ trang",
+      "D": "Đấu tranh chính trị hòa bình"
+    },
+    "correct": "B",
+    "explanation": "Miền Bắc hoàn toàn giải phóng, có nhiệm vụ xây dựng chủ nghĩa xã hội, làm hậu phương cho cách mạng miền Nam."
+  },
+  {
+    "id": 4,
+    "text": "Mỹ - Diệm thực hiện chính sách gì để phá hoại Hiệp định Giơ-ne-vơ và đàn áp phong trào cách mạng miền Nam?",
+    "options": {
+      "A": "Chiến dịch Toàn thắng",
+      "B": "Luật 10/59",
+      "C": "Kế hoạch De Lattre",
+      "D": "Chiến lược Chiến tranh đặc biệt"
+    },
+    "correct": "B",
+    "explanation": "Năm 1959, Mỹ - Diệm ban hành Luật 10/59 lê máy chém khắp miền Nam, tàn sát những người kháng chiến cũ và người dân yêu nước."
+  },
+  {
+    "id": 5,
+    "text": "Phong trào Đồng Khởi (1959 - 1960) nổ ra đầu tiên ở đâu?",
+    "options": {
+      "A": "Củ Chi, Gia Định",
+      "B": "Bến Tre",
+      "C": "Quảng Ngãi",
+      "D": "Tây Ninh"
+    },
+    "correct": "B",
+    "explanation": "Phong trào Đồng Khởi nổ ra đầu tiên ở Bến Tre (17/1/1960), sau đó lan rộng ra khắp miền Nam."
+  },
+  {
+    "id": 6,
+    "text": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập vào ngày tháng năm nào?",
+    "options": {
+      "A": "20/12/1960",
+      "B": "17/1/1960",
+      "C": "15/5/1959",
+      "D": "20/7/1954"
+    },
+    "correct": "A",
+    "explanation": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập ngày 20/12/1960, là sự kiện lịch sử trọng đại của cách mạng miền Nam."
+  },
+  {
+    "id": 7,
+    "text": "Đại hội đại biểu toàn quốc lần thứ III của Đảng Lao động Việt Nam họp tại đâu và vào năm nào?",
+    "options": {
+      "A": "Hà Nội, năm 1960",
+      "B": "Việt Bắc, năm 1960",
+      "C": "Hà Nội, năm 1961",
+      "D": "Hải Phòng, năm 1960"
+    },
+    "correct": "A",
+    "explanation": "Đại hội III họp tại Hà Nội từ ngày 5 đến 10/9/1960, là đại hội xây dựng chủ nghĩa xã hội và đấu tranh thống nhất nước nhà."
+  },
+  {
+    "id": 8,
+    "text": "Đại hội III (1960) xác định nhiệm vụ của cách mạng miền Nam là gì?",
+    "options": {
+      "A": "Giải phóng miền Nam khỏi ách thống trị của đế quốc Mỹ và tay sai",
+      "B": "Xây dựng lực lượng vũ trang nhân dân",
+      "C": "Tiến hành tổng khởi nghĩa vũ trang",
+      "D": "Đấu tranh nghị trường, đòi thực hiện Hiệp định Giơ-ne-vơ"
+    },
+    "correct": "A",
+    "explanation": "Đại hội III xác định cách mạng miền Nam là cách mạng dân tộc dân chủ nhân dân, nhiệm vụ là giải phóng miền Nam khỏi ách thống trị của đế quốc Mỹ và tay sai."
+  },
+  {
+    "id": 9,
+    "text": "Đại hội III (1960) xác định cách mạng xã hội chủ nghĩa ở miền Bắc có vai trò như thế nào đối với toàn bộ cách mạng Việt Nam?",
+    "options": {
+      "A": "Vai trò quyết định trực tiếp",
+      "B": "Vai trò quyết định nhất",
+      "C": "Vai trò bổ trợ",
+      "D": "Vai trò ngang bằng với cách mạng miền Nam"
+    },
+    "correct": "B",
+    "explanation": "Đại hội III xác định cách mạng xã hội chủ nghĩa ở miền Bắc có vai trò quyết định nhất đối với sự phát triển của toàn bộ cách mạng Việt Nam."
+  },
+  {
+    "id": 10,
+    "text": "Đại hội III (1960) xác định cách mạng miền Nam có vai trò gì?",
+    "options": {
+      "A": "Vai trò quyết định trực tiếp đối với sự nghiệp giải phóng miền Nam",
+      "B": "Vai trò hậu phương chiến lược",
+      "C": "Vai trò thứ yếu",
+      "D": "Vai trò phụ trợ cho miền Bắc"
+    },
+    "correct": "A",
+    "explanation": "Đại hội III xác định cách mạng miền Nam có vai trò quyết định trực tiếp đối với sự nghiệp giải phóng miền Nam, thống nhất đất nước."
+  },
+  {
+    "id": 11,
+    "text": "Ai được bầu làm Chủ tịch Ban Chấp hành Trung ương Đảng tại Đại hội III (1960)?",
+    "options": {
+      "A": "Đồng chí Lê Duẩn",
+      "B": "Đồng chí Trường Chinh",
+      "C": "Đồng chí Hồ Chí Minh",
+      "D": "Đồng chí Phạm Văn Đồng"
+    },
+    "correct": "C",
+    "explanation": "Đại hội III bầu đồng chí Hồ Chí Minh làm Chủ tịch Ban Chấp hành Trung ương Đảng, đồng chí Lê Duẩn làm Bí thư thứ nhất."
+  },
+  {
+    "id": 12,
+    "text": "Ai được bầu làm Bí thư thứ nhất Ban Chấp hành Trung ương Đảng tại Đại hội III (1960)?",
+    "options": {
+      "A": "Đồng chí Hồ Chí Minh",
+      "B": "Đồng chí Trường Chinh",
+      "C": "Đồng chí Lê Duẩn",
+      "D": "Đồng chí Võ Nguyên Giáp"
+    },
+    "correct": "C",
+    "explanation": "Đồng chí Lê Duẩn được bầu làm Bí thư thứ nhất Ban Chấp hành Trung ương Đảng tại Đại hội III."
+  },
+  {
+    "id": 13,
+    "text": "Kế hoạch 5 năm lần thứ nhất (1961-1965) ở miền Bắc đặt trọng tâm vào lĩnh vực nào?",
+    "options": {
+      "A": "Phát triển thương mại và dịch vụ",
+      "B": "Ưu tiên phát triển công nghiệp nặng",
+      "C": "Phát triển nông nghiệp toàn diện",
+      "D": "Xây dựng quốc phòng hiện đại"
+    },
+    "correct": "B",
+    "explanation": "Kế hoạch 5 năm lần thứ nhất (1961-1965) ưu tiên phát triển công nghiệp nặng, đồng thời phát triển nông nghiệp và công nghiệp nhẹ."
+  },
+  {
+    "id": 14,
+    "text": "Phong trào thi đua nào nổi bật trong xây dựng chủ nghĩa xã hội ở miền Bắc giai đoạn 1954-1965?",
+    "options": {
+      "A": "Phong trào 'Ba sẵn sàng'",
+      "B": "Phong trào 'Sóng Duyên Hải' trong công nghiệp, 'Gió Đại Phong' trong nông nghiệp",
+      "C": "Phong trào 'Toàn dân đoàn kết'",
+      "D": "Phong trào 'Mỗi người làm việc bằng hai'"
+    },
+    "correct": "B",
+    "explanation": "Phong trào thi đua 'Sóng Duyên Hải' trong công nghiệp và 'Gió Đại Phong' trong nông nghiệp tiêu biểu cho phong trào thi đua yêu nước ở miền Bắc giai đoạn này."
+  },
+  {
+    "id": 15,
+    "text": "Chiến lược 'Chiến tranh đặc biệt' của Mỹ ở miền Nam (1961-1965) dựa vào lực lượng chủ yếu nào?",
+    "options": {
+      "A": "Quân đội Mỹ chiến đấu trực tiếp",
+      "B": "Quân đội Sài Gòn (VNCH) với cố vấn và vũ khí Mỹ",
+      "C": "Lực lượng đặc nhiệm Mỹ - Úc",
+      "D": "Liên minh quân sự SEATO"
+    },
+    "correct": "B",
+    "explanation": "'Chiến tranh đặc biệt' là hình thức chiến tranh xâm lược thực dân mới, dùng quân đội tay sai (VNCH) do cố vấn Mỹ chỉ huy với vũ khí, trang bị và tiền của Mỹ."
+  },
+  {
+    "id": 16,
+    "text": "Ấp chiến lược là một công cụ quan trọng trong chiến lược nào của Mỹ?",
+    "options": {
+      "A": "Chiến tranh cục bộ",
+      "B": "Việt Nam hóa chiến tranh",
+      "C": "Chiến tranh đặc biệt",
+      "D": "Chiến lược Đông Nam Á"
+    },
+    "correct": "C",
+    "explanation": "Ấp chiến lược là công cụ cơ bản trong chiến lược 'Chiến tranh đặc biệt' (1961-1965), nhằm tách rời quân cách mạng khỏi nhân dân."
+  },
+  {
+    "id": 17,
+    "text": "Trận Ấp Bắc (1963) có ý nghĩa gì đối với cách mạng miền Nam?",
+    "options": {
+      "A": "Mở đầu cho phong trào Đồng Khởi",
+      "B": "Chứng minh khả năng đánh bại chiến lược 'Chiến tranh đặc biệt' của Mỹ",
+      "C": "Đánh dấu sự thất bại hoàn toàn của Mỹ ở miền Nam",
+      "D": "Dẫn đến sự sụp đổ của chính quyền Ngô Đình Diệm"
+    },
+    "correct": "B",
+    "explanation": "Trận Ấp Bắc (1/1/1963) là chiến thắng tiêu biểu, chứng minh quân và dân miền Nam có khả năng đánh bại chiến lược 'Chiến tranh đặc biệt' của Mỹ."
+  },
+  {
+    "id": 18,
+    "text": "Đường Hồ Chí Minh (đường Trường Sơn) bắt đầu được mở vào năm nào?",
+    "options": {
+      "A": "1954",
+      "B": "1957",
+      "C": "1959",
+      "D": "1961"
+    },
+    "correct": "C",
+    "explanation": "Đường Hồ Chí Minh (đường Trường Sơn) bắt đầu được mở vào ngày 19/5/1959, nhằm chi viện sức người, sức của cho cách mạng miền Nam."
+  },
+  {
+    "id": 19,
+    "text": "Hội nghị Trung ương lần thứ 15 (1959) của Đảng quyết định điều gì quan trọng cho cách mạng miền Nam?",
+    "options": {
+      "A": "Tổng động viên toàn quốc",
+      "B": "Để nhân dân miền Nam sử dụng bạo lực cách mạng để chống Mỹ - Diệm",
+      "C": "Tiến hành tổng tuyển cử thống nhất",
+      "D": "Thành lập Mặt trận Dân tộc Giải phóng"
+    },
+    "correct": "B",
+    "explanation": "Hội nghị Trung ương 15 (1/1959) quyết định để nhân dân miền Nam sử dụng bạo lực cách mạng để đánh đổ chính quyền Mỹ - Diệm, mở đường cho phong trào Đồng Khởi."
+  },
+  {
+    "id": 20,
+    "text": "Đại hội III (1960) xác định con đường thống nhất đất nước là gì?",
+    "options": {
+      "A": "Thống nhất bằng thương lượng hòa bình với chính quyền Sài Gòn",
+      "B": "Thống nhất bằng con đường hòa bình trên cơ sở độc lập, dân chủ",
+      "C": "Thống nhất bằng tổng tấn công quân sự",
+      "D": "Chờ sự can thiệp của Liên Xô và Trung Quốc"
+    },
+    "correct": "B",
+    "explanation": "Đại hội III (1960) chủ trương thống nhất đất nước bằng con đường hòa bình trên cơ sở độc lập, dân chủ. Tuy nhiên, do Mỹ - Diệm phá hoại, cách mạng phải kết hợp đấu tranh chính trị và vũ trang."
+  }
+]
