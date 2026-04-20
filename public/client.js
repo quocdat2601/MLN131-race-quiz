@@ -1,11 +1,13 @@
 const socket = io();
 
 // ── State ────────────────────────────────────────────────────
-let myGroup    = '';
-let inventory  = [];   // Array of item objects
-let timerMax   = 20;
-let gamePhase  = 'JOIN'; // JOIN | WAITING | QUESTION | ANSWERED | RESULT | ITEM_PHASE | BETWEEN | GAMEOVER
-let isFrozen   = false;
+let myGroup           = '';
+let selectedGroup     = '';      // chosen group before joining
+let mySubmittedAnswer = null;    // tracks which answer this client submitted
+let inventory         = [];      // Array of item objects
+let timerMax          = 20;
+let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | ITEM_PHASE | BETWEEN | GAMEOVER
+let isFrozen          = false;
 
 // Item-use selection state
 let selectedItemId    = null;
@@ -19,7 +21,15 @@ const MEDALS  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
 function $(id)       { return document.getElementById(id); }
 function show(id)    { const e = $(id); if(e) e.style.display = ''; }
 function hide(id)    { const e = $(id); if(e) e.style.display = 'none'; }
-
+function showToast(message) {
+  const container = $('client-toast-container');
+  if (!container) return;
+  const el = document.createElement('div');
+  el.className = 'client-toast';
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
 const screens = {
   join:       $('screen-join'),
   waiting:    $('screen-waiting'),
@@ -154,8 +164,24 @@ function resetItemPanel() {
 }
 
 // ── Socket events ─────────────────────────────────────────────
+socket.on('lobby:member-counts', (counts) => {
+  if (!counts) return;
+  document.querySelectorAll('.group-btn').forEach(btn => {
+    const g = btn.dataset.group;
+    const n = counts[g] || 0;
+    const full = n >= 4;
+    btn.querySelector('.member-count').textContent = `(${n}/4)`;
+    btn.disabled = full;
+    if (full && selectedGroup === g) {
+      selectedGroup = '';
+      btn.classList.remove('selected');
+    }
+  });
+});
+
 socket.on('join:success', ({ groupName }) => {
   myGroup = groupName;
+  if (peekInterval) { clearInterval(peekInterval); peekInterval = null; }
   $('waiting-group-name').textContent = groupName;
   showScreen('waiting');
 });
@@ -183,6 +209,7 @@ socket.on('question:shown', ({ number, total, text, options }) => {
     btn.classList.remove('selected','correct','wrong');
     btn.disabled = false;
   });
+  mySubmittedAnswer = null;
 
   timerMax = 20;
   setTimerUI(20, 20);
@@ -198,11 +225,21 @@ socket.on('timer:tick', ({ remaining }) => {
   }
 });
 
-socket.on('answer:locked', () => {
-  // Show "sent" screen
+socket.on('team:locked', ({ answer }) => {
+  // Lock all option buttons and highlight chosen answer
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.answer === answer) btn.classList.add('selected');
+  });
+
+  const isMine = mySubmittedAnswer === answer;
+  showToast(isMine
+    ? `✅ Bạn đã chốt: ${answer}!`
+    : `🤝 Đồng đội đã chốt: ${answer}!`);
+
   $('answered-icon').textContent = '✅';
-  $('answered-msg').textContent  = 'Đã gửi đáp án!';
-  showScreen('answered');
+  $('answered-msg').textContent  = isMine ? 'Đã gửi đáp án!' : `Nhóm đã chọn: ${answer}`;
+  setTimeout(() => { if (gamePhase === 'question') showScreen('answered'); }, 700);
 });
 
 socket.on('answer:result', ({ correct, stepsGained, itemReceived }) => {
@@ -276,9 +313,36 @@ socket.on('host:disconnected', () => {
 });
 
 // ── Button handlers ───────────────────────────────────────────
+// Group picker buttons
+document.querySelectorAll('.group-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    selectedGroup = btn.dataset.group;
+    document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  });
+});
+
+// Peek room to get live member counts when a 4-digit code is entered
+let peekInterval = null;
+
+function startPeek(code) {
+  socket.emit('client:peek-room', { roomCode: code });
+  if (peekInterval) clearInterval(peekInterval);
+  peekInterval = setInterval(() => {
+    if (gamePhase !== 'join') { clearInterval(peekInterval); peekInterval = null; return; }
+    socket.emit('client:peek-room', { roomCode: code });
+  }, 3000);
+}
+
+$('input-code').addEventListener('input', () => {
+  const code = $('input-code').value.trim();
+  if (code.length === 4) startPeek(code);
+  else if (peekInterval) { clearInterval(peekInterval); peekInterval = null; }
+});
+
 $('btn-join').addEventListener('click', () => {
   const code  = $('input-code').value.trim();
-  const group = $('select-group').value;
   const errEl = $('join-error');
   errEl.style.display = 'none';
 
@@ -287,20 +351,21 @@ $('btn-join').addEventListener('click', () => {
     errEl.style.display = '';
     return;
   }
-  if (!group) {
+  if (!selectedGroup) {
     errEl.textContent = 'Vui lòng chọn nhóm.';
     errEl.style.display = '';
     return;
   }
 
   $('btn-join').disabled = true;
-  socket.emit('client:join', { roomCode: code, groupName: group });
+  socket.emit('client:join', { roomCode: code, groupName: selectedGroup });
 });
 
 // Answer buttons
 document.querySelectorAll('.opt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const answer = btn.dataset.answer;
+    mySubmittedAnswer = answer;
     document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
     btn.classList.add('selected');
     socket.emit('client:submit-answer', { answer });

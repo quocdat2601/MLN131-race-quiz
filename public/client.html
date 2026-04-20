@@ -18,15 +18,14 @@
     <input id="input-code" type="text" maxlength="4" placeholder="Ví dụ: 3721" inputmode="numeric" />
 
     <label class="field-label">Nhóm</label>
-    <select id="select-group">
-      <option value="">-- Chọn nhóm --</option>
-      <option value="Nhóm 1">Nhóm 1</option>
-      <option value="Nhóm 2">Nhóm 2</option>
-      <option value="Nhóm 3">Nhóm 3</option>
-      <option value="Nhóm 5">Nhóm 5</option>
-      <option value="Nhóm 6">Nhóm 6</option>
-      <option value="Nhóm 7">Nhóm 7</option>
-    </select>
+    <div id="group-picker" class="group-picker">
+      <button class="group-btn" data-group="Nhóm 1">Nhóm 1<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Nhóm 2">Nhóm 2<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Nhóm 3">Nhóm 3<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Nhóm 5">Nhóm 5<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Nhóm 6">Nhóm 6<span class="member-count">(0/4)</span></button>
+      <button class="group-btn" data-group="Nhóm 7">Nhóm 7<span class="member-count">(0/4)</span></button>
+    </div>
 
     <div id="join-error" class="error-msg" style="display:none"></div>
     <button id="btn-join" class="btn-primary">Tham Gia</button>
@@ -124,6 +123,7 @@
   </div>
 </div>
 
+<div id="client-toast-container" class="client-toast-container"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="client.js"></script>
 </body>

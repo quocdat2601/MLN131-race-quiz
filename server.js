@@ -78,8 +78,11 @@ class GameRoom {
     this.state        = STATES.LOBBY;
     this.hostSocketId = null;
 
-    // groupName → { socketId, steps, inventory, frozen, shield, usedItemThisPhase }
+    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, usedItemThisPhase }
     this.groups = {};
+    GROUPS.forEach(g => {
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, usedItemThisPhase: false };
+    });
 
     this.questions     = [...QUESTIONS];
     this.currentQ      = -1;
@@ -88,26 +91,26 @@ class GameRoom {
     this.itemsThisPhase = {}; // groupName → item queued { itemId, targetGroup }
   }
 
-  addGroup(socketId, groupName) {
-    if (this.groups[groupName]) {
-      // Reconnect: update socket
-      this.groups[groupName].socketId = socketId;
-    } else {
-      this.groups[groupName] = {
-        socketId,
-        steps: 0,
-        inventory: [],
-        frozen: false,
-        shielded: false,
-        usedItemThisPhase: false,
-      };
+  getMemberCounts() {
+    const counts = {};
+    for (const [name, data] of Object.entries(this.groups)) {
+      counts[name] = data.members.size;
     }
+    return counts;
   }
 
-  removeGroup(socketId) {
+  addMember(socketId, groupName) {
+    const group = this.groups[groupName];
+    if (!group) return { error: 'invalid' };
+    if (group.members.size >= 4) return { error: 'full' };
+    group.members.add(socketId);
+    return { ok: true };
+  }
+
+  removeMember(socketId) {
     for (const [name, data] of Object.entries(this.groups)) {
-      if (data.socketId === socketId) {
-        delete this.groups[name];
+      if (data.members.has(socketId)) {
+        data.members.delete(socketId);
         return name;
       }
     }
@@ -115,19 +118,20 @@ class GameRoom {
   }
 
   getGroupBySocket(socketId) {
-    return Object.entries(this.groups).find(([, d]) => d.socketId === socketId);
+    return Object.entries(this.groups).find(([, d]) => d.members.has(socketId));
   }
 
   getPositions() {
     const pos = {};
     for (const [name, data] of Object.entries(this.groups)) {
-      pos[name] = data.steps;
+      if (data.members.size > 0) pos[name] = data.steps;
     }
     return pos;
   }
 
   getRankings() {
     return Object.entries(this.groups)
+      .filter(([, d]) => d.members.size > 0)
       .map(([name, data]) => ({ group: name, steps: data.steps }))
       .sort((a, b) => b.steps - a.steps);
   }
@@ -200,13 +204,10 @@ class GameRoom {
     this.roundAnswers.push({ groupName, answer, serverTime: Date.now() });
 
     // Notify host of count
-    const correctAnswers = this.roundAnswers.filter(
-      a => a.answer === this.questions[this.currentQ].correct
-    );
     io.to(this.hostSocketId).emit('answers:count', { count: this.roundAnswers.length });
 
-    // Ack client
-    io.to(socketId).emit('answer:locked');
+    // Broadcast to all team members: lock + highlight chosen answer
+    io.to(this.roomCode + '_' + groupName).emit('team:locked', { answer });
   }
 
   revealAnswer() {
@@ -252,23 +253,24 @@ class GameRoom {
         frozen:       frozenGroups.includes(a.groupName),
       });
 
-      // Notify client of result
-      io.to(group.socketId).emit('answer:result', {
+      // Notify team of result
+      io.to(this.roomCode + '_' + a.groupName).emit('answer:result', {
         correct:      true,
         stepsGained:  steps,
         itemReceived: item,
       });
       if (item) {
-        io.to(group.socketId).emit('inventory:update', { items: group.inventory });
+        io.to(this.roomCode + '_' + a.groupName).emit('inventory:update', { items: group.inventory });
       }
     });
 
     // Wrong / no answer
     for (const [name, data] of Object.entries(this.groups)) {
+      if (data.members.size === 0) continue;
       const answered = this.roundAnswers.find(a => a.groupName === name);
       if (!answered || answered.answer !== correct) {
         movements.push({ groupName: name, correct: false, stepsGained: 0 });
-        io.to(data.socketId).emit('answer:result', { correct: false, stepsGained: 0 });
+        io.to(this.roomCode + '_' + name).emit('answer:result', { correct: false, stepsGained: 0 });
       }
     }
 
@@ -334,7 +336,7 @@ class GameRoom {
     // Queue item for resolution
     this.itemsThisPhase[groupName] = { itemId, targetGroup, item };
 
-    io.to(groupData.socketId).emit('inventory:update', { items: groupData.inventory });
+    io.to(this.roomCode + '_' + groupName).emit('inventory:update', { items: groupData.inventory });
     return { ok: true };
   }
 
@@ -362,7 +364,7 @@ class GameRoom {
       // Check shield
       if (target.shielded) {
         target.shielded = false;
-        io.to(target.socketId).emit('shield:blocked');
+        io.to(this.roomCode + '_' + targetGroup).emit('shield:blocked');
         io.to(this.roomCode).emit('item:used', {
           byGroup,
           itemEmoji: item.emoji,
@@ -381,7 +383,7 @@ class GameRoom {
       } else if (item.id === 'freeze') {
         target.frozen = true;
         effect = `${targetGroup} bị đóng băng 1 câu!`;
-        io.to(target.socketId).emit('frozen:notified');
+        io.to(this.roomCode + '_' + targetGroup).emit('frozen:notified');
       } else if (item.id === 'swap') {
         const bySteps         = this.groups[byGroup].steps;
         this.groups[byGroup].steps = target.steps;
@@ -497,6 +499,17 @@ io.on('connection', (socket) => {
   });
 
   // ── CLIENT ────────────────────────────────────────────────
+  socket.on('client:peek-room', ({ roomCode }) => {
+    if (!roomCode || typeof roomCode !== 'string') return;
+    if (!currentRoom || currentRoom.roomCode !== roomCode) {
+      socket.emit('lobby:member-counts', null);
+      return;
+    }
+    socket.join(roomCode);
+    // Broadcast to whole room so all waiting clients get refreshed counts
+    io.to(roomCode).emit('lobby:member-counts', currentRoom.getMemberCounts());
+  });
+
   socket.on('client:join', ({ roomCode, groupName }) => {
     if (!roomCode || typeof roomCode !== 'string') return;
     if (!groupName || !GROUPS.includes(groupName)) {
@@ -514,14 +527,16 @@ io.on('connection', (socket) => {
       return;
     }
 
-    socket.join(roomCode);
-    currentRoom.addGroup(socket.id, groupName);
+    const result = currentRoom.addMember(socket.id, groupName);
+    if (result.error === 'full') {
+      socket.emit('join:error', { message: `${groupName} đã đủ 4 thành viên.` });
+      return;
+    }
 
+    socket.join(roomCode);
+    socket.join(roomCode + '_' + groupName);
     socket.emit('join:success', { groupName });
-    io.to(currentRoom.roomCode).emit('room:group-joined', {
-      groupName,
-      groups: Object.keys(currentRoom.groups),
-    });
+    io.to(currentRoom.roomCode).emit('lobby:member-counts', currentRoom.getMemberCounts());
   });
 
   socket.on('client:submit-answer', ({ answer }) => {
@@ -548,13 +563,9 @@ io.on('connection', (socket) => {
       return;
     }
 
-    const name = currentRoom.removeGroup(socket.id);
-    if (name) {
-      io.to(currentRoom.roomCode).emit('room:group-joined', {
-        groupName: null,
-        groups:    Object.keys(currentRoom.groups),
-        left:      name,
-      });
+    const name = currentRoom.removeMember(socket.id);
+    if (name && currentRoom.state === STATES.LOBBY) {
+      io.to(currentRoom.roomCode).emit('lobby:member-counts', currentRoom.getMemberCounts());
     }
   });
 });

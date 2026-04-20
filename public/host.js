@@ -189,10 +189,12 @@ socket.on('host:room-created', ({ roomCode: code }) => {
   btnCreateRoom.style.display = 'none';
 });
 
-socket.on('room:group-joined', ({ groups }) => {
-  lobbyGroupCount.textContent = groups.length;
-  lobbyGroupList.innerHTML = groups.map(g => `<li>${g}</li>`).join('');
-  btnStartGame.disabled = groups.length < 1; // allow start with any group for testing
+socket.on('lobby:member-counts', (counts) => {
+  if (!counts) return;
+  const active = Object.entries(counts).filter(([, n]) => n > 0);
+  lobbyGroupCount.textContent = active.length;
+  lobbyGroupList.innerHTML = active.map(([g, n]) => `<li>${g} (${n}/4)</li>`).join('');
+  btnStartGame.disabled = active.length < 1;
 });
 
 socket.on('game:started', () => {
