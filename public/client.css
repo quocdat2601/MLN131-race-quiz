@@ -8,6 +8,10 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: stretch;
+  /* Chặn bôi đen text toàn bộ trang client */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .screen { display: none; width: 100%; flex-direction: column; }
