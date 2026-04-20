@@ -465,34 +465,34 @@ io.on('connection', (socket) => {
   });
 
   socket.on('host:pause-timer', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     currentRoom.pauseTimer();
   });
 
   socket.on('host:resume-timer', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     currentRoom.resumeTimer();
   });
 
   socket.on('host:reveal-answer', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     if (currentRoom.state !== STATES.QUESTION && currentRoom.state !== STATES.PAUSED) return;
     currentRoom.revealAnswer();
   });
 
   socket.on('host:skip-item-phase', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     currentRoom.skipItemPhase();
   });
 
   socket.on('host:next-question', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     if (currentRoom.state !== STATES.BETWEEN_ROUNDS) return;
     currentRoom.startQuestion();
   });
 
   socket.on('host:end-game', () => {
-    if (!currentRoom || currentRoom.hostSocketId !== socket.id) return;
+    if (!currentRoom) return;
     currentRoom.endGame();
   });
 
