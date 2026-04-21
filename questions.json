@@ -3,12 +3,12 @@
     "id": 1,
     "text": "Hội nghị lần thứ sáu Ban Chấp hành Trung ương Đảng (7/1954) xác định kẻ thù chính của nhân dân Việt Nam lúc này là ai?",
     "options": {
-      "A": "Thực dân Pháp đang rút quân nhưng vẫn âm mưu trở lại",
-      "B": "Đế quốc Mỹ – kẻ thù chính và trực tiếp của nhân dân Đông Dương",
-      "C": "Chính quyền tay sai Ngô Đình Diệm ở miền Nam",
-      "D": "Liên minh Pháp – Mỹ – ngụy quyền"
+      "A": "Đế quốc Mỹ – kẻ thù chính và trực tiếp của nhân dân Đông Dương",
+      "B": "Chính quyền tay sai Ngô Đình Diệm ở miền Nam",
+      "C": "Liên minh Pháp – Mỹ – ngụy quyền",
+      "D": "Thực dân Pháp đang rút quân nhưng vẫn âm mưu trở lại"
     },
-    "correct": "B",
+    "correct": "A",
     "explanation": "Hội nghị TW 6 (7/1954) chỉ rõ: 'Hiện nay đế quốc Mỹ là kẻ thù chính của nhân dân thế giới, và nó đang trở thành kẻ thù chính và trực tiếp của nhân dân Đông Dương, cho nên mọi việc của ta đều nhằm chống đế quốc Mỹ'."
   },
   {
@@ -40,23 +40,23 @@
     "text": "Nghị quyết Bộ Chính trị (9/1954) xác định 3 nhiệm vụ cụ thể trước mắt của cách mạng miền Nam là gì?",
     "options": {
       "A": "Đấu tranh vũ trang – xây dựng căn cứ địa – phát triển lực lượng",
-      "B": "Đấu tranh đòi thi hành Hiệp định – chuyển hướng công tác – tập hợp lực lượng lật đổ chính quyền bù nhìn thân Mỹ",
-      "C": "Giữ gìn lực lượng – bám dân bám đất – chờ thời cơ",
-      "D": "Đàm phán hòa bình – tổ chức tổng tuyển cử – thống nhất đất nước"
+      "B": "Giữ gìn lực lượng – bám dân bám đất – chờ thời cơ",
+      "C": "Đàm phán hòa bình – tổ chức tổng tuyển cử – thống nhất đất nước",
+      "D": "Đấu tranh đòi thi hành Hiệp định – chuyển hướng công tác – tập hợp lực lượng lật đổ chính quyền bù nhìn thân Mỹ"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Nghị quyết Bộ Chính trị (9/1954) nêu 3 nhiệm vụ: (1) Đấu tranh đòi thi hành Hiệp định; (2) Chuyển hướng công tác cho phù hợp điều kiện mới; (3) Tập hợp mọi lực lượng dân tộc, dân chủ, hòa bình đấu tranh nhằm lật đổ chính quyền bù nhìn thân Mỹ, hoàn thành thống nhất Tổ quốc."
   },
   {
     "id": 5,
     "text": "Tháng 10/1954, Xứ ủy Nam Bộ được thành lập, do ai làm Bí thư?",
     "options": {
-      "A": "Nguyễn Văn Linh",
-      "B": "Nguyễn Hữu Thọ",
-      "C": "Trường Chinh",
-      "D": "Lê Duẩn"
+      "A": "Lê Duẩn",
+      "B": "Nguyễn Văn Linh",
+      "C": "Nguyễn Hữu Thọ",
+      "D": "Trường Chinh"
     },
-    "correct": "D",
+    "correct": "A",
     "explanation": "Tháng 10/1954, thực hiện Chỉ thị của Bộ Chính trị về tình hình và công tác của các đảng bộ miền Nam, Xứ ủy Nam Bộ được thành lập, do đồng chí Lê Duẩn, Ủy viên Bộ Chính trị, làm Bí thư."
   },
   {
@@ -76,11 +76,11 @@
     "text": "Hội nghị TW lần thứ 7 (3/1955) và lần thứ 8 (8/1955) nhận định điều gì và đề ra chủ trương cốt lõi nào?",
     "options": {
       "A": "Pháp sắp rút hết, cần tranh thủ thương lượng để tổ chức tổng tuyển cử đúng hạn",
-      "B": "Mỹ đã bắt chân Pháp, lập nhà nước riêng chống Hiệp định; cần củng cố miền Bắc và đẩy mạnh đấu tranh miền Nam",
-      "C": "Nên tập trung toàn bộ lực lượng vào xây dựng kinh tế miền Bắc, tạm gác miền Nam",
-      "D": "Phải tiến hành ngay khởi nghĩa vũ trang ở miền Nam để phản công Mỹ – Diệm"
+      "B": "Phải tiến hành ngay khởi nghĩa vũ trang ở miền Nam để phản công Mỹ – Diệm",
+      "C": "Mỹ đã bắt chân Pháp, lập nhà nước riêng chống Hiệp định; cần củng cố miền Bắc và đẩy mạnh đấu tranh miền Nam",
+      "D": "Nên tập trung toàn bộ lực lượng vào xây dựng kinh tế miền Bắc, tạm gác miền Nam"
     },
-    "correct": "B",
+    "correct": "C",
     "explanation": "Hội nghị TW 7 và 8 (1955) nhận định Mỹ đã bắt chân Pháp ở miền Nam, công khai lập nhà nước riêng chống phá Hiệp định, đàn áp phong trào cách mạng. Chủ trương cốt lõi: phải ra sức củng cố miền Bắc, đồng thời giữ vững và đẩy mạnh cuộc đấu tranh của nhân dân miền Nam."
   },
   {
@@ -88,23 +88,23 @@
     "text": "Ngày 16/5/1955 có ý nghĩa gì trong cuộc đấu tranh đòi Pháp rút quân?",
     "options": {
       "A": "Những lính Pháp cuối cùng rút khỏi Hà Nội",
-      "B": "Toàn bộ quân đội viễn chinh Pháp và tay sai rút khỏi hoàn toàn miền Bắc",
-      "C": "Pháp ký văn bản bàn giao chính quyền cho Chính phủ Việt Nam Dân chủ Cộng hòa",
-      "D": "Quân đội nhân dân Việt Nam tiến vào tiếp quản Hải Phòng"
+      "B": "Pháp ký văn bản bàn giao chính quyền cho Chính phủ Việt Nam Dân chủ Cộng hòa",
+      "C": "Quân đội nhân dân Việt Nam tiến vào tiếp quản Hải Phòng",
+      "D": "Toàn bộ quân đội viễn chinh Pháp và tay sai rút khỏi hoàn toàn miền Bắc"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Ngày 16/5/1955, toàn bộ quân đội viễn chinh Pháp và tay sai phải rút khỏi hoàn toàn miền Bắc theo đúng thời gian quy định trong Hiệp định Giơnevơ – kết quả của cuộc đấu tranh kiên quyết của nhân dân ta."
   },
   {
     "id": 9,
     "text": "Địch sử dụng quốc sách nào để đàn áp phong trào cách mạng và người yêu nước ở miền Nam từ sau 1954?",
     "options": {
-      "A": "Kế hoạch 'Bình định nông thôn' và 'Ấp chiến lược'",
-      "B": "'Tố cộng, diệt cộng', lập 'khu trù mật', 'khu dinh điền'",
-      "C": "Luật 10/59 và Tòa án quân sự đặc biệt",
-      "D": "Chiến lược 'Chiến tranh đặc biệt' với cố vấn Mỹ"
+      "A": "'Tố cộng, diệt cộng', lập 'khu trù mật', 'khu dinh điền'",
+      "B": "Luật 10/59 và Tòa án quân sự đặc biệt",
+      "C": "Chiến lược 'Chiến tranh đặc biệt' với cố vấn Mỹ",
+      "D": "Kế hoạch 'Bình định nông thôn' và 'Ấp chiến lược'"
     },
-    "correct": "B",
+    "correct": "A",
     "explanation": "Địch ráo riết thi hành quốc sách 'tố cộng, diệt cộng', lập 'khu trù mật', 'khu dinh điền' nhằm bắt bớ, trả thù người kháng chiến cũ, đàn áp phong trào đấu tranh đòi thi hành Hiệp định Giơnevơ, gây ra nhiều vụ thảm sát ở Bến Tre, Quảng Nam, Phú Yên."
   },
   {
@@ -147,12 +147,12 @@
     "id": 13,
     "text": "Đến năm 1957, nông nghiệp miền Bắc đạt thành tựu nổi bật nào?",
     "options": {
-      "A": "Vượt mức sản lượng năm 1945 trước Cách mạng tháng Tám",
-      "B": "Đạt năng suất và sản lượng của năm 1939 – năm cao nhất dưới thời Pháp thuộc – nạn đói bị đẩy lùi",
-      "C": "Hoàn thành cơ giới hóa toàn bộ nông nghiệp đồng bằng Bắc Bộ",
-      "D": "Xuất khẩu được lương thực lần đầu tiên sang các nước xã hội chủ nghĩa"
+      "A": "Đạt năng suất và sản lượng của năm 1939 – năm cao nhất dưới thời Pháp thuộc – nạn đói bị đẩy lùi",
+      "B": "Hoàn thành cơ giới hóa toàn bộ nông nghiệp đồng bằng Bắc Bộ",
+      "C": "Xuất khẩu được lương thực lần đầu tiên sang các nước xã hội chủ nghĩa",
+      "D": "Vượt mức sản lượng năm 1945 trước Cách mạng tháng Tám"
     },
-    "correct": "B",
+    "correct": "A",
     "explanation": "Đến năm 1957, nông nghiệp miền Bắc đã đạt được năng suất và sản lượng của năm 1939 – năm cao nhất dưới thời Pháp thuộc, nhờ đó nạn đói bị đẩy lùi, ổn định đời sống nhân dân và góp phần ổn định chính trị, trật tự xã hội."
   },
   {
@@ -172,11 +172,11 @@
     "text": "Nguyên nhân chủ yếu dẫn đến sai lầm trong cải cách ruộng đất là gì?",
     "options": {
       "A": "Thiếu cán bộ có kinh nghiệm, địch cài người phá hoại từ bên trong",
-      "B": "Chủ quan, giáo điều, không xuất phát từ thực tiễn; cường điệu hóa đấu tranh giai cấp, mở rộng quá mức đối tượng đấu tranh, xử lý oan cán bộ, đảng viên tốt",
-      "C": "Áp dụng mô hình nước ngoài không phù hợp với điều kiện Việt Nam",
-      "D": "Thiếu sự chỉ đạo thống nhất từ Trung ương dẫn đến tình trạng cục bộ địa phương"
+      "B": "Áp dụng mô hình nước ngoài không phù hợp với điều kiện Việt Nam",
+      "C": "Thiếu sự chỉ đạo thống nhất từ Trung ương dẫn đến tình trạng cục bộ địa phương",
+      "D": "Chủ quan, giáo điều, không xuất phát từ thực tiễn; cường điệu hóa đấu tranh giai cấp, mở rộng quá mức đối tượng đấu tranh, xử lý oan cán bộ, đảng viên tốt"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Nguyên nhân chủ yếu là chủ quan, giáo điều, không xuất phát từ thực tiễn; cường điệu hóa đấu tranh giai cấp dẫn đến mở rộng quá mức đối tượng đấu tranh; nhận định sai về tổ chức cơ sở Đảng ở nông thôn, từ đó xử lý oan nhiều cán bộ, đảng viên tốt."
   },
   {
@@ -184,23 +184,23 @@
     "text": "Hội nghị TW lần thứ 10 (9/1956) xử lý sai lầm cải cách ruộng đất như thế nào?",
     "options": {
       "A": "Ra nghị quyết mật, xử lý nội bộ không công khai để tránh ảnh hưởng uy tín Đảng",
-      "B": "Nghiêm khắc kiểm điểm, công khai tự phê bình trước nhân dân, thi hành kỷ luật một số Ủy viên Bộ Chính trị và Ủy viên TW Đảng",
-      "C": "Giao cho Chính phủ xử lý, Đảng không trực tiếp can thiệp",
-      "D": "Thành lập ủy ban điều tra độc lập để làm rõ trách nhiệm cá nhân"
+      "B": "Giao cho Chính phủ xử lý, Đảng không trực tiếp can thiệp",
+      "C": "Thành lập ủy ban điều tra độc lập để làm rõ trách nhiệm cá nhân",
+      "D": "Nghiêm khắc kiểm điểm, công khai tự phê bình trước nhân dân, thi hành kỷ luật một số Ủy viên Bộ Chính trị và Ủy viên TW Đảng"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Hội nghị TW 10 (9/1956) nghiêm khắc kiểm điểm sai lầm, công khai tự phê bình trước nhân dân, thi hành kỷ luật một số Ủy viên Bộ Chính trị và Ủy viên TW Đảng. Công tác sửa sai được tiến hành kiên quyết, khẩn trương, thận trọng và có kế hoạch chặt chẽ."
   },
   {
     "id": 17,
     "text": "Tháng 8/1956, đồng chí Lê Duẩn dự thảo văn kiện nào và nêu rõ luận điểm cốt lõi nào về con đường của nhân dân miền Nam?",
     "options": {
-      "A": "Nghị quyết TW 15 – xác định dùng bạo lực cách mạng kết hợp đấu tranh chính trị và vũ trang",
-      "B": "Đề cương đường lối cách mạng Việt Nam ở miền Nam – 'nhân dân miền Nam chỉ có con đường cách mạng, ngoài ra không có con đường nào khác'",
+      "A": "Đề cương đường lối cách mạng Việt Nam ở miền Nam – 'nhân dân miền Nam chỉ có con đường cách mạng, ngoài ra không có con đường nào khác'",
+      "B": "Nghị quyết TW 15 – xác định dùng bạo lực cách mạng kết hợp đấu tranh chính trị và vũ trang",
       "C": "Chỉ thị về phương hướng và nhiệm vụ trước mắt ở miền Nam – ưu tiên giữ gìn lực lượng",
       "D": "Báo cáo chính trị Đại hội III – xác định đường lối chung của cách mạng Việt Nam"
     },
-    "correct": "B",
+    "correct": "A",
     "explanation": "Tháng 8/1956, Lê Duẩn dự thảo 'Đề cương đường lối cách mạng Việt Nam ở miền Nam', nêu rõ luận điểm cốt lõi: 'nhân dân miền Nam chỉ có con đường cứu nước và tự cứu mình, là con đường cách mạng. Ngoài con đường cách mạng không có một con đường khác'. Đây là văn kiện quan trọng góp phần hình thành đường lối cách mạng miền Nam."
   },
   {
@@ -232,23 +232,23 @@
     "text": "Địch leo thang đàn áp ở miền Nam năm 1959 bằng hai hành động nào, theo thứ tự thời gian?",
     "options": {
       "A": "Ban hành Luật 10/59 (tháng 1) rồi tuyên bố tình trạng chiến tranh (tháng 3)",
-      "B": "Tuyên bố tình trạng chiến tranh (tháng 3) rồi ban hành Luật 10/59 dùng tòa án quân sự đặc biệt bắn giết tại chỗ",
-      "C": "Mở chiến dịch tố cộng quy mô lớn (tháng 1) rồi xây dựng ấp chiến lược (tháng 3)",
-      "D": "Thành lập quân đội VNCH 500.000 người (tháng 1) rồi ký hiệp ước phòng thủ với Mỹ (tháng 3)"
+      "B": "Mở chiến dịch tố cộng quy mô lớn (tháng 1) rồi xây dựng ấp chiến lược (tháng 3)",
+      "C": "Thành lập quân đội VNCH 500.000 người (tháng 1) rồi ký hiệp ước phòng thủ với Mỹ (tháng 3)",
+      "D": "Tuyên bố tình trạng chiến tranh (tháng 3) rồi ban hành Luật 10/59 dùng tòa án quân sự đặc biệt bắn giết tại chỗ"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Tháng 3/1959, Diệm tuyên bố 'đặt miền Nam trong tình trạng chiến tranh'. Tiếp đó, Luật 10/59 dùng Tòa án quân sự đặc biệt để đưa những người bị bắt ra xét xử và bắn giết tại chỗ – địch khủng bố bằng cả súng đạn và máy chém lưu động khắp miền Nam."
   },
   {
     "id": 21,
     "text": "Nghị quyết Trung ương 15 (1/1959) xác định tinh thần cơ bản nào cho cách mạng miền Nam, mở đường cho Đồng khởi?",
     "options": {
-      "A": "Tiếp tục đấu tranh chính trị hòa bình thuần túy, kiên nhẫn chờ thời cơ quốc tế thuận lợi",
-      "B": "Tiến hành tổng khởi nghĩa vũ trang đồng loạt trên toàn miền Nam ngay lập tức",
-      "C": "Tiếp tục cách mạng dân tộc dân chủ nhân dân; dùng bạo lực cách mạng với hai lực lượng chính trị và vũ trang; tiến tới khởi nghĩa vũ trang giành chính quyền",
+      "A": "Tiếp tục cách mạng dân tộc dân chủ nhân dân; dùng bạo lực cách mạng với hai lực lượng chính trị và vũ trang; tiến tới khởi nghĩa vũ trang giành chính quyền",
+      "B": "Tiếp tục đấu tranh chính trị hòa bình thuần túy, kiên nhẫn chờ thời cơ quốc tế thuận lợi",
+      "C": "Tiến hành tổng khởi nghĩa vũ trang đồng loạt trên toàn miền Nam ngay lập tức",
       "D": "Yêu cầu Liên Hợp Quốc và các nước XHCN can thiệp buộc Mỹ – Diệm thi hành Hiệp định"
     },
-    "correct": "C",
+    "correct": "A",
     "explanation": "Nghị quyết TW 15 (1/1959) xác định: tiếp tục cách mạng dân tộc dân chủ nhân dân ở miền Nam, sử dụng bạo lực cách mạng với hai lực lượng chính trị và vũ trang, kết hợp đấu tranh chính trị với đấu tranh quân sự, tiến tới khởi nghĩa vũ trang giành chính quyền – mở đường cho phong trào Đồng khởi."
   },
   {
@@ -268,11 +268,11 @@
     "text": "Phong trào Đồng khởi bùng nổ ngày 17/1/1960 ở đâu, do ai lãnh đạo, và từ đó lan rộng như thế nào?",
     "options": {
       "A": "Quảng Ngãi, do Nguyễn Văn Linh lãnh đạo, lan ra các tỉnh miền Trung",
-      "B": "Bến Tre, do Nguyễn Thị Định lãnh đạo ở huyện Mỏ Cày, rồi lan ra các huyện khác và nhanh chóng mở rộng ra khắp miền Nam",
-      "C": "Tây Ninh, do Nguyễn Hữu Thọ lãnh đạo, lan ra các tỉnh miền Đông Nam Bộ",
-      "D": "Mỹ Tho, do Lê Duẩn chỉ đạo, lan ra đồng bằng sông Cửu Long"
+      "B": "Mỹ Tho, do Lê Duẩn chỉ đạo, lan ra đồng bằng sông Cửu Long",
+      "C": "Bến Tre, do Nguyễn Thị Định lãnh đạo ở huyện Mỏ Cày, rồi lan ra các huyện khác và nhanh chóng mở rộng ra khắp miền Nam",
+      "D": "Tây Ninh, do Nguyễn Hữu Thọ lãnh đạo, lan ra các tỉnh miền Đông Nam Bộ"
     },
-    "correct": "B",
+    "correct": "C",
     "explanation": "Ngày 17/1/1960, Đồng khởi bùng nổ ở huyện Mỏ Cày (Bến Tre) do đồng chí Nguyễn Thị Định lãnh đạo, sau đó lan ra các huyện Minh Tân, Giồng Trôm, Châu Thành, Ba Tri, Thạnh Phú; rồi nhanh chóng mở rộng ra khắp các tỉnh đồng bằng sông Cửu Long, Tây Nguyên và một số nơi ở Trung Bộ."
   },
   {
@@ -280,23 +280,23 @@
     "text": "Đến cuối 1960, phong trào Đồng khởi đạt kết quả và có ý nghĩa lịch sử gì?",
     "options": {
       "A": "850 xã lập chính quyền tự quản; đánh dấu thắng lợi hoàn toàn của cách mạng miền Nam",
-      "B": "1.383/9.627 xã lập chính quyền tự quản; là bước nhảy vọt chuyển cách mạng từ thế giữ gìn lực lượng sang thế tiến công",
-      "C": "2.000 xã lập chính quyền tự quản; buộc Mỹ – Diệm phải chấp nhận hiệp thương tổng tuyển cử",
-      "D": "500 xã lập chính quyền tự quản; mở đầu cho giai đoạn đấu tranh chính trị hòa bình mới"
+      "B": "2.000 xã lập chính quyền tự quản; buộc Mỹ – Diệm phải chấp nhận hiệp thương tổng tuyển cử",
+      "C": "500 xã lập chính quyền tự quản; mở đầu cho giai đoạn đấu tranh chính trị hòa bình mới",
+      "D": "1.383/9.627 xã lập chính quyền tự quản; là bước nhảy vọt chuyển cách mạng từ thế giữ gìn lực lượng sang thế tiến công"
     },
-    "correct": "B",
+    "correct": "D",
     "explanation": "Đến cuối 1960, có 1.383/9.627 xã nhân dân lập chính quyền tự quản; vùng giải phóng nối liền từ Tây Nguyên đến miền Tây Nam Bộ. Đồng khởi là bước nhảy vọt lịch sử: chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công, từ khởi nghĩa từng phần sang chiến tranh cách mạng."
   },
   {
     "id": 25,
     "text": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập ngày 20/12/1960 ở đâu, ai làm Chủ tịch, theo chương trình bao nhiêu điểm và nhằm mục tiêu gì?",
     "options": {
-      "A": "Tại Bến Tre, Nguyễn Thị Định làm Chủ tịch, chương trình 5 điểm, nhằm tiến hành tổng khởi nghĩa",
-      "B": "Tại xã Tân Lập (Tây Ninh), Nguyễn Hữu Thọ làm Chủ tịch, chương trình 10 điểm, nhằm đánh đổ chế độ thuộc địa trá hình của Mỹ và chính quyền độc tài Diệm, hướng tới thống nhất đất nước",
+      "A": "Tại xã Tân Lập (Tây Ninh), Nguyễn Hữu Thọ làm Chủ tịch, chương trình 10 điểm, nhằm đánh đổ chế độ thuộc địa trá hình của Mỹ và chính quyền độc tài Diệm, hướng tới thống nhất đất nước",
+      "B": "Tại Bến Tre, Nguyễn Thị Định làm Chủ tịch, chương trình 5 điểm, nhằm tiến hành tổng khởi nghĩa",
       "C": "Tại Hà Nội, Hồ Chí Minh làm Chủ tịch, chương trình 8 điểm, nhằm yêu cầu Mỹ rút quân khỏi miền Nam",
       "D": "Tại Quảng Ngãi, Lê Duẩn làm Chủ tịch, chương trình 7 điểm, nhằm thực hiện Nghị quyết TW 15"
     },
-    "correct": "B",
+    "correct": "A",
     "explanation": "Ngày 20/12/1960, tại xã Tân Lập (Tây Ninh), Mặt trận DTGP miền Nam Việt Nam thành lập do Luật sư Nguyễn Hữu Thọ làm Chủ tịch, theo chương trình hành động 10 điểm, nhằm đánh đổ chế độ thuộc địa trá hình của đế quốc Mỹ và chính quyền độc tài Ngô Đình Diệm, xây dựng miền Nam độc lập, dân chủ, hòa bình, trung lập, tiến tới thống nhất nước nhà."
   }
 ]
