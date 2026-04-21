@@ -8,6 +8,10 @@ let inventory         = [];      // Array of item objects
 let timerMax          = 25;
 let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | BETWEEN | GAMEOVER
 let isFrozen          = false;
+let isButtonFrozen    = false;   // New effect
+let tapCount          = 0;
+let lastTappedOption  = null;
+
 
 // Item-use selection state
 let selectedItemId    = null;
@@ -16,6 +20,14 @@ let selectedTarget    = null;
 
 const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
 const MEDALS  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
+const ITEM_IMAGE_MAP = {
+  blooper: 'assets/blooper.png',
+  banana:  'assets/banana.png',
+  ice:     'assets/ice.png',
+  brick:   'assets/rockk.png',
+  mirror:  'assets/Mirror.png',
+  shield:  'assets/shield.png'
+};
 
 // ── DOM helpers ───────────────────────────────────────────────
 function $(id)       { return document.getElementById(id); }
@@ -84,7 +96,7 @@ function renderInventory() {
       if (noItems) noItems.style.display = 'none';
       list.innerHTML = inventory.map(item => `
         <div class="item-chip" data-item-id="${item.id}" data-item-type="${item.type}">
-          ${item.emoji} ${item.name}
+          <img src="${ITEM_IMAGE_MAP[item.id] || ''}" class="chip-icon"> ${item.name}
         </div>
       `).join('');
       list.querySelectorAll('.item-chip').forEach(chip => {
@@ -95,7 +107,7 @@ function renderInventory() {
 
   if (between) {
     between.innerHTML = inventory.length > 0
-      ? `<div class="mini-inventory">${inventory.map(i => `<span class="mini-chip">${i.emoji} ${i.name}</span>`).join('')}</div>`
+      ? `<div class="mini-inventory">${inventory.map(i => `<span class="mini-chip"><img src="${ITEM_IMAGE_MAP[i.id] || ''}" class="mini-icon"> ${i.name}</span>`).join('')}</div>`
       : '';
   }
 }
@@ -120,7 +132,10 @@ function selectItem(itemId, itemType) {
   if (!panel || !title) return;
 
   panel.style.display = 'flex';
-  title.textContent   = `${item.emoji} ${item.name}: ${itemDescription(item.id)}`;
+  title.innerHTML   = `
+    <img src="${ITEM_IMAGE_MAP[item.id] || ''}" class="title-icon">
+    <span>${item.name}: ${itemDescription(item.id)}</span>
+  `;
 
   if (itemType === 'offensive') {
     picker.style.display = 'flex';
@@ -147,8 +162,9 @@ function itemDescription(id) {
   const desc = {
     blooper: 'Đối thủ bị che mắt 4 giây',
     banana:  'Đáp án đối thủ bị xáo trộn',
-    magnet:  'Hút điểm từ đối thủ phía trước',
-    brick:   'Đối thủ mất 5 điểm',
+    ice:     'Băng Giá: Nạn nhân phải bấm 3 lần mới chọn được đáp án',
+    brick:   'Ném đá: Đối thủ bị giảm 5 giây thời gian trả lời câu tiếp theo',
+    mirror:  'Gương Thần: Lật ngược màn hình đối thủ',
     shield:  'Chặn 1 đòn tấn công',
   };
   return desc[id] || '';
@@ -213,6 +229,10 @@ socket.on('question:shown', ({ number, total, text, options }) => {
     btn.disabled = false;
   });
   mySubmittedAnswer = null;
+  isButtonFrozen = false;
+  tapCount = 0;
+  lastTappedOption = null;
+  document.body.classList.remove('ice-active');
 
   timerMax = 25;
   setTimerUI(25, 25);
@@ -302,6 +322,32 @@ socket.on('effect:shield-gained', () => {
   showToast('🛡️ Khiên hoạt động! Bạn được bảo vệ khỏi 1 đòn tấn công.');
 });
 
+socket.on('effect:mirror', () => {
+  document.body.classList.add('mirror-active');
+  showToast('🪞 Gương Thần! Màn hình của bạn đã bị lật ngược!');
+  setTimeout(() => {
+    document.body.classList.remove('mirror-active');
+  }, 7000); // Effect lasts 7 seconds
+});
+
+socket.on('effect:ice', () => {
+  isButtonFrozen = true;
+  document.body.classList.add('ice-active');
+  showToast('🧊 Băng Giá! Nút bấm của bạn đã bị đóng băng! Nhấp 3 lần để chọn!');
+});
+
+socket.on('game:penalty', ({ seconds }) => {
+  timerMax = 25 - seconds;
+  showToast(`💥 Bạn bị mất ${seconds}s thời gian trả lời câu này!`);
+  setTimerUI(timerMax, 25); // Show immediate drop if possible
+});
+
+socket.on('answer:error', ({ message }) => {
+  showToast(`⚠️ ${message}`);
+  // If they were trying to submit, unlock buttons so they know they failed? 
+  // Or just keep locked if it's already over.
+});
+
 socket.on('shield:blocked', () => {
   showToast('🛡️ Khiên đã chặn một đòn tấn công!');
 });
@@ -378,6 +424,24 @@ $('btn-join').addEventListener('click', () => {
 document.querySelectorAll('.opt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const answer = btn.dataset.answer;
+
+    if (isButtonFrozen) {
+      if (lastTappedOption !== answer) {
+        tapCount = 1;
+        lastTappedOption = answer;
+        showToast(`🧊 Nhấp thêm 2 lần nữa: ${answer}`);
+        return;
+      }
+      tapCount++;
+      if (tapCount === 2) {
+        showToast(`🧊 Nhấp thêm 1 lần cuối: ${answer}`);
+        return;
+      } else if (tapCount < 3) {
+        return;
+      }
+      // Success after 3 taps
+    }
+
     mySubmittedAnswer = answer;
     document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
     btn.classList.add('selected');

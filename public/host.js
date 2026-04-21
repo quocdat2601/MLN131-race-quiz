@@ -97,7 +97,10 @@ function buildTrack(activeGroups) {
     const charImg = CHARACTER_IMAGES[group] || 'assets/duck.png';
 
     duckData.innerHTML = `
-      <img src="${charImg}" alt="${group}">
+      <div class="duck-wrapper">
+        <img src="${charImg}" alt="${group}">
+        <div class="shield-aura"></div>
+      </div>
       <div class="duck-name-tag">${group}</div>
       <span class="duck-steps" id="steps-${group.replace(' ','')}">0</span>
     `;
@@ -196,7 +199,23 @@ function animateProjectile(fromGroup, targetGroup, itemEmoji) {
 
   const projectile = document.createElement('div');
   projectile.className = 'projectile';
-  projectile.textContent = itemEmoji;
+  
+  const ITEM_IMAGES = {
+    '🦑': 'assets/blooper.png',
+    '🍌': 'assets/banana.png',
+    '🧊': 'assets/ice.png',
+    '🪨': 'assets/rockk.png',
+    '🧱': 'assets/rockk.png',
+    '🪞': 'assets/Mirror.png',
+    '🛡️': 'assets/shield.png'
+  };
+
+  const imgSrc = ITEM_IMAGES[itemEmoji];
+  if (imgSrc) {
+    projectile.innerHTML = `<img src="${imgSrc}" style="width: 50px; height: 50px; object-image: contain;">`;
+  } else {
+    projectile.textContent = itemEmoji;
+  }
 
   // Center points
   const startX = fromRect.left + fromRect.width / 2;
@@ -220,8 +239,14 @@ function animateProjectile(fromGroup, targetGroup, itemEmoji) {
     const curX = startX + (endX - startX) * progress;
     const curY = startY + (endY - startY) * progress + Math.sin(progress * Math.PI) * arcHeight;
 
-    // Rotate as it flies
-    const rotation = progress * 720;
+    // Custom rotations per item
+    let rotation = progress * 720;
+    if (itemEmoji === '🍌') rotation = progress * 1440; // Spinning banana
+    if (itemEmoji === '🧲') {
+       // Magnet doesn't rotate, it faces target
+       rotation = 0;
+    }
+
     const scale = 1 + Math.sin(progress * Math.PI) * 0.8;
 
     projectile.style.left = `${curX}px`;
@@ -236,28 +261,37 @@ function animateProjectile(fromGroup, targetGroup, itemEmoji) {
       targetEl.classList.add('shake');
       setTimeout(() => targetEl.classList.remove('shake'), 600);
       
-      // Explosion effect at impact
-      createExplosion(endX, endY);
+      // Specific explosion colors
+      let explosionColor = null;
+      if (itemEmoji === '🦑') explosionColor = '#000'; // Ink
+      if (itemEmoji === '🍌') explosionColor = '#ffdb58'; // Yellow
+      if (itemEmoji === '🪨' || itemEmoji === '🧱') explosionColor = '#aaa'; // Stone
+      
+      createExplosion(endX, endY, explosionColor);
     }
   }
   requestAnimationFrame(update);
 }
 
-function createExplosion(x, y) {
+function createExplosion(x, y, customColor) {
   const container = document.createElement('div');
   container.className = 'explosion';
   container.style.left = `${x}px`;
   container.style.top = `${y}px`;
   document.body.appendChild(container);
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 12; i++) {
     const spark = document.createElement('div');
     spark.className = 'spark';
-    const angle = (i / 8) * Math.PI * 2;
-    const dist = 40 + Math.random() * 40;
+    const angle = (i / 12) * Math.PI * 2;
+    const dist = 40 + Math.random() * 60;
     spark.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
     spark.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
-    spark.style.background = `hsl(${Math.random() * 60 + 20}, 100%, 60%)`;
+    spark.style.background = customColor || `hsl(${Math.random() * 60 + 20}, 100%, 60%)`;
+    if (customColor === '#000') {
+      spark.style.width = spark.style.height = (Math.random() * 12 + 6) + 'px';
+      spark.style.borderRadius = '40% 60% 50% 50%'; // Inky drops
+    }
     container.appendChild(spark);
   }
 
