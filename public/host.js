@@ -445,15 +445,26 @@ socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect, sha
   if (targetGroup && byGroup !== targetGroup) {
     animateProjectile(byGroup, targetGroup, itemEmoji);
   } else {
-    // Duck shake (immediate if same group or no animation)
-    if (shake) {
-      const duckEl = document.getElementById('duck-' + shake.replace(' ',''));
-      if (duckEl) {
+  // Duck visual impact
+  if (targetGroup) {
+    const duckEl = document.getElementById('duck-' + targetGroup.replace(' ',''));
+    if (duckEl) {
+      if (itemName === 'Băng Giá') {
+        duckEl.classList.add('state-frozen');
+        setTimeout(() => duckEl.classList.remove('state-frozen'), 5000);
+      } else if (itemName === 'Gương Thần') {
+        duckEl.classList.add('state-mirrored');
+        setTimeout(() => duckEl.classList.remove('state-mirrored'), 7000);
+      } else if (itemName === 'Mực Che Mắt') {
+        duckEl.classList.add('state-bloopered');
+        setTimeout(() => duckEl.classList.remove('state-bloopered'), 4000);
+      } else {
         duckEl.classList.add('shake');
         setTimeout(() => duckEl.classList.remove('shake'), 600);
       }
     }
   }
+
   // Shield aura
   if (itemName === 'Khiên') {
     const duckEl = document.getElementById('duck-' + byGroup.replace(' ',''));

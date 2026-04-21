@@ -642,6 +642,17 @@ body {
   filter: drop-shadow(0 0 10px #7ef);
 }
 
+/* Impact Effects */
+.duck.state-frozen img {
+  filter: drop-shadow(0 0 15px #7ef) sepia(1) hue-rotate(180deg) saturate(2);
+}
+.duck.state-mirrored img {
+  transform: rotate(180deg);
+}
+.duck.state-bloopered img {
+  filter: brightness(0.2) drop-shadow(0 0 5px #000);
+}
+
 @keyframes shieldRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

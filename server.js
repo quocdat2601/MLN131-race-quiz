@@ -399,15 +399,6 @@ class GameRoom {
       return { ok: true };
     }
 
-    if (item.id === 'ice') {
-      io.to(this.roomCode + '_' + targetGroup).emit('effect:ice');
-      effect = `Nút bấm của ${targetGroup} bị đóng băng!`;
-    }
-
-    // Shield check already handles this before reaching specific IDs for offensive items
-    // (Existing offensive items are below)
-
-    // Offensive: blooper, banana, brick, mirror, ice
     const target = this.groups[targetGroup];
     if (!target) return { error: 'Invalid target' };
 
@@ -422,7 +413,10 @@ class GameRoom {
     }
 
     let effect = '';
-    if (item.id === 'blooper') {
+    if (item.id === 'ice') {
+      io.to(this.roomCode + '_' + targetGroup).emit('effect:ice');
+      effect = `Nút bấm của ${targetGroup} bị đóng băng!`;
+    } else if (item.id === 'blooper') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:blooper');
       effect = `${targetGroup} bị che mắt 4 giây!`;
     } else if (item.id === 'banana') {
