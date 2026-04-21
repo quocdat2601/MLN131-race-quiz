@@ -30,6 +30,8 @@ const ITEM_IMAGE_MAP = {
   shield:  'assets/shield.png'
 };
 
+
+
 // ── DOM helpers ───────────────────────────────────────────────
 function $(id)       { return document.getElementById(id); }
 function show(id)    { const e = $(id); if(e) e.style.display = ''; }
@@ -320,8 +322,15 @@ socket.on('round:between', () => {
 // ── Global event handler ──
 function handleGlobalEvent(event) {
   const banner = $('global-event-banner');
+  const weather = $('weather-layer');
   if (!banner) return;
-  if (!event) { banner.style.display = 'none'; return; }
+  
+  if (!event) { 
+    banner.style.display = 'none'; 
+    if (weather) { weather.style.display = 'none'; weather.className = 'weather-layer'; }
+    return; 
+  }
+  
   const labels = {
     storm:  '🌊 BÃO TỐ! Chỉ còn 10 giây!',
     fog:    '🌫️ SƯƠNG MÙ! Thời gian 60 giây.',
@@ -330,7 +339,15 @@ function handleGlobalEvent(event) {
   banner.textContent = labels[event] || '';
   banner.className = 'global-event-banner event-' + event;
   banner.style.display = '';
-  setTimeout(() => { if (banner) banner.style.display = 'none'; }, 5000);
+
+  if (weather) {
+    weather.style.display = '';
+    weather.className = 'weather-layer ' + event;
+  }
+
+  setTimeout(() => { 
+    if (banner) banner.style.display = 'none'; 
+  }, 5000);
 }
 
 socket.on('global:event', ({ event }) => {
