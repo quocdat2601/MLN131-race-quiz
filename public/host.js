@@ -246,12 +246,14 @@ function animateProjectile(fromGroup, targetGroup, itemEmoji) {
     '🪨': 'assets/rockk.png',
     '🧱': 'assets/rockk.png',
     '🪞': 'assets/Mirror.png',
+    '🙃': 'assets/Mirror.png',
     '🛡️': 'assets/shield.png'
   };
 
   const imgSrc = ITEM_IMAGES[itemEmoji];
+  const size = (itemEmoji === '🪞' || itemEmoji === '🙃') ? 90 : 70;
   if (imgSrc) {
-    projectile.innerHTML = `<img src="${imgSrc}" style="width: 50px; height: 50px; object-image: contain;">`;
+    projectile.innerHTML = `<img src="${imgSrc}" style="width: ${size}px; height: ${size}px; object-fit: contain;">`;
   } else {
     projectile.textContent = itemEmoji;
   }
@@ -299,6 +301,18 @@ function animateProjectile(fromGroup, targetGroup, itemEmoji) {
       // On impact
       targetEl.classList.add('shake');
       setTimeout(() => targetEl.classList.remove('shake'), 600);
+
+      // Apply persisting effects on impact
+      if (itemEmoji === '🧊') {
+        targetEl.classList.add('state-frozen');
+        setTimeout(() => targetEl.classList.remove('state-frozen'), 5000);
+      } else if (itemEmoji === '🪞' || itemEmoji === '🙃') {
+        targetEl.classList.add('state-mirrored');
+        setTimeout(() => targetEl.classList.remove('state-mirrored'), 7000);
+      } else if (itemEmoji === '🦑') {
+        targetEl.classList.add('state-bloopered');
+        setTimeout(() => targetEl.classList.remove('state-bloopered'), 4000);
+      }
       
       // Specific explosion colors
       let explosionColor = null;

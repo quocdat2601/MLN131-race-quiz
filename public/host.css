@@ -813,7 +813,26 @@ body {
   transform: rotate(180deg);
 }
 .duck.state-bloopered img {
-  filter: brightness(0.2) drop-shadow(0 0 5px #000);
+  filter: brightness(0.3) saturate(0.5) drop-shadow(0 0 10px #000);
+  transition: filter 0.3s ease;
+}
+.duck.state-bloopered::after {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: 
+    radial-gradient(circle at 30% 20%, #111 15%, transparent 40%),
+    radial-gradient(circle at 75% 45%, #000 20%, transparent 50%),
+    radial-gradient(circle at 40% 80%, #111 18%, transparent 45%),
+    radial-gradient(circle at 85% 85%, #000 15%, transparent 35%);
+  opacity: 0.9;
+  z-index: 20;
+  pointer-events: none;
+  animation: inkOoze 4s ease-in-out infinite alternate;
+}
+@keyframes inkOoze {
+  from { transform: scale(1); opacity: 0.8; }
+  to   { transform: scale(1.1); opacity: 1; }
 }
 
 @keyframes shieldRotate {
