@@ -81,7 +81,7 @@ function buildTrack(activeGroups) {
     'Nhóm 5': 'assets/senku.png',
     'Nhóm 6': 'assets/songoku.png',
     'Nhóm 7': 'assets/duck.png',
-    'Giảng Viên': 'assets/duck.png'
+    'Giảng Viên': "assets/trilm's duck.png"
   };
 
   groupList.forEach((group, index) => {

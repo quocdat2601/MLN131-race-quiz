@@ -30,6 +30,16 @@ const ITEM_IMAGE_MAP = {
   shield:  'assets/shield.png'
 };
 
+const CHARACTER_IMAGES = {
+  'Nhóm 1': 'assets/aot.png',
+  'Nhóm 2': 'assets/kimet.png',
+  'Nhóm 3': 'assets/naruto.png',
+  'Nhóm 5': 'assets/senku.png',
+  'Nhóm 6': 'assets/songoku.png',
+  'Nhóm 7': 'assets/duck.png',
+  'Giảng Viên': "assets/trilm's duck.png"
+};
+
 
 
 // ── DOM helpers ───────────────────────────────────────────────
@@ -203,6 +213,13 @@ socket.on('join:success', ({ groupName }) => {
   myGroup = groupName;
   if (peekInterval) { clearInterval(peekInterval); peekInterval = null; }
   $('waiting-group-name').textContent = groupName;
+  
+  // Set duck image for waiting screen
+  const waitDuck = document.querySelector('#screen-waiting .duck-anim img');
+  if (waitDuck) {
+    waitDuck.src = CHARACTER_IMAGES[groupName] || 'assets/duck.png';
+  }
+
   showScreen('waiting');
 });
 
