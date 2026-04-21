@@ -332,12 +332,17 @@ body {
 }
 
 .option-card.correct {
-  background: rgba(39, 174, 96, .3);
-  border-color: #27ae60;
+  background: rgba(39, 174, 96, .75);
+  border-color: #2ecc71;
+  border-width: 2px;
+  box-shadow: 0 0 14px rgba(46, 204, 113, 0.6), inset 0 0 8px rgba(255,255,255,0.05);
+  color: #fff;
 }
 
 .option-card.revealed {
-  background: rgba(255, 255, 255, .04);
+  background: rgba(10, 20, 35, 0.75);
+  border-color: rgba(255,255,255,0.08);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .opt-letter {
@@ -882,6 +887,88 @@ body {
     opacity: 0;
   }
 }
+
+/* ── MILESTONE BOXES ──────────────────────────────────────── */
+/* Distance marker lines */
+.track-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed rgba(255, 255, 255, 0.22);
+  z-index: 3;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.track-marker-label {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0,0,0,0.6);
+  letter-spacing: 0.6px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.milestone-box {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  transform: translate(-50%, -50%);
+  z-index: 6; /* above duck background, below weather layer */
+  pointer-events: none;
+}
+.milestone-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: boxBob 2s ease-in-out infinite;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.5));
+}
+@keyframes boxBob {
+  0%, 100% { transform: translateY(0)   rotate(-4deg); }
+  50%       { transform: translateY(-5px) rotate(4deg); }
+}
+.milestone-box.collected {
+  animation: boxPop 0.45s ease forwards;
+  pointer-events: none;
+}
+@keyframes boxPop {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+  40%  { transform: translate(-50%, -65%) scale(1.6); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0);   opacity: 0; }
+}
+
+/* ── EVENT BANNER COUNTDOWN BORDER (4-SIDE SVG) ─────────── */
+.ge-border-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  border-radius: 16px;
+}
+.ge-border-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 3;
+}
+.ge-border-fill {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 3;
+  stroke-linecap: butt;
+  /* stroke-dasharray và vector-effect do JS tính động */
+}
+.banner-storm  .ge-border-fill { stroke: #7ef; }
+.banner-fog    .ge-border-fill { stroke: #c8d8f0; }
+.banner-golden .ge-border-fill { stroke: #ffe066; filter: drop-shadow(0 0 4px #ffcc00); }
 
 /* ── TOAST ────────────────────────────────────────────────── */
 .toast-container {

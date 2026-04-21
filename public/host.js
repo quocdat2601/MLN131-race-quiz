@@ -74,6 +74,15 @@ function buildTrack(activeGroups) {
   }
   raceTrack.appendChild(bubblesDiv);
 
+  // Distance marker lines (every 100pts, z-index below ducks)
+  [100, 200, 300, 400, 500, 600].forEach(pts => {
+    const marker = document.createElement('div');
+    marker.className = 'track-marker';
+    marker.style.left = milestoneLeft(pts);
+    marker.innerHTML = `<span class="track-marker-label">${pts}m</span>`;
+    raceTrack.appendChild(marker);
+  });
+
   const CHARACTER_IMAGES = {
     'Nhóm 1': 'assets/aot.png',
     'Nhóm 2': 'assets/kimet.png',
@@ -109,16 +118,32 @@ function buildTrack(activeGroups) {
       <span class="duck-steps" id="steps-${group.replace(' ','')}">0</span>
     `;
     raceTrack.appendChild(duckData);
+
+    // Milestone boxes for this duck's lane (same z-index layer as duck, above background)
+    MILESTONES_DISPLAY.forEach((pts, mIdx) => {
+      const box = document.createElement('div');
+      box.className = 'milestone-box';
+      box.id = `mbox-${group.replace(' ', '')}-${mIdx}`;
+      box.style.left = milestoneLeft(pts);
+      box.style.top = verticalOffset + '%';
+      box.innerHTML = `<img src="assets/randombox.png" alt="?">`;
+      raceTrack.appendChild(box);
+    });
   });
 }
-buildTrack();
 
 // ── Duck position ─────────────────────────────────────────────
 // Absolute scale: max possible = 25pts * 25q = 625
 const MAX_TOTAL_SCORE = 25 * 25;
+const MILESTONES_DISPLAY = [100, 200, 300, 400, 500, 600];
 function duckLeft(steps) {
   return (5 + (steps / MAX_TOTAL_SCORE) * 88) + '%';
 }
+function milestoneLeft(pts) {
+  return (5 + (pts / MAX_TOTAL_SCORE) * 88) + '%';
+}
+
+buildTrack();
 
 function updateDucks(positions) {
   let leaderSteps = 0;
@@ -141,6 +166,14 @@ function updateDucks(positions) {
       duckEl.classList.remove('leader');
     }
     if (stepsEl) stepsEl.textContent = typeof steps === 'number' ? steps.toFixed(1) : steps;
+
+    // Hide milestone boxes already passed (safety net in case milestone:reached missed)
+    MILESTONES_DISPLAY.forEach((pts, mIdx) => {
+      if (steps >= pts) {
+        const box = document.getElementById(`mbox-${group.replace(' ', '')}-${mIdx}`);
+        if (box && !box.classList.contains('collected')) box.classList.add('collected');
+      }
+    });
   }
 
   if (leaderSteps > 0) {
@@ -170,18 +203,65 @@ const EVENT_BANNER_DATA = {
   golden: { icon: '✨', title: 'Thời Cơ Vàng',  desc: 'Điểm thưởng nhân đôi (X2) trong 60 giây!', cls: 'banner-golden' },
 };
 
-function showEventBanner(event) {
+function showEventBanner(event, remaining, duration) {
   const banner = $('global-event-banner');
   if (!banner) return;
+
+  const svg = banner.querySelector('.ge-border-svg');
+  const track = banner.querySelector('.ge-border-track');
+  const fill = document.getElementById('ge-border-fill');
+
+  // Nếu không có event -> Ẩn banner và reset viền
   if (!event || !EVENT_BANNER_DATA[event]) {
     banner.classList.add('hidden');
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.strokeDashoffset = '0';
+    }
     return;
   }
+
+  // Set thông tin event
   const d = EVENT_BANNER_DATA[event];
   $('ge-icon').textContent  = d.icon;
   $('ge-title').textContent = d.title;
   $('ge-desc').textContent  = d.desc;
-  banner.className = 'event-banner ' + d.cls; // removes 'hidden'
+  banner.className = 'event-banner ' + d.cls; // Bỏ class 'hidden' để hiện banner
+
+  // Dùng requestAnimationFrame để đợi DOM vẽ xong banner, lấy kích thước chính xác
+  requestAnimationFrame(() => {
+    if (!fill || !track || !svg) return;
+
+    // 1. Lấy kích thước thật của banner (px)
+    const w = banner.clientWidth;
+    const h = banner.clientHeight;
+    const r = 8; // Bán kính góc bo tròn (rx=8)
+
+    // 2. Ép SVG và thẻ rect vừa khít với kích thước thật
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    track.setAttribute('width', w - 2);
+    track.setAttribute('height', h - 2);
+    fill.setAttribute('width', w - 2);
+    fill.setAttribute('height', h - 2);
+
+    // 3. Tính chu vi chính xác: 2*(W+H) - 8r + 2πr
+    const perimeter = 2 * (w - 2) + 2 * (h - 2) - (8 * r) + (2 * Math.PI * r);
+
+    fill.style.strokeDasharray = perimeter;
+
+    // 4. Kích hoạt animation
+    if (duration > 0 && remaining > 0) {
+      const startOffset = perimeter * (1 - remaining / duration);
+      fill.style.transition = 'none';
+      fill.style.strokeDashoffset = String(startOffset);
+      void fill.getBoundingClientRect();
+      fill.style.transition = `stroke-dashoffset ${remaining}s linear`;
+      fill.style.strokeDashoffset = String(perimeter);
+    } else {
+      fill.style.transition = 'none';
+      fill.style.strokeDashoffset = '0';
+    }
+  });
 }
 // ── Screen switch ─────────────────────────────────────────────
 function showScreen(name) {
@@ -399,7 +479,7 @@ socket.on('game:started', ({ activeGroups } = {}) => {
   btnNextQ.style.display = 'none';
 });
 
-socket.on('question:shown', ({ number, total, text, options, timeLimit, event }) => {
+socket.on('question:shown', ({ number, total, text, options, timeLimit, event, eventDuration, eventRemaining }) => {
   qCounter.textContent = `Câu ${number}/${total}`;
   qNumberBadge.textContent = `Câu ${number}`;
   qText.textContent = text;
@@ -417,7 +497,7 @@ socket.on('question:shown', ({ number, total, text, options, timeLimit, event })
   // Apply weather effect for this question
   currentWeatherEvent = event || null;
   applyWeatherEffect(currentWeatherEvent);
-  showEventBanner(currentWeatherEvent);
+  showEventBanner(currentWeatherEvent, eventRemaining || 0, eventDuration || 0);
 });
 
 socket.on('timer:tick', ({ remaining }) => {
@@ -475,10 +555,10 @@ socket.on('ducks:updated', ({ positions }) => {
   updateDucks(positions);
 });
 
-socket.on('global:event', ({ event }) => {
+socket.on('global:event', ({ event, eventDuration, eventRemaining }) => {
   currentWeatherEvent = event || null;
   applyWeatherEffect(currentWeatherEvent);
-  showEventBanner(currentWeatherEvent);
+  showEventBanner(currentWeatherEvent, eventRemaining || 0, eventDuration || 0);
   const labels = { storm: '🌊 Bão Tố!', fog: '🌫️ Sương Mù!', golden: '✨ Thời Cơ Vàng! x2 điểm!' };
   if (event && labels[event]) toast(labels[event]);
 });
@@ -506,6 +586,17 @@ socket.on('between:countdown', ({ remaining }) => {
 
 socket.on('item:gained', ({ groupName, item }) => {
   toast(`🎁 <strong>${groupName}</strong> đạt mốc — nhận ${item.emoji} ${item.name}!`);
+});
+
+socket.on('milestone:reached', ({ groupName, milestoneIndex, item }) => {
+  // Pop the milestone box visually
+  const box = document.getElementById(`mbox-${groupName.replace(' ', '')}-${milestoneIndex}`);
+  if (box && !box.classList.contains('collected')) {
+    box.classList.add('collected');
+    setTimeout(() => box.remove(), 500);
+  }
+  const MILESTONE_PTS = ['50', '100', '150', '200', '250'];
+  toast(`🎁 <strong>${groupName}</strong> đạt mốc ${MILESTONE_PTS[milestoneIndex]} điểm! Nhận ${item.emoji} ${item.name}!`);
 });
 
 socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect, shake }) => {

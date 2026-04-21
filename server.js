@@ -22,7 +22,25 @@ const ITEMS = [
   { id: 'mirror',  emoji: '🙃', name: 'Gương Thần',   type: 'offensive' },
   { id: 'shield',  emoji: '🛡️', name: 'Khiên',        type: 'self'      },
 ];
-const MILESTONES = [50, 100, 150, 200, 250];
+const MILESTONES = [100, 200, 300, 400, 500, 600];
+
+// Weighted item pool — mirror rare (8%), shield/brick most common
+const ITEM_WEIGHTS = [
+  { id: 'shield',  weight: 25 },
+  { id: 'brick',   weight: 22 },
+  { id: 'banana',  weight: 18 },
+  { id: 'ice',     weight: 17 },
+  { id: 'blooper', weight: 10 },
+  { id: 'mirror',  weight: 8  },
+];
+function pickWeightedItem() {
+  let roll = Math.random() * 100;
+  for (const { id, weight } of ITEM_WEIGHTS) {
+    roll -= weight;
+    if (roll <= 0) return ITEMS.find(i => i.id === id);
+  }
+  return ITEMS.find(i => i.id === 'shield');
+}
 
 const STATES = {
   LOBBY:          'LOBBY',
@@ -100,6 +118,7 @@ class GameRoom {
     this.betweenCountdown = null;
     this.timerMax        = 25;
     this.currentEvent    = null; // 'storm' | 'fog' | 'golden' | null
+    this.eventStartTime  = null; // epoch ms khi event bắt đầu
   }
 
   getMemberCounts() {
@@ -148,42 +167,21 @@ class GameRoom {
       .sort((a, b) => b.steps - a.steps);
   }
 
-  giveRandomItem(groupName) {
-    const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
-    this.groups[groupName].inventory.push(item);
-    return item;
-  }
-
-  giveCatchupItem(groupName) {
-    const rankings = this.getRankings();
-    const rank = rankings.findIndex(r => r.group === groupName); // 0 = leader
-    const total = rankings.length;
-    let item;
-    if (rank === 0) {
-      // Leader gets shield only
-      item = ITEMS.find(i => i.id === 'shield');
-    } else if (rank >= total - 2) {
-      // Last or second-to-last: 70% offensive, 30% shield
-      const offensiveItems = ITEMS.filter(i => i.type === 'offensive' || i.type === 'auto');
-      item = Math.random() < 0.7
-        ? offensiveItems[Math.floor(Math.random() * offensiveItems.length)]
-        : ITEMS.find(i => i.id === 'shield');
-    } else {
-      item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
-    }
-    if (!item) item = ITEMS[0];
+  giveWeightedItem(groupName) {
+    const item = pickWeightedItem();
     this.groups[groupName].inventory.push(item);
     io.to(this.roomCode + '_' + groupName).emit('inventory:update', { items: this.groups[groupName].inventory });
-    io.to(this.hostSocketId).emit('item:gained', { groupName, item });
     return item;
   }
 
   checkMilestone(groupName) {
     const group = this.groups[groupName];
-    const nextMilestone = MILESTONES[group.lastMilestone];
+    const milestoneIdx = group.lastMilestone;
+    const nextMilestone = MILESTONES[milestoneIdx];
     if (nextMilestone !== undefined && group.steps >= nextMilestone) {
       group.lastMilestone++;
-      this.giveCatchupItem(groupName);
+      const item = this.giveWeightedItem(groupName);
+      io.to(this.hostSocketId).emit('milestone:reached', { groupName, milestoneIndex: milestoneIdx, item });
     }
   }
 
@@ -203,14 +201,33 @@ class GameRoom {
     // ── Global Event (every 4th question: Q4, Q8, Q12…) ──
     if ((this.currentQ + 1) % 4 === 0) {
       const events = ['storm', 'fog', 'golden'];
-      this.currentEvent = events[Math.floor(Math.random() * events.length)];
+      this.currentEvent   = events[Math.floor(Math.random() * events.length)];
+      this.eventStartTime = Date.now();
     } else {
-      this.currentEvent = null;
+      // Giữ event nếu còn trong thời hạn (fog/golden = 60s)
+      if (this.currentEvent && this.currentEvent !== 'storm' && this.eventStartTime) {
+        const elapsed = (Date.now() - this.eventStartTime) / 1000;
+        if (elapsed >= 60) {
+          this.currentEvent   = null;
+          this.eventStartTime = null;
+        }
+        // else: giữ nguyên this.currentEvent
+      } else {
+        this.currentEvent   = null;
+        this.eventStartTime = null;
+      }
     }
-    this.timerMax = this.currentEvent === 'storm' ? 10
-                  : (this.currentEvent === 'fog' || this.currentEvent === 'golden') ? 60
-                  : 25;
 
+    // timerMax = thời gian câu hỏi (luôn 25s, trừ storm = 10s)
+    this.timerMax = this.currentEvent === 'storm' ? 10 : 25;
+
+    // eventDuration = thời gian hiệu lực event (riêng biệt, không liên quan timer câu hỏi)
+    const eventDuration = this.currentEvent === 'storm'  ? 10
+                        : (this.currentEvent === 'fog' || this.currentEvent === 'golden') ? 60
+                        : 0;
+    const eventRemaining = (this.currentEvent && this.eventStartTime)
+                         ? Math.max(0, eventDuration - Math.floor((Date.now() - this.eventStartTime) / 1000))
+                         : 0;
     const q = this.questions[this.currentQ];
     io.to(this.roomCode).emit('question:shown', {
       number:    this.currentQ + 1,
@@ -219,6 +236,8 @@ class GameRoom {
       options:   q.options,
       timeLimit: this.timerMax,
       event:     this.currentEvent,
+      eventDuration,
+      eventRemaining,
     });
 
     // Notify bricked groups
@@ -295,26 +314,27 @@ class GameRoom {
       .filter(([, d]) => d.frozen)
       .map(([name]) => name);
 
-    correctAnswers.forEach((a, idx) => {
+    correctAnswers.forEach((a) => {
       const group = this.groups[a.groupName];
-      let pts  = 0;
-      let item = null;
+      let pts = 0;
 
       if (frozenGroups.includes(a.groupName)) {
         pts = 0;
+        group.consecutiveCorrect = 0;
       } else {
+        group.consecutiveCorrect++;
         const effectiveMax = group.bricked ? Math.max(0, this.timerMax - 5) : this.timerMax;
         const elapsed = (a.serverTime - this.startTime) / 1000;
-        let rawPts;
-        if (idx === 0 || idx === 1) {
-          rawPts = Math.max(0, parseFloat((effectiveMax - elapsed).toFixed(2)));
-          item = this.giveRandomItem(a.groupName);
-        } else {
-          rawPts = Math.max(0, parseFloat((Math.min(10, effectiveMax - elapsed)).toFixed(2)));
-        }
+        let rawPts = Math.max(0, parseFloat((effectiveMax - elapsed).toFixed(2)));
         if (this.currentEvent === 'golden') rawPts = parseFloat((rawPts * 2).toFixed(2));
         pts = rawPts;
         group.steps = parseFloat((group.steps + pts).toFixed(2));
+      }
+
+      // Every 2 consecutive correct answers → streak item (from randombox)
+      let streakItem = null;
+      if (group.consecutiveCorrect > 0 && group.consecutiveCorrect % 2 === 0) {
+        streakItem = this.giveWeightedItem(a.groupName);
       }
 
       // Check milestone after updating steps
@@ -324,16 +344,16 @@ class GameRoom {
         groupName:    a.groupName,
         correct:      true,
         stepsGained:  pts,
-        itemReceived: item,
+        itemReceived: streakItem,
         frozen:       frozenGroups.includes(a.groupName),
       });
 
       io.to(this.roomCode + '_' + a.groupName).emit('answer:result', {
         correct:      true,
         stepsGained:  pts,
-        itemReceived: item,
+        itemReceived: streakItem,
       });
-      if (item) {
+      if (streakItem) {
         io.to(this.roomCode + '_' + a.groupName).emit('inventory:update', { items: group.inventory });
       }
     });
@@ -343,6 +363,7 @@ class GameRoom {
       if (data.members.size === 0) continue;
       const answered = this.roundAnswers.find(a => a.groupName === name);
       if (!answered || answered.answer !== correct) {
+        data.consecutiveCorrect = 0;  // break streak
         movements.push({ groupName: name, correct: false, stepsGained: 0 });
         io.to(this.roomCode + '_' + name).emit('answer:result', { correct: false, stepsGained: 0 });
       }
@@ -353,7 +374,17 @@ class GameRoom {
       data.frozen = false;
       data.bricked = false;
     }
-    this.currentEvent = null;
+    // Clear event: storm chỉ 1 câu, fog/golden hết sau 60s
+    if (this.currentEvent === 'storm') {
+      this.currentEvent   = null;
+      this.eventStartTime = null;
+    } else if (this.currentEvent && this.eventStartTime) {
+      const elapsed = (Date.now() - this.eventStartTime) / 1000;
+      if (elapsed >= 60) {
+        this.currentEvent   = null;
+        this.eventStartTime = null;
+      }
+    }
 
     io.to(this.roomCode).emit('answer:revealed', {
       correctAnswer: correct,
@@ -695,8 +726,13 @@ io.on('connection', (socket) => {
     }
     const safeEvent = ['storm', 'fog', 'golden', 'clear'].includes(event) ? event : 'clear';
     currentRoom.currentEvent = safeEvent === 'clear' ? null : safeEvent;
-    const newMax = safeEvent === 'storm' ? 10 : (safeEvent === 'fog' || safeEvent === 'golden') ? 60 : 25;
+    // timerMax = thời gian câu hỏi (luôn 25s, trừ storm = 10s)
+    const newMax = safeEvent === 'storm' ? 10 : 25;
     currentRoom.timerMax = newMax;
+    // eventDuration riêng cho banner countdown
+    const triggerEventDuration = safeEvent === 'storm' ? 10
+                               : (safeEvent === 'fog' || safeEvent === 'golden') ? 60
+                               : 0;
 
     // Rebuild timer with new duration
     if (currentRoom.timer) currentRoom.timer.stop();
@@ -707,7 +743,11 @@ io.on('connection', (socket) => {
     );
     if (currentRoom.state === STATES.QUESTION) currentRoom.timer.start();
 
-    io.to(currentRoom.roomCode).emit('global:event', { event: currentRoom.currentEvent });
+    io.to(currentRoom.roomCode).emit('global:event', {
+      event: currentRoom.currentEvent,
+      eventDuration: triggerEventDuration,
+      eventRemaining: triggerEventDuration,
+    });
     io.to(currentRoom.roomCode).emit('timer:sync', { remaining: newMax, max: newMax });
     socket.emit('dev:log', { msg: `✅ Event triggered: ${safeEvent}` });
   });
