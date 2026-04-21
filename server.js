@@ -300,6 +300,7 @@ class GameRoom {
     this.state = STATES.REVEAL;
 
     const q = this.questions[this.currentQ];
+    if (!q) return; // guard: question not found (e.g. out-of-bounds)
     const correct = q.correct;
     const now = Date.now();
 
