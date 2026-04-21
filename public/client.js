@@ -8,9 +8,10 @@ let inventory         = [];      // Array of item objects
 let timerMax          = 25;
 let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | BETWEEN | GAMEOVER
 let isFrozen          = false;
-let isButtonFrozen    = false;   // New effect
+let isButtonFrozen    = false;   // ice effect
 let tapCount          = 0;
 let lastTappedOption  = null;
+let isBricked         = false;   // brick effect — local timer reduction
 
 
 // Item-use selection state
@@ -160,11 +161,11 @@ function selectItem(itemId, itemType) {
 
 function itemDescription(id) {
   const desc = {
-    blooper: 'Đối thủ bị che mắt 4 giây',
-    banana:  'Đáp án đối thủ bị xáo trộn',
-    ice:     'Băng Giá: Nạn nhân phải bấm 3 lần mới chọn được đáp án',
-    brick:   'Ném đá: Đối thủ bị giảm 5 giây thời gian trả lời câu tiếp theo',
-    mirror:  'Gương Thần: Lật ngược màn hình đối thủ',
+    blooper: 'Màn hình bị phủ đen 4 giây',
+    banana:  'Đáp án bị xáo trộn ngẫu nhiên',
+    brick:   'Gạch: Câu tiếp điểm tối đa giảm 5, chỉ còn 20s đồng hồ hiển thị',
+    ice:     'Băng Giá: Nạn nhân phải bấm 5 lần mới chọn được đáp án',
+    mirror:  'Gương Thần: Lật ngược khu vực đáp án',
     shield:  'Chặn 1 đòn tấn công',
   };
   return desc[id] || '';
@@ -217,7 +218,7 @@ socket.on('game:started', () => {
   if (btn) btn.style.display = '';
 });
 
-socket.on('question:shown', ({ number, total, text, options }) => {
+socket.on('question:shown', ({ number, total, text, options, timeLimit, event }) => {
   $('client-q-badge').textContent   = `Câu ${number}/${total}`;
   $('client-q-text').textContent    = text;
   ['A','B','C','D'].forEach(l => {
@@ -230,18 +231,36 @@ socket.on('question:shown', ({ number, total, text, options }) => {
   });
   mySubmittedAnswer = null;
   isButtonFrozen = false;
+  isBricked = false;
   tapCount = 0;
   lastTappedOption = null;
   document.body.classList.remove('ice-active');
+  // Remove any inline mirror transform
+  const optCont = $('options-container');
+  if (optCont) optCont.style.transform = '';
 
-  timerMax = 25;
-  setTimerUI(25, 25);
+  timerMax = timeLimit || 25;
+  setTimerUI(timerMax, timerMax);
+
+  // Show global event banner
+  handleGlobalEvent(event);
+
   showScreen('question');
 });
 
 socket.on('timer:tick', ({ remaining }) => {
   if (gamePhase === 'question') {
-    setTimerUI(remaining, timerMax);
+    if (isBricked) {
+      const display = Math.max(0, remaining - 5);
+      const brickedMax = Math.max(1, timerMax - 5);
+      setTimerUI(display, brickedMax);
+      if (display === 0 && !mySubmittedAnswer) {
+        document.querySelectorAll('.opt-btn').forEach(b => { b.disabled = true; });
+        showToast('🧱 Hết giờ! (Bị Gạch)');
+      }
+    } else {
+      setTimerUI(remaining, timerMax);
+    }
   }
 });
 
@@ -298,6 +317,48 @@ socket.on('round:between', () => {
   // Stay on question screen — next question will auto-arrive
 });
 
+// ── Global event handler ──
+function handleGlobalEvent(event) {
+  const banner = $('global-event-banner');
+  if (!banner) return;
+  if (!event) { banner.style.display = 'none'; return; }
+  const labels = {
+    storm:  '🌊 BÃO TỐ! Chỉ còn 10 giây!',
+    fog:    '🌫️ SƯƠNG MÙ! Thời gian 60 giây.',
+    golden: '✨ THỜI CƠ VÀNG! Điểm x2! 60 giây!',
+  };
+  banner.textContent = labels[event] || '';
+  banner.className = 'global-event-banner event-' + event;
+  banner.style.display = '';
+  setTimeout(() => { if (banner) banner.style.display = 'none'; }, 5000);
+}
+
+socket.on('global:event', ({ event }) => {
+  if (event === 'storm') {
+    timerMax = 10;
+    showToast('🌊 Bão Tố! Chỉ còn 10 giây!');
+  } else if (event === 'fog') {
+    timerMax = 60;
+    showToast('🌫️ Sương Mù! Thời gian 60 giây.');
+  } else if (event === 'golden') {
+    timerMax = 60;
+    showToast('✨ Thời Cơ Vàng! Điểm x2! 60 giây!');
+  }
+  handleGlobalEvent(event || null);
+});
+
+socket.on('timer:sync', ({ remaining, max }) => {
+  timerMax = max;
+  setTimerUI(remaining, max);
+});
+
+socket.on('question:bricked', ({ displayTime }) => {
+  isBricked = true;
+  timerMax = displayTime + 5; // so remaining - 5 shows displayTime
+  setTimerUI(displayTime, displayTime);
+  showToast(`🧱 Bị Gạch! Chỉ còn ${displayTime}s, điểm tối đa giảm 5!`);
+});
+
 socket.on('effect:blooper', () => {
   const overlay = $('blooper-overlay');
   if (!overlay) return;
@@ -323,23 +384,22 @@ socket.on('effect:shield-gained', () => {
 });
 
 socket.on('effect:mirror', () => {
-  document.body.classList.add('mirror-active');
-  showToast('🪞 Gương Thần! Màn hình của bạn đã bị lật ngược!');
+  const container = $('options-container');
+  if (container) container.style.transform = 'rotate(180deg)';
+  showToast('🙃 Gương Thần! Đáp án bị lật ngược!');
   setTimeout(() => {
-    document.body.classList.remove('mirror-active');
-  }, 7000); // Effect lasts 7 seconds
+    if (container) container.style.transform = '';
+  }, 10000);
 });
 
 socket.on('effect:ice', () => {
   isButtonFrozen = true;
   document.body.classList.add('ice-active');
-  showToast('🧊 Băng Giá! Nút bấm của bạn đã bị đóng băng! Nhấp 3 lần để chọn!');
+  showToast('🧊 Băng Giá! Phải bấm 5 lần vào 1 đáp án mới gửi được!');
 });
 
 socket.on('game:penalty', ({ seconds }) => {
-  timerMax = 25 - seconds;
-  showToast(`💥 Bạn bị mất ${seconds}s thời gian trả lời câu này!`);
-  setTimerUI(timerMax, 25); // Show immediate drop if possible
+  // Legacy handler — no-op, replaced by question:bricked
 });
 
 socket.on('answer:error', ({ message }) => {
@@ -429,17 +489,15 @@ document.querySelectorAll('.opt-btn').forEach(btn => {
       if (lastTappedOption !== answer) {
         tapCount = 1;
         lastTappedOption = answer;
-        showToast(`🧊 Nhấp thêm 2 lần nữa: ${answer}`);
+        showToast(`🧊 Cần nhấn thêm 4 lần nữa: ${answer}`);
         return;
       }
       tapCount++;
-      if (tapCount === 2) {
-        showToast(`🧊 Nhấp thêm 1 lần cuối: ${answer}`);
-        return;
-      } else if (tapCount < 3) {
+      if (tapCount < 5) {
+        showToast(`🧊 Còn ${5 - tapCount} lần nữa: ${answer}`);
         return;
       }
-      // Success after 3 taps
+      // 5th tap — success
     }
 
     mySubmittedAnswer = answer;

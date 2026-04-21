@@ -17,9 +17,9 @@ const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7'
 const ITEMS = [
   { id: 'blooper', emoji: '🦑', name: 'Mực Che Mắt', type: 'offensive' },
   { id: 'banana',  emoji: '🍌', name: 'Vỏ Chuối',    type: 'offensive' },
+  { id: 'brick',   emoji: '🧱', name: 'Gạch',         type: 'offensive' },
   { id: 'ice',     emoji: '🧊', name: 'Băng Giá',     type: 'offensive' },
-  { id: 'brick',   emoji: '🪨', name: 'Đá',         type: 'offensive' },
-  { id: 'mirror',  emoji: '🪞', name: 'Gương Thần',   type: 'offensive' },
+  { id: 'mirror',  emoji: '🙃', name: 'Gương Thần',   type: 'offensive' },
   { id: 'shield',  emoji: '🛡️', name: 'Khiên',        type: 'self'      },
 ];
 const MILESTONES = [50, 100, 150, 200, 250];
@@ -62,6 +62,12 @@ class Timer {
   pause()  { this.paused = true;  }
   resume() { this.paused = false; }
 
+  setDuration(newDuration) {
+    this.stop();
+    this.duration  = newDuration;
+    this.remaining = newDuration;
+  }
+
   stop() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
@@ -79,19 +85,21 @@ class GameRoom {
     this.state        = STATES.LOBBY;
     this.hostSocketId = null;
 
-    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, lastMilestone }
+    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, bricked, lastMilestone }
     this.groups = {};
     GROUPS.forEach(g => {
-      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, lastMilestone: 0, timePenalty: 0 };
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, lastMilestone: 0 };
     });
 
-    this.questions      = [...QUESTIONS].slice(0, 25);
+    this.questions       = [...QUESTIONS].slice(0, 25);
     this.currentQ        = -1;
     this.timer           = null;
     this.startTime       = null;
     this.roundAnswers    = [];
     this.betweenTimer    = null;
     this.betweenCountdown = null;
+    this.timerMax        = 25;
+    this.currentEvent    = null; // 'storm' | 'fog' | 'golden' | null
   }
 
   getMemberCounts() {
@@ -192,24 +200,38 @@ class GameRoom {
     this.roundAnswers = [];
     this.startTime    = Date.now();
 
+    // ── Global Event (every 4th question: Q4, Q8, Q12…) ──
+    if ((this.currentQ + 1) % 4 === 0) {
+      const events = ['storm', 'fog', 'golden'];
+      this.currentEvent = events[Math.floor(Math.random() * events.length)];
+    } else {
+      this.currentEvent = null;
+    }
+    this.timerMax = this.currentEvent === 'storm' ? 10
+                  : (this.currentEvent === 'fog' || this.currentEvent === 'golden') ? 60
+                  : 25;
+
     const q = this.questions[this.currentQ];
     io.to(this.roomCode).emit('question:shown', {
       number:    this.currentQ + 1,
       total:     this.questions.length,
       text:      q.text,
       options:   q.options,
-      timeLimit: 25,
+      timeLimit: this.timerMax,
+      event:     this.currentEvent,
     });
 
-    // Notify specific groups of their time penalty
+    // Notify bricked groups
     for (const [name, data] of Object.entries(this.groups)) {
-      if (data.timePenalty > 0) {
-        io.to(this.roomCode + '_' + name).emit('game:penalty', { seconds: data.timePenalty });
+      if (data.bricked && data.members.size > 0) {
+        io.to(this.roomCode + '_' + name).emit('question:bricked', {
+          displayTime: Math.max(0, this.timerMax - 5),
+        });
       }
     }
 
     this.timer = new Timer(
-      25,
+      this.timerMax,
       (remaining) => {
         io.to(this.roomCode).emit('timer:tick', { remaining });
       },
@@ -243,16 +265,6 @@ class GameRoom {
 
     // No duplicate
     if (this.roundAnswers.find(a => a.groupName === groupName)) return;
-
-    // Time penalty check
-    const data = this.groups[groupName];
-    if (data.timePenalty > 0) {
-      const elapsed = (Date.now() - this.startTime) / 1000;
-      if (elapsed > (25 - data.timePenalty)) {
-        io.to(socketId).emit('answer:error', { message: 'Hết thời gian (Bị trừ 5s do trúng Đá)!' });
-        return;
-      }
-    }
 
     this.roundAnswers.push({ groupName, answer, serverTime: Date.now() });
 
@@ -290,15 +302,18 @@ class GameRoom {
 
       if (frozenGroups.includes(a.groupName)) {
         pts = 0;
-      } else if (idx === 0 || idx === 1) {
-        // Time-based: max 25 pts minus elapsed seconds
-        const elapsed = (a.serverTime - this.startTime) / 1000;
-        pts = Math.max(0, parseFloat((25 - elapsed).toFixed(2)));
-        item = this.giveRandomItem(a.groupName);
-        group.steps = parseFloat((group.steps + pts).toFixed(2));
       } else {
+        const effectiveMax = group.bricked ? Math.max(0, this.timerMax - 5) : this.timerMax;
         const elapsed = (a.serverTime - this.startTime) / 1000;
-        pts = Math.max(0, parseFloat((Math.min(10, 25 - elapsed)).toFixed(2)));
+        let rawPts;
+        if (idx === 0 || idx === 1) {
+          rawPts = Math.max(0, parseFloat((effectiveMax - elapsed).toFixed(2)));
+          item = this.giveRandomItem(a.groupName);
+        } else {
+          rawPts = Math.max(0, parseFloat((Math.min(10, effectiveMax - elapsed)).toFixed(2)));
+        }
+        if (this.currentEvent === 'golden') rawPts = parseFloat((rawPts * 2).toFixed(2));
+        pts = rawPts;
         group.steps = parseFloat((group.steps + pts).toFixed(2));
       }
 
@@ -333,11 +348,12 @@ class GameRoom {
       }
     }
 
-    // Unfreeze and clear penalties
+    // Unfreeze, clear bricked, reset event
     for (const [, data] of Object.entries(this.groups)) {
       data.frozen = false;
-      data.timePenalty = 0;
+      data.bricked = false;
     }
+    this.currentEvent = null;
 
     io.to(this.roomCode).emit('answer:revealed', {
       correctAnswer: correct,
@@ -415,7 +431,7 @@ class GameRoom {
     let effect = '';
     if (item.id === 'ice') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:ice');
-      effect = `Nút bấm của ${targetGroup} bị đóng băng!`;
+      effect = `Nút bấm của ${targetGroup} bị đóng băng! (Phải bấm 5 lần)`;
     } else if (item.id === 'blooper') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:blooper');
       effect = `${targetGroup} bị che mắt 4 giây!`;
@@ -423,8 +439,8 @@ class GameRoom {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:banana');
       effect = `Đáp án của ${targetGroup} bị xáo trộn!`;
     } else if (item.id === 'brick') {
-      target.timePenalty = 5;
-      effect = `${targetGroup} sẽ bị trừ 5 giây ở câu hỏi tiếp theo!`;
+      if (!target.bricked) target.bricked = true;
+      effect = `${targetGroup} bị Gạch! Câu tiếp điểm tối đa giảm 5, đồng hồ chỉ còn ${Math.max(0, this.timerMax - 5)}s!`;
     } else if (item.id === 'mirror') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:mirror');
       effect = `Màn hình của ${targetGroup} bị lộn ngược!`;
@@ -651,10 +667,10 @@ io.on('connection', (socket) => {
         targetGroup, effect: `[DEV] Đáp án ${targetGroup} bị xáo trộn!`, shake: targetGroup,
       });
     } else if (itemId === 'brick') {
-      target.timePenalty = 5;
+      if (!target.bricked) target.bricked = true;
       io.to(currentRoom.roomCode).emit('item:used', {
         byGroup: label, itemEmoji: item.emoji, itemName: item.name,
-        targetGroup, effect: `[DEV] ${targetGroup} bị trừ 5s câu tiếp!`, shake: targetGroup,
+        targetGroup, effect: `[DEV] ${targetGroup} bị Gạch câu tiếp!`, shake: targetGroup,
       });
     } else if (itemId === 'ice') {
       io.to(currentRoom.roomCode + '_' + targetGroup).emit('effect:ice');
@@ -670,6 +686,30 @@ io.on('connection', (socket) => {
       });
     }
     socket.emit('dev:log', { msg: `✅ [DEV] ${item.emoji} ${item.name} → ${targetGroup}` });
+  });
+
+  socket.on('dev:trigger-event', ({ event }) => {
+    if (!currentRoom) { socket.emit('dev:log', { msg: '⚠️ No active room' }); return; }
+    if (currentRoom.state !== STATES.QUESTION && currentRoom.state !== STATES.PAUSED) {
+      socket.emit('dev:log', { msg: '⚠️ Not in QUESTION state' }); return;
+    }
+    const safeEvent = ['storm', 'fog', 'golden', 'clear'].includes(event) ? event : 'clear';
+    currentRoom.currentEvent = safeEvent === 'clear' ? null : safeEvent;
+    const newMax = safeEvent === 'storm' ? 10 : (safeEvent === 'fog' || safeEvent === 'golden') ? 60 : 25;
+    currentRoom.timerMax = newMax;
+
+    // Rebuild timer with new duration
+    if (currentRoom.timer) currentRoom.timer.stop();
+    currentRoom.timer = new Timer(
+      newMax,
+      (remaining) => { io.to(currentRoom.roomCode).emit('timer:tick', { remaining }); },
+      () => currentRoom.revealAnswer()
+    );
+    if (currentRoom.state === STATES.QUESTION) currentRoom.timer.start();
+
+    io.to(currentRoom.roomCode).emit('global:event', { event: currentRoom.currentEvent });
+    io.to(currentRoom.roomCode).emit('timer:sync', { remaining: newMax, max: newMax });
+    socket.emit('dev:log', { msg: `✅ Event triggered: ${safeEvent}` });
   });
 
   // ── DISCONNECT ────────────────────────────────────────────

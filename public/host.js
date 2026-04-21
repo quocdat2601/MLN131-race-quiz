@@ -4,10 +4,11 @@ const socket = io();
 let roomCode       = '';
 let gameState      = 'LOBBY';
 let totalSteps     = {};
-let timerMax       = 20;
-let timerRemaining = 20;
+let timerMax       = 25;
+let timerRemaining = 25;
 let isPaused       = false;
 let frozenGroups   = new Set();
+let currentWeatherEvent = null;
 
 const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
 const DUCK_EMOJIS = {
@@ -50,9 +51,12 @@ function $(id) { return document.getElementById(id); }
 // ── Build race track ─────────────────────────────────────────
 function buildTrack(activeGroups) {
   const groupList = activeGroups || GROUPS;
-  // Keep start-line
+  // Preserve these elements before wiping innerHTML
   const startLine = raceTrack.querySelector('.start-line');
+  const weatherLayer = document.getElementById('weather-layer');
   raceTrack.innerHTML = '';
+  // Weather-layer must be first child (sibling selector ~ .duck depends on it)
+  if (weatherLayer) raceTrack.appendChild(weatherLayer);
   raceTrack.appendChild(startLine);
 
   // Add bubbles container
@@ -92,7 +96,7 @@ function buildTrack(activeGroups) {
     duckData.id = `duck-${group.replace(' ','')}`;
     duckData.style.left = '5%';
     duckData.style.top = verticalOffset + '%';
-    duckData.style.zIndex = 10 + index;
+    duckData.style.zIndex = 5;
 
     const charImg = CHARACTER_IMAGES[group] || 'assets/duck.png';
 
@@ -132,6 +136,7 @@ function updateDucks(positions) {
 
     if (duckEl) {
       duckEl.style.left = duckLeft(steps);
+      duckEl.style.zIndex = 5;
       duckEl.classList.toggle('frozen', frozenGroups.has(group));
       duckEl.classList.remove('leader');
     }
@@ -140,10 +145,44 @@ function updateDucks(positions) {
 
   if (leaderSteps > 0) {
     const leaderDuck = document.getElementById(`duck-${leaderGroup.replace(' ','')}`);
-    if (leaderDuck) leaderDuck.classList.add('leader');
+    if (leaderDuck) { leaderDuck.classList.add('leader'); leaderDuck.style.zIndex = 10; }
+  }
+}
+// ── Weather layer ──────────────────────────────────────────────
+function applyWeatherEffect(event) {
+  const layer = $('weather-layer');
+  if (!layer) return;
+  layer.className = 'weather-layer';
+  // Remove golden glow from all ducks
+  document.querySelectorAll('.duck').forEach(d => d.classList.remove('duck-golden'));
+  if (!event) { layer.style.display = 'none'; return; }
+  layer.style.display = '';
+  layer.classList.add(event);
+  // Apply golden glow to ducks during golden event
+  if (event === 'golden') {
+    document.querySelectorAll('.duck').forEach(d => d.classList.add('duck-golden'));
   }
 }
 
+const EVENT_BANNER_DATA = {
+  storm:  { icon: '🌊', title: 'Bão Tố',       desc: 'Thời gian bị rút ngắn chỉ còn 10 giây!',   cls: 'banner-storm'  },
+  fog:    { icon: '🌫️', title: 'Sương Mù',      desc: 'Đường đua bị che khuất trong 60 giây!',     cls: 'banner-fog'    },
+  golden: { icon: '✨', title: 'Thời Cơ Vàng',  desc: 'Điểm thưởng nhân đôi (X2) trong 60 giây!', cls: 'banner-golden' },
+};
+
+function showEventBanner(event) {
+  const banner = $('global-event-banner');
+  if (!banner) return;
+  if (!event || !EVENT_BANNER_DATA[event]) {
+    banner.classList.add('hidden');
+    return;
+  }
+  const d = EVENT_BANNER_DATA[event];
+  $('ge-icon').textContent  = d.icon;
+  $('ge-title').textContent = d.title;
+  $('ge-desc').textContent  = d.desc;
+  banner.className = 'event-banner ' + d.cls; // removes 'hidden'
+}
 // ── Screen switch ─────────────────────────────────────────────
 function showScreen(name) {
   Object.values(screens).forEach(s => s.classList.remove('active'));
@@ -346,7 +385,7 @@ socket.on('game:started', ({ activeGroups } = {}) => {
   btnNextQ.style.display = 'none';
 });
 
-socket.on('question:shown', ({ number, total, text, options }) => {
+socket.on('question:shown', ({ number, total, text, options, timeLimit, event }) => {
   qCounter.textContent = `Câu ${number}/${total}`;
   qNumberBadge.textContent = `Câu ${number}`;
   qText.textContent = text;
@@ -355,17 +394,27 @@ socket.on('question:shown', ({ number, total, text, options }) => {
     const card = document.getElementById(`opt-${l}`);
     card.classList.remove('correct','revealed');
   });
-  timerMax = 25;
-  setTimerUI(25, 25);
+  timerMax = timeLimit || 25;
+  setTimerUI(timerMax, timerMax);
   answerCountBadge.textContent = '0 nhóm đã trả lời';
   questionPanel.style.display = 'block';
   itemPhaseBanner.style.display = 'none';
   setControlState('QUESTION');
+  // Apply weather effect for this question
+  currentWeatherEvent = event || null;
+  applyWeatherEffect(currentWeatherEvent);
+  showEventBanner(currentWeatherEvent);
 });
 
 socket.on('timer:tick', ({ remaining }) => {
   timerRemaining = remaining;
   setTimerUI(remaining, timerMax);
+});
+
+socket.on('timer:sync', ({ remaining, max }) => {
+  timerMax = max;
+  timerRemaining = remaining;
+  setTimerUI(remaining, max);
 });
 
 socket.on('timer:paused', ({ remaining }) => {
@@ -386,6 +435,7 @@ socket.on('answer:revealed', ({ correctAnswer, explanation, movements }) => {
   setControlState('REVEAL');
   btnReveal.style.display = 'none';
   btnPauseResume.style.display = 'none';
+  showEventBanner(null);
 
   ['A','B','C','D'].forEach(l => {
     const card = document.getElementById(`opt-${l}`);
@@ -411,8 +461,18 @@ socket.on('ducks:updated', ({ positions }) => {
   updateDucks(positions);
 });
 
+socket.on('global:event', ({ event }) => {
+  currentWeatherEvent = event || null;
+  applyWeatherEffect(currentWeatherEvent);
+  showEventBanner(currentWeatherEvent);
+  const labels = { storm: '🌊 Bão Tố!', fog: '🌫️ Sương Mù!', golden: '✨ Thời Cơ Vàng! x2 điểm!' };
+  if (event && labels[event]) toast(labels[event]);
+});
+
 socket.on('round:between', ({ autoAdvanceIn, isLast } = {}) => {
   itemPhaseBanner.style.display = 'none';
+  applyWeatherEffect(null);
+  showEventBanner(null);
   if (isLast) {
     btnNextQ.style.display = 'none';
     setControlState('BETWEEN_ROUNDS');
@@ -445,32 +505,33 @@ socket.on('item:used', ({ byGroup, itemEmoji, itemName, targetGroup, effect, sha
   if (targetGroup && byGroup !== targetGroup) {
     animateProjectile(byGroup, targetGroup, itemEmoji);
   } else {
-  // Duck visual impact
-  if (targetGroup) {
-    const duckEl = document.getElementById('duck-' + targetGroup.replace(' ',''));
-    if (duckEl) {
-      if (itemName === 'Băng Giá') {
-        duckEl.classList.add('state-frozen');
-        setTimeout(() => duckEl.classList.remove('state-frozen'), 5000);
-      } else if (itemName === 'Gương Thần') {
-        duckEl.classList.add('state-mirrored');
-        setTimeout(() => duckEl.classList.remove('state-mirrored'), 7000);
-      } else if (itemName === 'Mực Che Mắt') {
-        duckEl.classList.add('state-bloopered');
-        setTimeout(() => duckEl.classList.remove('state-bloopered'), 4000);
-      } else {
-        duckEl.classList.add('shake');
-        setTimeout(() => duckEl.classList.remove('shake'), 600);
+    // Duck visual impact
+    if (targetGroup) {
+      const duckEl = document.getElementById('duck-' + targetGroup.replace(' ',''));
+      if (duckEl) {
+        if (itemName === 'Băng Giá') {
+          duckEl.classList.add('state-frozen');
+          setTimeout(() => duckEl.classList.remove('state-frozen'), 5000);
+        } else if (itemName === 'Gương Thần') {
+          duckEl.classList.add('state-mirrored');
+          setTimeout(() => duckEl.classList.remove('state-mirrored'), 7000);
+        } else if (itemName === 'Mực Che Mắt') {
+          duckEl.classList.add('state-bloopered');
+          setTimeout(() => duckEl.classList.remove('state-bloopered'), 4000);
+        } else {
+          duckEl.classList.add('shake');
+          setTimeout(() => duckEl.classList.remove('shake'), 600);
+        }
       }
     }
-  }
 
-  // Shield aura
-  if (itemName === 'Khiên') {
-    const duckEl = document.getElementById('duck-' + byGroup.replace(' ',''));
-    if (duckEl) {
-      duckEl.classList.add('shielded');
-      setTimeout(() => duckEl.classList.remove('shielded'), 5000);
+    // Shield aura
+    if (itemName === 'Khiên') {
+      const duckEl = document.getElementById('duck-' + byGroup.replace(' ',''));
+      if (duckEl) {
+        duckEl.classList.add('shielded');
+        setTimeout(() => duckEl.classList.remove('shielded'), 5000);
+      }
     }
   }
 });
@@ -616,6 +677,16 @@ btnRestart.addEventListener('click', () => {
       fromGroup:   $('dev-from-group').value,
       itemId:      $('dev-effect-item').value,
       targetGroup: $('dev-to-group').value,
+    });
+  });
+
+  // Global event buttons
+  ['storm', 'fog', 'golden', 'clear-event'].forEach(id => {
+    const btn = $('dev-btn-' + id);
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const event = id === 'clear-event' ? 'clear' : id;
+      socket.emit('dev:trigger-event', { event });
     });
   });
 })();

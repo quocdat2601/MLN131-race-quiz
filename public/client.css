@@ -508,6 +508,37 @@ input:focus { border-color: #3a7eff; }
 .opt-btn { min-height: 70px; }
 .opt-btn:active:not(:disabled) { transform: scale(0.97); }
 
+/* ── GLOBAL EVENT BANNER ─────────────────────────────────── */
+.global-event-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: .6rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
+  z-index: 9000;
+  animation: bannerSlide .4s ease-out;
+  letter-spacing: .5px;
+}
+@keyframes bannerSlide {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+.global-event-banner.event-storm {
+  background: linear-gradient(90deg, #1a4a7a, #2d7dd2, #1a4a7a);
+  color: #cef;
+  text-shadow: 0 0 8px #7ef;
+}
+.global-event-banner.event-fog {
+  background: linear-gradient(90deg, #555, #888, #555);
+  color: #eee;
+}
+.global-event-banner.event-golden {
+  background: linear-gradient(90deg, #7c5000, #f0b000, #7c5000);
+  color: #fff9d6;
+  text-shadow: 0 0 8px #ffcc00;
+}
+
 /* ── MIRROR EFFECT ────────────────────────────────────────── */
 .mirror-active {
   transform: rotate(180deg) scaleX(-1);
