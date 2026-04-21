@@ -17,8 +17,9 @@ const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7'
 const ITEMS = [
   { id: 'blooper', emoji: '🦑', name: 'Mực Che Mắt', type: 'offensive' },
   { id: 'banana',  emoji: '🍌', name: 'Vỏ Chuối',    type: 'offensive' },
-  { id: 'magnet',  emoji: '🧲', name: 'Nam Châm',     type: 'auto'      },
-  { id: 'brick',   emoji: '🧱', name: 'Gạch',         type: 'offensive' },
+  { id: 'ice',     emoji: '🧊', name: 'Băng Giá',     type: 'offensive' },
+  { id: 'brick',   emoji: '🪨', name: 'Đá',         type: 'offensive' },
+  { id: 'mirror',  emoji: '🪞', name: 'Gương Thần',   type: 'offensive' },
   { id: 'shield',  emoji: '🛡️', name: 'Khiên',        type: 'self'      },
 ];
 const MILESTONES = [50, 100, 150, 200, 250];
@@ -81,7 +82,7 @@ class GameRoom {
     // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, lastMilestone }
     this.groups = {};
     GROUPS.forEach(g => {
-      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, lastMilestone: 0 };
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, lastMilestone: 0, timePenalty: 0 };
     });
 
     this.questions      = [...QUESTIONS].slice(0, 25);
@@ -200,6 +201,13 @@ class GameRoom {
       timeLimit: 25,
     });
 
+    // Notify specific groups of their time penalty
+    for (const [name, data] of Object.entries(this.groups)) {
+      if (data.timePenalty > 0) {
+        io.to(this.roomCode + '_' + name).emit('game:penalty', { seconds: data.timePenalty });
+      }
+    }
+
     this.timer = new Timer(
       25,
       (remaining) => {
@@ -235,6 +243,16 @@ class GameRoom {
 
     // No duplicate
     if (this.roundAnswers.find(a => a.groupName === groupName)) return;
+
+    // Time penalty check
+    const data = this.groups[groupName];
+    if (data.timePenalty > 0) {
+      const elapsed = (Date.now() - this.startTime) / 1000;
+      if (elapsed > (25 - data.timePenalty)) {
+        io.to(socketId).emit('answer:error', { message: 'Hết thời gian (Bị trừ 5s do trúng Đá)!' });
+        return;
+      }
+    }
 
     this.roundAnswers.push({ groupName, answer, serverTime: Date.now() });
 
@@ -315,9 +333,10 @@ class GameRoom {
       }
     }
 
-    // Unfreeze
+    // Unfreeze and clear penalties
     for (const [, data] of Object.entries(this.groups)) {
       data.frozen = false;
+      data.timePenalty = 0;
     }
 
     io.to(this.roomCode).emit('answer:revealed', {
@@ -380,27 +399,6 @@ class GameRoom {
       return { ok: true };
     }
 
-    if (item.id === 'magnet') {
-      // Find group ranked just above this one
-      const rankings = this.getRankings();
-      const myRank = rankings.findIndex(r => r.group === groupName);
-      const aboveIdx = myRank > 0 ? myRank - 1 : null;
-      const autoTarget = aboveIdx !== null ? rankings[aboveIdx].group : null;
-      if (autoTarget) {
-        const target = this.groups[autoTarget];
-        const steal = Math.min(5, target.steps);
-        target.steps = parseFloat((target.steps - steal).toFixed(2));
-        groupData.steps = parseFloat((groupData.steps + steal).toFixed(2));
-        io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
-        io.to(this.roomCode).emit('item:used', {
-          byGroup: groupName, itemEmoji: item.emoji, itemName: item.name,
-          targetGroup: autoTarget, effect: `${groupName} hút ${steal.toFixed(2)} điểm từ ${autoTarget}!`, shake: autoTarget,
-        });
-      }
-      return { ok: true };
-    }
-
-    // Offensive: blooper, banana, brick
     const target = this.groups[targetGroup];
     if (!target) return { error: 'Invalid target' };
 
@@ -415,17 +413,21 @@ class GameRoom {
     }
 
     let effect = '';
-    if (item.id === 'blooper') {
+    if (item.id === 'ice') {
+      io.to(this.roomCode + '_' + targetGroup).emit('effect:ice');
+      effect = `Nút bấm của ${targetGroup} bị đóng băng!`;
+    } else if (item.id === 'blooper') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:blooper');
       effect = `${targetGroup} bị che mắt 4 giây!`;
     } else if (item.id === 'banana') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:banana');
       effect = `Đáp án của ${targetGroup} bị xáo trộn!`;
     } else if (item.id === 'brick') {
-      const loss = Math.min(5, target.steps);
-      target.steps = parseFloat((target.steps - loss).toFixed(2));
-      io.to(this.roomCode).emit('ducks:updated', { positions: this.getPositions() });
-      effect = `${targetGroup} mất ${loss.toFixed(2)} điểm!`;
+      target.timePenalty = 5;
+      effect = `${targetGroup} sẽ bị trừ 5 giây ở câu hỏi tiếp theo!`;
+    } else if (item.id === 'mirror') {
+      io.to(this.roomCode + '_' + targetGroup).emit('effect:mirror');
+      effect = `Màn hình của ${targetGroup} bị lộn ngược!`;
     }
 
     io.to(this.roomCode).emit('item:used', {
@@ -649,12 +651,22 @@ io.on('connection', (socket) => {
         targetGroup, effect: `[DEV] Đáp án ${targetGroup} bị xáo trộn!`, shake: targetGroup,
       });
     } else if (itemId === 'brick') {
-      const loss = Math.min(5, target.steps);
-      target.steps = parseFloat((target.steps - loss).toFixed(2));
-      io.to(currentRoom.roomCode).emit('ducks:updated', { positions: currentRoom.getPositions() });
+      target.timePenalty = 5;
       io.to(currentRoom.roomCode).emit('item:used', {
         byGroup: label, itemEmoji: item.emoji, itemName: item.name,
-        targetGroup, effect: `[DEV] ${targetGroup} mất ${loss.toFixed(2)} điểm!`, shake: targetGroup,
+        targetGroup, effect: `[DEV] ${targetGroup} bị trừ 5s câu tiếp!`, shake: targetGroup,
+      });
+    } else if (itemId === 'ice') {
+      io.to(currentRoom.roomCode + '_' + targetGroup).emit('effect:ice');
+      io.to(currentRoom.roomCode).emit('item:used', {
+        byGroup: label, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `[DEV] ${targetGroup} bị đóng băng nút!`, shake: targetGroup,
+      });
+    } else if (itemId === 'mirror') {
+      io.to(currentRoom.roomCode + '_' + targetGroup).emit('effect:mirror');
+      io.to(currentRoom.roomCode).emit('item:used', {
+        byGroup: label, itemEmoji: item.emoji, itemName: item.name,
+        targetGroup, effect: `[DEV] ${targetGroup} bị lật màn hình!`, shake: targetGroup,
       });
     }
     socket.emit('dev:log', { msg: `✅ [DEV] ${item.emoji} ${item.name} → ${targetGroup}` });

@@ -620,8 +620,46 @@ body {
 .duck.shake { animation: duckShake 0.5s ease; }
 
 /* Shield aura */
+.duck-wrapper {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+.shield-aura {
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  background: url('assets/shield.png') center/contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  animation: none;
+}
+.duck.shielded .shield-aura {
+  opacity: 0.8;
+  animation: shieldRotate 4s linear infinite, shieldPulse 2s ease-in-out infinite;
+}
 .duck.shielded img {
-  filter: drop-shadow(0 0 10px #7ef) drop-shadow(0 0 22px #3af);
+  filter: drop-shadow(0 0 10px #7ef);
+}
+
+/* Impact Effects */
+.duck.state-frozen img {
+  filter: drop-shadow(0 0 15px #7ef) sepia(1) hue-rotate(180deg) saturate(2);
+}
+.duck.state-mirrored img {
+  transform: rotate(180deg);
+}
+.duck.state-bloopered img {
+  filter: brightness(0.2) drop-shadow(0 0 5px #000);
+}
+
+@keyframes shieldRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes shieldPulse {
+  0%, 100% { transform: scale(1.1); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 0.9; }
 }
 
 /* ── PROJECTILE ANIMATION ─────────────────────────────────── */
@@ -632,6 +670,14 @@ body {
   font-size: 2.8rem;
   filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5));
   will-change: transform, left, top;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.projectile img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
 .explosion {
