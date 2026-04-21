@@ -103,10 +103,10 @@ class GameRoom {
     this.state        = STATES.LOBBY;
     this.hostSocketId = null;
 
-    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, bricked, lastMilestone }
+    // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, bricked, lastMilestone, consecutiveCorrect, itemUsedThisRound }
     this.groups = {};
     GROUPS.forEach(g => {
-      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, lastMilestone: 0 };
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, lastMilestone: 0, consecutiveCorrect: 0, itemUsedThisRound: false };
     });
 
     this.questions       = [...QUESTIONS].slice(0, 25);
@@ -240,8 +240,9 @@ class GameRoom {
       eventRemaining,
     });
 
-    // Notify bricked groups
+    // Notify bricked groups + reset item-use flag for new round
     for (const [name, data] of Object.entries(this.groups)) {
+      data.itemUsedThisRound = false;
       if (data.bricked && data.members.size > 0) {
         io.to(this.roomCode + '_' + name).emit('question:bricked', {
           displayTime: Math.max(0, this.timerMax - 5),
@@ -421,6 +422,9 @@ class GameRoom {
     if (!entry) return { error: 'Not a player' };
     const [groupName, groupData] = entry;
 
+    // Mỗi lượt chỉ dùng 1 item (bất kể thành viên nào trong nhóm dùng)
+    if (groupData.itemUsedThisRound) return { error: 'Item đã được dùng trong lượt này' };
+
     const itemIdx = groupData.inventory.findIndex(i => i.id === itemId);
     if (itemIdx === -1) return { error: 'Item not in inventory' };
 
@@ -434,6 +438,7 @@ class GameRoom {
 
     // Remove from inventory
     groupData.inventory.splice(itemIdx, 1);
+    groupData.itemUsedThisRound = true;
     io.to(this.roomCode + '_' + groupName).emit('inventory:update', { items: groupData.inventory });
 
     if (item.id === 'shield') {

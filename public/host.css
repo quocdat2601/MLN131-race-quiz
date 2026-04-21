@@ -545,12 +545,13 @@ body {
 
 .duck {
   position: absolute;
-  height: clamp(40px, 8vh, 85px);
+  height: clamp(38px, 6.5vh, 70px);
   width: auto;
   transition: left 1.2s cubic-bezier(.34, 1.4, .64, 1);
   z-index: 5;
   top: 50%;
-  transform: translateY(-50%);
+  /* center-anchor: duck's center aligns with its score position */
+  transform: translateX(-50%) translateY(-50%);
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
   white-space: nowrap;
   animation: duckFloat 3s ease-in-out infinite;
@@ -560,11 +561,11 @@ body {
 
   0%,
   100% {
-    transform: translateY(-55%) rotate(-2deg);
+    transform: translateX(-50%) translateY(-55%) rotate(-2deg);
   }
 
   50% {
-    transform: translateY(-45%) rotate(2deg);
+    transform: translateX(-50%) translateY(-45%) rotate(2deg);
   }
 }
 
@@ -702,9 +703,9 @@ body {
 
 /* Duck shake animation */
 @keyframes duckShake {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  25%       { transform: translateX(-8px) rotate(-5deg); }
-  75%       { transform: translateX(8px) rotate(5deg); }
+  0%, 100% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+  25%       { transform: translateX(calc(-50% - 8px)) translateY(-50%) rotate(-5deg); }
+  75%       { transform: translateX(calc(-50% + 8px)) translateY(-50%) rotate(5deg); }
 }
 .duck.shake { animation: duckShake 0.5s ease; }
 
@@ -756,10 +757,10 @@ body {
   animation: stormShake 0.25s ease-in-out infinite alternate !important;
 }
 @keyframes stormShake {
-  0%   { transform: translateY(-54%) translateX(-4px) rotate(-3deg); }
-  33%  { transform: translateY(-50%) translateX(4px)  rotate(2deg);  }
-  66%  { transform: translateY(-46%) translateX(-3px) rotate(-2deg); }
-  100% { transform: translateY(-50%) translateX(3px)  rotate(3deg);  }
+  0%   { transform: translateX(calc(-50% - 4px)) translateY(-54%) rotate(-3deg); }
+  33%  { transform: translateX(calc(-50% + 4px)) translateY(-50%) rotate(2deg);  }
+  66%  { transform: translateX(calc(-50% - 3px)) translateY(-46%) rotate(-2deg); }
+  100% { transform: translateX(calc(-50% + 3px)) translateY(-50%) rotate(3deg);  }
 }
 
 /* ── Fog: white-gray misty cover ── */
@@ -917,8 +918,8 @@ body {
 }
 .milestone-box {
   position: absolute;
-  width: 38px;
-  height: 38px;
+  width: 30px;
+  height: 30px;
   transform: translate(-50%, -50%);
   z-index: 6; /* above duck background, below weather layer */
   pointer-events: none;
