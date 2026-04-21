@@ -723,6 +723,7 @@ body {
 /* ── Storm: heavy rain + lightning ── */
 .weather-layer.storm {
   background-image:
+    url('assets/rain.gif'),
     repeating-linear-gradient(
       170deg,
       transparent 0px,
@@ -737,6 +738,9 @@ body {
       rgba(100, 170, 255, 0.25) 11px,
       rgba(100, 170, 255, 0.25) 13px
     );
+  background-size: cover, auto, auto;
+  background-repeat: no-repeat, repeat, repeat;
+  mix-blend-mode: screen;
   animation: rainDrop 0.2s linear infinite, lightningFlash 4s ease-in-out infinite;
 }
 @keyframes rainDrop {
