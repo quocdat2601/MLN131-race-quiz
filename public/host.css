@@ -722,37 +722,54 @@ body {
 
 /* ── Storm: heavy rain + lightning ── */
 .weather-layer.storm {
-  background-image:
-    url('assets/rain.gif'),
-    repeating-linear-gradient(
-      170deg,
-      transparent 0px,
-      transparent 5px,
-      rgba(130, 200, 255, 0.45) 5px,
-      rgba(130, 200, 255, 0.45) 6px
-    ),
-    repeating-linear-gradient(
-      170deg,
-      transparent 0px,
-      transparent 11px,
-      rgba(100, 170, 255, 0.25) 11px,
-      rgba(100, 170, 255, 0.25) 13px
-    );
-  background-size: cover, auto, auto;
-  background-repeat: no-repeat, repeat, repeat;
+  background-image: 
+    url('assets/rain1.gif'),
+    repeating-linear-gradient(170deg, transparent 0, transparent 5px, rgba(200, 230, 255, 0.45) 5px, rgba(200, 230, 255, 0.45) 6px);
+  background-size: cover;
+  background-repeat: no-repeat;
   mix-blend-mode: screen;
-  animation: rainDrop 0.2s linear infinite, lightningFlash 4s ease-in-out infinite;
+  animation: lightningFlash 4s ease-in-out infinite;
 }
-@keyframes rainDrop {
-  0%   { background-position: 0 0, 0 0; }
-  100% { background-position: -30px 60px, -20px 40px; }
-}
+
 @keyframes lightningFlash {
-  0%,   89%  { background-color: transparent; }
-  90%        { background-color: rgba(255, 255, 255, 0.55); }
-  91%        { background-color: transparent; }
-  93%        { background-color: rgba(255, 255, 255, 0.35); }
-  94%, 100%  { background-color: transparent; }
+  0%, 89%, 92%, 94%, 100% { background-color: transparent; }
+  90%, 93% { background-color: rgba(255, 255, 255, 0.7); filter: brightness(1.5); }
+}
+
+/* Lightning strike effect */
+.weather-layer.storm::before,
+.weather-layer.storm::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 0 0 20px 5px #fff, 0 0 40px 10px #7ef;
+  opacity: 0;
+  z-index: 60;
+}
+
+.weather-layer.storm::before {
+  left: 30%;
+  transform: skewX(-20deg);
+  animation: lightningStrike1 4s infinite;
+}
+
+.weather-layer.storm::after {
+  left: 70%;
+  transform: skewX(15deg);
+  animation: lightningStrike2 4s infinite 0.2s;
+}
+
+@keyframes lightningStrike1 {
+  0%, 89%, 91%, 100% { opacity: 0; }
+  90% { opacity: 1; }
+}
+
+@keyframes lightningStrike2 {
+  0%, 92%, 94%, 100% { opacity: 0; }
+  93% { opacity: 1; }
 }
 
 /* Storm shakes ducks (weather-layer is inside race-track as first child) */
