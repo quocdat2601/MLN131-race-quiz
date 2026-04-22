@@ -201,6 +201,13 @@ input:focus { border-color: #3a7eff; }
   background: rgba(255,255,255,.12);
   border-radius: 5px;
   overflow: hidden;
+  transition: box-shadow .3s;
+}
+#client-timer-wrap.bricked {
+  box-shadow: 0 0 0 2px #e74c3c, 0 0 8px #e74c3c;
+}
+#client-timer-wrap.bricked #client-timer-bar {
+  background: #e74c3c !important;
 }
 #client-timer-bar {
   height: 100%;
@@ -296,6 +303,23 @@ input:focus { border-color: #3a7eff; }
   justify-content: center;
   font-size: 4rem;
   color: white;
+}
+
+/* ── PLAYER BADGE (inline in question-top bar) ────────────── */
+.player-badge {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: .2rem .6rem;
+  font-size: .82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.badge-score {
+  color: #ffe066;
+  font-weight: 800;
 }
 
 /* ── FLOATING INVENTORY BUTTON ────────────────────────────── */

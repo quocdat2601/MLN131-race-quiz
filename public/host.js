@@ -114,8 +114,7 @@ function buildTrack(activeGroups) {
         <img src="${charImg}" alt="${group}">
         <div class="shield-aura"></div>
       </div>
-      <div class="duck-name-tag">${group}</div>
-      <span class="duck-steps" id="steps-${group.replace(' ','')}">0</span>
+      <div class="duck-name-tag">${group} <span class="duck-steps-inline" id="steps-${group.replace(' ','')}">0</span></div>
     `;
     raceTrack.appendChild(duckData);
 
@@ -547,7 +546,7 @@ socket.on('answer:revealed', ({ correctAnswer, explanation, movements }) => {
   });
 
   if (explanation) {
-    setTimeout(() => toast(`📖 ${explanation}`), 600);
+    // explanation removed
   }
 });
 

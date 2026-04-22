@@ -80,6 +80,15 @@ class Timer {
   pause()  { this.paused = true;  }
   resume() { this.paused = false; }
 
+  reduceBy(seconds) {
+    this.remaining = Math.max(0, this.remaining - seconds);
+    this.onTick(this.remaining);
+    if (this.remaining <= 0) {
+      this.stop();
+      this.onComplete();
+    }
+  }
+
   setDuration(newDuration) {
     this.stop();
     this.duration  = newDuration;
@@ -106,7 +115,7 @@ class GameRoom {
     // groupName → { members: Set<socketId>, steps, inventory, frozen, shielded, bricked, lastMilestone, consecutiveCorrect, itemUsedThisRound }
     this.groups = {};
     GROUPS.forEach(g => {
-      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, lastMilestone: 0, consecutiveCorrect: 0, itemUsedThisRound: false };
+      this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, brickedForNext: false, lastMilestone: 0, consecutiveCorrect: 0, itemUsedThisRound: false };
     });
 
     this.questions       = [...QUESTIONS].slice(0, 25);
@@ -228,21 +237,33 @@ class GameRoom {
     const eventRemaining = (this.currentEvent && this.eventStartTime)
                          ? Math.max(0, eventDuration - Math.floor((Date.now() - this.eventStartTime) / 1000))
                          : 0;
-    const q = this.questions[this.currentQ];
-    io.to(this.roomCode).emit('question:shown', {
-      number:    this.currentQ + 1,
-      total:     this.questions.length,
-      text:      q.text,
-      options:   q.options,
-      timeLimit: this.timerMax,
-      event:     this.currentEvent,
-      eventDuration,
-      eventRemaining,
-    });
 
-    // Notify bricked groups + reset item-use flag for new round
+    // Apply deferred brick BEFORE emitting question:shown so brickedGroups is accurate
+    const brickedGroups = [];
     for (const [name, data] of Object.entries(this.groups)) {
       data.itemUsedThisRound = false;
+      if (data.brickedForNext) {
+        data.bricked     = true;
+        data.brickedForNext = false;
+      }
+      if (data.bricked) brickedGroups.push(name);
+    }
+
+    const q = this.questions[this.currentQ];
+    io.to(this.roomCode).emit('question:shown', {
+      number:       this.currentQ + 1,
+      total:        this.questions.length,
+      text:         q.text,
+      options:      q.options,
+      timeLimit:    this.timerMax,
+      event:        this.currentEvent,
+      eventDuration,
+      eventRemaining,
+      brickedGroups,            // client uses this instead of separate question:bricked
+    });
+
+    // (legacy) also send question:bricked for any connected group members
+    for (const [name, data] of Object.entries(this.groups)) {
       if (data.bricked && data.members.size > 0) {
         io.to(this.roomCode + '_' + name).emit('question:bricked', {
           displayTime: Math.max(0, this.timerMax - 5),
@@ -293,6 +314,17 @@ class GameRoom {
 
     // Broadcast to all team members: lock + highlight chosen answer
     io.to(this.roomCode + '_' + groupName).emit('team:locked', { answer });
+
+    // Auto-reveal when every active group (with members) has answered
+    const activeGroupNames = Object.entries(this.groups)
+      .filter(([, d]) => d.members.size > 0)
+      .map(([name]) => name);
+    const answeredGroupNames = new Set(this.roundAnswers.map(a => a.groupName));
+    if (activeGroupNames.length > 0 &&
+        activeGroupNames.every(n => answeredGroupNames.has(n)) &&
+        this.state === STATES.QUESTION) {
+      this.revealAnswer();
+    }
   }
 
   revealAnswer() {
@@ -353,6 +385,7 @@ class GameRoom {
       io.to(this.roomCode + '_' + a.groupName).emit('answer:result', {
         correct:      true,
         stepsGained:  pts,
+        totalSteps:   group.steps,
         itemReceived: streakItem,
       });
       if (streakItem) {
@@ -367,13 +400,13 @@ class GameRoom {
       if (!answered || answered.answer !== correct) {
         data.consecutiveCorrect = 0;  // break streak
         movements.push({ groupName: name, correct: false, stepsGained: 0 });
-        io.to(this.roomCode + '_' + name).emit('answer:result', { correct: false, stepsGained: 0 });
+        io.to(this.roomCode + '_' + name).emit('answer:result', { correct: false, stepsGained: 0, totalSteps: data.steps });
       }
     }
 
-    // Unfreeze, clear bricked, reset event
+    // Unfreeze, clear bricked (but NOT brickedForNext — handled in startQuestion)
     for (const [, data] of Object.entries(this.groups)) {
-      data.frozen = false;
+      data.frozen  = false;
       data.bricked = false;
     }
     // Clear event: storm chỉ 1 câu, fog/golden hết sau 60s
@@ -476,8 +509,20 @@ class GameRoom {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:banana');
       effect = `Đáp án của ${targetGroup} bị xáo trộn!`;
     } else if (item.id === 'brick') {
-      if (!target.bricked) target.bricked = true;
-      effect = `${targetGroup} bị Gạch! Câu tiếp điểm tối đa giảm 5, đồng hồ chỉ còn ${Math.max(0, this.timerMax - 5)}s!`;
+      const remaining = this.timer ? this.timer.remaining : 0;
+      if (remaining > 15) {
+        // Áp dụng ngay cho câu này: chỉ target mới bị, không đụng timer chung
+        target.bricked = true;
+        io.to(this.roomCode + '_' + targetGroup).emit('effect:brick:immediate', {
+          currentRemaining: remaining,
+          timerMax: this.timerMax,
+        });
+        effect = `${targetGroup} bị Gạch! Hiệu lực ngay: đồng hồ hiển thị giảm 5s, điểm tối đa giảm 5!`;
+      } else {
+        // Í t thời gian — áp dụng câu sau
+        target.brickedForNext = true;
+        effect = `${targetGroup} bị Gạch! Câu tiếp điểm tối đa giảm 5, đồng hồ chỉ còn ${Math.max(0, this.timerMax - 5)}s!`;
+      }
     } else if (item.id === 'mirror') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:mirror');
       effect = `Màn hình của ${targetGroup} bị lộn ngược!`;

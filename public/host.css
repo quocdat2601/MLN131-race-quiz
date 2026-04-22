@@ -590,7 +590,24 @@ body {
   white-space: nowrap;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
+
+.duck-steps-inline {
+  background: #ffe066;
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+
+/* hide the old standalone steps badge */
+.duck-steps { display: none; }
 
 /* Speech bubble pointer */
 .duck-name-tag::after {

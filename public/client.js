@@ -2,6 +2,7 @@ const socket = io();
 
 // ── State ────────────────────────────────────────────────────
 let myGroup           = '';
+let myScore           = 0;        // running total score
 let selectedGroup     = '';      // chosen group before joining
 let mySubmittedAnswer = null;    // tracks which answer this client submitted
 let inventory         = [];      // Array of item objects
@@ -54,6 +55,20 @@ function showToast(message) {
   el.textContent = message;
   container.appendChild(el);
   setTimeout(() => el.remove(), 3500);
+}
+
+function updatePlayerBadge() {
+  const badge = $('player-badge');
+  const nameEl = $('badge-group-name');
+  const scoreEl = $('badge-score');
+  if (!badge || !nameEl || !scoreEl) return;
+  if (myGroup) {
+    nameEl.textContent = myGroup;
+    scoreEl.textContent = ` (${myScore.toFixed(1)}m)`;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 const screens = {
   join:       $('screen-join'),
@@ -175,9 +190,9 @@ function itemDescription(id) {
   const desc = {
     blooper: 'Màn hình bị phủ đen 4 giây',
     banana:  'Đáp án bị xáo trộn ngẫu nhiên',
-    brick:   'Gạch: Câu tiếp điểm tối đa giảm 5, chỉ còn 20s đồng hồ hiển thị',
-    ice:     'Băng Giá: Nạn nhân phải bấm 5 lần mới chọn được đáp án',
-    mirror:  'Gương Thần: Lật ngược khu vực đáp án',
+    brick:   'Câu tiếp điểm tối đa giảm 5, chỉ còn 20s đồng hồ hiển thị',
+    ice:     'Nạn nhân phải bấm 5 lần mới chọn được đáp án',
+    mirror:  'Lật ngược khu vực đáp án',
     shield:  'Chặn 1 đòn tấn công',
   };
   return desc[id] || '';
@@ -211,6 +226,8 @@ socket.on('lobby:member-counts', (counts) => {
 
 socket.on('join:success', ({ groupName }) => {
   myGroup = groupName;
+  myScore = 0;
+  updatePlayerBadge();
   if (peekInterval) { clearInterval(peekInterval); peekInterval = null; }
   $('waiting-group-name').textContent = groupName;
   
@@ -237,7 +254,7 @@ socket.on('game:started', () => {
   if (btn) btn.style.display = '';
 });
 
-socket.on('question:shown', ({ number, total, text, options, timeLimit, event }) => {
+socket.on('question:shown', ({ number, total, text, options, timeLimit, event, brickedGroups, brickedForThis }) => {
   $('client-q-badge').textContent   = `Câu ${number}/${total}`;
   $('client-q-text').textContent    = text;
   ['A','B','C','D'].forEach(l => {
@@ -251,6 +268,8 @@ socket.on('question:shown', ({ number, total, text, options, timeLimit, event })
   mySubmittedAnswer = null;
   isButtonFrozen = false;
   isBricked = false;
+  const timerWrapReset = $('client-timer-wrap');
+  if (timerWrapReset) timerWrapReset.classList.remove('bricked');
   tapCount = 0;
   lastTappedOption = null;
   document.body.classList.remove('ice-active');
@@ -259,7 +278,15 @@ socket.on('question:shown', ({ number, total, text, options, timeLimit, event })
   if (optCont) optCont.style.transform = '';
 
   timerMax = timeLimit || 25;
-  setTimerUI(timerMax, timerMax);
+
+  // Check if this group is bricked this round (deferred brick applied server-side)
+  if (brickedGroups && myGroup && brickedGroups.includes(myGroup)) {
+    isBricked = true;
+    const displayTime = Math.max(0, timerMax - 5);
+    setTimerUI(displayTime, displayTime);
+  } else {
+    setTimerUI(timerMax, timerMax);
+  }
 
   // Show global event banner
   handleGlobalEvent(event);
@@ -275,7 +302,6 @@ socket.on('timer:tick', ({ remaining }) => {
       setTimerUI(display, brickedMax);
       if (display === 0 && !mySubmittedAnswer) {
         document.querySelectorAll('.opt-btn').forEach(b => { b.disabled = true; });
-        showToast('🧱 Hết giờ! (Bị Gạch)');
       }
     } else {
       setTimerUI(remaining, timerMax);
@@ -289,21 +315,13 @@ socket.on('team:locked', ({ answer }) => {
     btn.disabled = true;
     if (btn.dataset.answer === answer) btn.classList.add('selected');
   });
-
-  const isMine = mySubmittedAnswer === answer;
-  showToast(isMine
-    ? `✅ Bạn đã chốt: ${answer}!`
-    : `🤝 Đồng đội đã chốt: ${answer}!`);
 });
 
-socket.on('answer:result', ({ correct, stepsGained, itemReceived }) => {
-  // Show result as toast — stay on question screen
-  if (correct && stepsGained > 0) {
-    showToast(`✅ Đúng! +${typeof stepsGained === 'number' ? stepsGained.toFixed(2) : stepsGained} điểm`);
-  } else if (correct) {
-    showToast('✅ Đúng nhưng bị đóng băng! ❌0 điểm');
-  } else {
-    showToast('❌ Sai — không có điểm');
+socket.on('answer:result', ({ correct, stepsGained, totalSteps, itemReceived }) => {
+  // Sync score from server
+  if (typeof totalSteps === 'number') {
+    myScore = totalSteps;
+    updatePlayerBadge();
   }
   if (itemReceived) showToast(`🎁 Nhận: ${itemReceived.emoji} ${itemReceived.name}`);
 });
@@ -336,48 +354,23 @@ socket.on('round:between', () => {
   // Stay on question screen — next question will auto-arrive
 });
 
-// ── Global event handler ──
+// ── Global event handler (weather layer only, no banner) ──
 function handleGlobalEvent(event) {
-  const banner = $('global-event-banner');
   const weather = $('weather-layer');
-  if (!banner) return;
-  
-  if (!event) { 
-    banner.style.display = 'none'; 
+  if (!event) {
     if (weather) { weather.style.display = 'none'; weather.className = 'weather-layer'; }
-    return; 
+    return;
   }
-  
-  const labels = {
-    storm:  '🌊 BÃO TỐ! Chỉ còn 10 giây!',
-    fog:    '🌫️ SƯƠNG MÙ! Thời gian 60 giây.',
-    golden: '✨ THỜI CƠ VÀNG! Điểm x2! 60 giây!',
-  };
-  banner.textContent = labels[event] || '';
-  banner.className = 'global-event-banner event-' + event;
-  banner.style.display = '';
-
   if (weather) {
     weather.style.display = '';
     weather.className = 'weather-layer ' + event;
   }
-
-  setTimeout(() => { 
-    if (banner) banner.style.display = 'none'; 
-  }, 5000);
 }
 
 socket.on('global:event', ({ event }) => {
-  if (event === 'storm') {
-    timerMax = 10;
-    showToast('🌊 Bão Tố! Chỉ còn 10 giây!');
-  } else if (event === 'fog') {
-    timerMax = 60;
-    showToast('🌫️ Sương Mù! Thời gian 60 giây.');
-  } else if (event === 'golden') {
-    timerMax = 60;
-    showToast('✨ Thời Cơ Vàng! Điểm x2! 60 giây!');
-  }
+  if (event === 'storm')       timerMax = 10;
+  else if (event === 'fog')    timerMax = 60;
+  else if (event === 'golden') timerMax = 60;
   handleGlobalEvent(event || null);
 });
 
@@ -386,11 +379,21 @@ socket.on('timer:sync', ({ remaining, max }) => {
   setTimerUI(remaining, max);
 });
 
+socket.on('effect:brick:immediate', ({ currentRemaining, timerMax: max }) => {
+  isBricked = true;
+  if (max) timerMax = max;
+  const display = Math.max(0, currentRemaining - 5);
+  const displayMax = Math.max(1, timerMax - 5);
+  setTimerUI(display, displayMax);
+  // Flash timer red to signal brick
+  const wrap = $('client-timer-wrap');
+  if (wrap) { wrap.classList.add('bricked'); }
+});
+
 socket.on('question:bricked', ({ displayTime }) => {
   isBricked = true;
-  timerMax = displayTime + 5; // so remaining - 5 shows displayTime
+  timerMax = displayTime + 5;
   setTimerUI(displayTime, displayTime);
-  showToast(`🧱 Bị Gạch! Chỉ còn ${displayTime}s, điểm tối đa giảm 5!`);
 });
 
 socket.on('effect:blooper', () => {
@@ -560,9 +563,6 @@ $('btn-confirm-use').addEventListener('click', () => {
   }
 
   socket.emit('client:use-item', { itemId: selectedItemId, targetGroup: selectedTarget || undefined });
-
-  const item = inventory.find(i => i.id === selectedItemId);
-  if (item) showToast(`${item.emoji} Dùng ${item.name}${selectedTarget ? ` → ${selectedTarget}` : ''}!`);
 
   resetItemPanel();
 });
