@@ -1017,7 +1017,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: .5rem;
-  z-index: 99;
+  z-index: 9999;
   pointer-events: none;
 }
 
