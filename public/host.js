@@ -10,10 +10,10 @@ let isPaused       = false;
 let frozenGroups   = new Set();
 let currentWeatherEvent = null;
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 4', 'Nhóm 5', 'Nhóm 6', 'Giảng Viên'];
 const DUCK_EMOJIS = {
-  'Nhóm 1': '🦆', 'Nhóm 2': '🐤', 'Nhóm 3': '🦜',
-  'Nhóm 5': '🐧', 'Nhóm 6': '🦩', 'Nhóm 7': '🦚', 'Giảng Viên': '👨‍🏫'
+  'Nhóm 1': '🦆', 'Nhóm 2': '🐤', 'Nhóm 4': '🦜',
+  'Nhóm 5': '🐧', 'Nhóm 6': '🦩', 'Giảng Viên': '👨‍🏫'
 };
 const MEDALS = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
 
@@ -86,10 +86,9 @@ function buildTrack(activeGroups) {
   const CHARACTER_IMAGES = {
     'Nhóm 1': 'assets/aot.png',
     'Nhóm 2': 'assets/kimet.png',
-    'Nhóm 3': 'assets/naruto.png',
+    'Nhóm 4': 'assets/naruto.png',
     'Nhóm 5': 'assets/senku.png',
     'Nhóm 6': 'assets/songoku.png',
-    'Nhóm 7': 'assets/duck.png',
     'Giảng Viên': "assets/trilm's duck.png"
   };
 

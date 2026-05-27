@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Load questions
 const QUESTIONS = JSON.parse(fs.readFileSync(path.join(__dirname, 'questions.json'), 'utf-8'));
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 4', 'Nhóm 5', 'Nhóm 6', 'Giảng Viên'];
 const ITEMS = [
   { id: 'blooper', emoji: '🦑', name: 'Mực Che Mắt', type: 'offensive' },
   { id: 'banana',  emoji: '🍌', name: 'Vỏ Chuối',    type: 'offensive' },

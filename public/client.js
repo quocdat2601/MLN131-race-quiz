@@ -19,8 +19,9 @@ let isBricked         = false;   // brick effect — local timer reduction
 let selectedItemId    = null;
 let selectedItemType  = null;
 let selectedTarget    = null;
+let presentGroups     = [];   // groups currently joined in the room
 
-const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6', 'Nhóm 7', 'Giảng Viên'];
+const GROUPS = ['Nhóm 1', 'Nhóm 2', 'Nhóm 4', 'Nhóm 5', 'Nhóm 6', 'Giảng Viên'];
 const MEDALS  = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
 const ITEM_IMAGE_MAP = {
   blooper: 'assets/blooper.png',
@@ -34,10 +35,9 @@ const ITEM_IMAGE_MAP = {
 const CHARACTER_IMAGES = {
   'Nhóm 1': 'assets/aot.png',
   'Nhóm 2': 'assets/kimet.png',
-  'Nhóm 3': 'assets/naruto.png',
+  'Nhóm 4': 'assets/naruto.png',
   'Nhóm 5': 'assets/senku.png',
   'Nhóm 6': 'assets/songoku.png',
-  'Nhóm 7': 'assets/duck.png',
   'Giảng Viên': "assets/trilm's duck.png"
 };
 
@@ -167,7 +167,7 @@ function selectItem(itemId, itemType) {
 
   if (itemType === 'offensive') {
     picker.style.display = 'flex';
-    const otherGroups = GROUPS.filter(g => g !== myGroup);
+    const otherGroups = (presentGroups.length > 0 ? presentGroups : GROUPS).filter(g => g !== myGroup);
     targetList.innerHTML = otherGroups.map(g => `
       <button class="target-btn" data-group="${g}">${g}</button>
     `).join('');
@@ -210,6 +210,8 @@ function resetItemPanel() {
 // ── Socket events ─────────────────────────────────────────────
 socket.on('lobby:member-counts', (counts) => {
   if (!counts) return;
+  // Track which groups have at least 1 member present
+  presentGroups = Object.entries(counts).filter(([, n]) => n > 0).map(([g]) => g);
   document.querySelectorAll('.group-btn').forEach(btn => {
     const g = btn.dataset.group;
     const n = counts[g] || 0;
