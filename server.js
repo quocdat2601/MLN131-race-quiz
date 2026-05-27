@@ -118,7 +118,7 @@ class GameRoom {
       this.groups[g] = { members: new Set(), steps: 0, inventory: [], frozen: false, shielded: false, bricked: false, brickedForNext: false, lastMilestone: 0, consecutiveCorrect: 0, itemUsedThisRound: false };
     });
 
-    this.questions       = [...QUESTIONS].slice(0, 25);
+    this.questions       = [...QUESTIONS].slice(0, 30);
     this.currentQ        = -1;
     this.timer           = null;
     this.startTime       = null;

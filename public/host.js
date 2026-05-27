@@ -4,8 +4,8 @@ const socket = io();
 let roomCode       = '';
 let gameState      = 'LOBBY';
 let totalSteps     = {};
-let timerMax       = 25;
-let timerRemaining = 25;
+let timerMax       = 30;
+let timerRemaining = 30;
 let isPaused       = false;
 let frozenGroups   = new Set();
 let currentWeatherEvent = null;
@@ -131,8 +131,8 @@ function buildTrack(activeGroups) {
 }
 
 // ── Duck position ─────────────────────────────────────────────
-// Absolute scale: max possible = 25pts * 25q = 625
-const MAX_TOTAL_SCORE = 25 * 25;
+// Absolute scale: max possible = 30pts * 30q = 900
+const MAX_TOTAL_SCORE = 30 * 30;
 const MILESTONES_DISPLAY = [100, 200, 300, 400, 500, 600];
 function duckLeft(steps) {
   return (5 + (steps / MAX_TOTAL_SCORE) * 88) + '%';
@@ -486,7 +486,7 @@ socket.on('question:shown', ({ number, total, text, options, timeLimit, event, e
     const card = document.getElementById(`opt-${l}`);
     card.classList.remove('correct','revealed');
   });
-  timerMax = timeLimit || 25;
+  timerMax = timeLimit || 30;
   setTimerUI(timerMax, timerMax);
   answerCountBadge.textContent = '0 nhóm đã trả lời';
   questionPanel.style.display = 'block';
