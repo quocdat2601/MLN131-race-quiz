@@ -1,302 +1,242 @@
 [
   {
     "id": 1,
-    "text": "Hội nghị lần thứ sáu Ban Chấp hành Trung ương Đảng (7/1954) xác định kẻ thù chính của nhân dân Việt Nam lúc này là ai?",
+    "text": "Theo quan điểm của chủ nghĩa Mác - Lênin, mục tiêu cuối cùng của chủ nghĩa xã hội là gì?",
     "options": {
-      "A": "Đế quốc Mỹ – kẻ thù chính và trực tiếp của nhân dân Đông Dương",
-      "B": "Chính quyền tay sai Ngô Đình Diệm ở miền Nam",
-      "C": "Liên minh Pháp – Mỹ – ngụy quyền",
-      "D": "Thực dân Pháp đang rút quân nhưng vẫn âm mưu trở lại"
+      "A": "Phát triển kinh tế và nâng cao thu nhập quốc dân",
+      "B": "Giải phóng con người, giải phóng giai cấp và giải phóng xã hội",
+      "C": "Xây dựng nhà nước pháp quyền vững mạnh",
+      "D": "Thiết lập chế độ sở hữu toàn dân về tư liệu sản xuất"
     },
-    "correct": "A",
-    "explanation": "Hội nghị Trung Ương 6 (7/1954) chỉ rõ: 'Hiện nay đế quốc Mỹ là kẻ thù chính của nhân dân thế giới, và nó đang trở thành kẻ thù chính và trực tiếp của nhân dân Đông Dương, cho nên mọi việc của ta đều nhằm chống đế quốc Mỹ'."
+    "correct": "B",
+    "explanation": "Theo quan điểm của chủ nghĩa Mác - Lênin, mục tiêu cuối cùng của chủ nghĩa xã hội là giải phóng con người, giải phóng giai cấp và giải phóng xã hội — hướng đến một xã hội công bằng, bình đẳng, trong đó con người được tôn trọng và có điều kiện phát triển toàn diện."
   },
   {
     "id": 2,
-    "text": "Sau Hiệp định Giơnevơ (7/1954), thuận lợi cơ bản nhất ở trong nước của cách mạng Việt Nam là gì?",
+    "text": "Điểm khác biệt cốt lõi của chủ nghĩa xã hội về quyền con người so với việc chỉ ghi nhận quyền trên văn bản pháp luật là gì?",
     "options": {
-      "A": "Kinh tế miền Bắc phát triển mạnh sau chín năm kháng chiến",
-      "B": "Miền Bắc được hoàn toàn giải phóng, làm căn cứ địa hậu phương cho cả nước",
-      "C": "Mỹ chưa kịp thay chân Pháp ở miền Nam",
-      "D": "Quân đội nhân dân Việt Nam đã kiểm soát toàn bộ Đông Dương"
+      "A": "Chủ nghĩa xã hội không cần văn bản pháp luật để bảo vệ quyền con người",
+      "B": "Chủ nghĩa xã hội đặt quyền tập thể cao hơn quyền cá nhân tuyệt đối",
+      "C": "Chủ nghĩa xã hội tạo ra điều kiện kinh tế, chính trị, văn hóa để con người thực sự được hưởng quyền trong thực tế",
+      "D": "Chủ nghĩa xã hội chỉ bảo vệ quyền của giai cấp công nhân và nông dân"
     },
-    "correct": "B",
-    "explanation": "Thuận lợi cơ bản nhất trong nước là đã có miền Bắc được hoàn toàn giải phóng, làm căn cứ địa hậu phương cho cả nước; thế và lực cách mạng lớn mạnh hơn trước sau chín năm kháng chiến; có ý chí độc lập thống nhất của nhân dân cả nước."
+    "correct": "C",
+    "explanation": "Chủ nghĩa xã hội không chỉ công nhận quyền con người trên lý thuyết, mà còn tạo ra những điều kiện kinh tế, chính trị, văn hóa và xã hội để mọi người có thể thực sự thực hiện những quyền đó trong đời sống thực tế."
   },
   {
     "id": 3,
-    "text": "Tháng 9/1954, Bộ Chính trị đề ra nhiệm vụ chủ yếu trước mắt của miền Bắc là gì?",
+    "text": "Trong chủ nghĩa xã hội, dân chủ xã hội chủ nghĩa được hiểu là gì?",
     "options": {
-      "A": "Tiến hành ngay cách mạng xã hội chủ nghĩa và hợp tác hóa nông nghiệp",
-      "B": "Tổng động viên lực lượng chuẩn bị cho cuộc kháng chiến chống Mỹ",
-      "C": "Hàn gắn vết thương chiến tranh, phục hồi kinh tế, ổn định xã hội và đời sống nhân dân",
-      "D": "Mở đường chi viện cho cách mạng miền Nam ngay lập tức"
+      "A": "Chế độ bầu cử tự do, đa đảng như các nước phương Tây",
+      "B": "Quyền lực thuộc về nhân dân; nhân dân là chủ thể thực hiện quyền làm chủ và tham gia quản lý xã hội",
+      "C": "Quyền cá nhân được đặt tối cao, không bị ràng buộc bởi pháp luật",
+      "D": "Hình thức tổ chức nhà nước dựa trên nguyên tắc tam quyền phân lập"
     },
-    "correct": "C",
-    "explanation": "Tháng 9/1954, Bộ Chính trị xác định nhiệm vụ trước mắt của miền Bắc là hàn gắn vết thương chiến tranh, phục hồi kinh tế quốc dân (trọng tâm là nông nghiệp), ổn định xã hội và đời sống nhân dân, để sớm đưa miền Bắc trở lại bình thường sau chín năm chiến tranh."
+    "correct": "B",
+    "explanation": "Dân chủ xã hội chủ nghĩa thể hiện ở chỗ nhân dân là chủ thể của quyền lực nhà nước. Nhà nước hoạt động vì lợi ích của nhân dân và bảo vệ quyền, lợi ích hợp pháp của nhân dân. Người dân không chỉ là đối tượng được bảo vệ mà còn là chủ thể tham gia xây dựng, quản lý và giám sát xã hội."
   },
   {
     "id": 4,
-    "text": "Nghị quyết Bộ Chính trị (9/1954) xác định 3 nhiệm vụ cụ thể trước mắt của cách mạng miền Nam là gì?",
+    "text": "Vì sao quyền con người cần được bảo đảm bằng pháp luật chứ không chỉ bằng đạo đức xã hội?",
     "options": {
-      "A": "Đấu tranh vũ trang – xây dựng căn cứ địa – phát triển lực lượng",
-      "B": "Giữ gìn lực lượng – bám dân bám đất – chờ thời cơ",
-      "C": "Đàm phán hòa bình – tổ chức tổng tuyển cử – thống nhất đất nước",
-      "D": "Đấu tranh đòi thi hành Hiệp định – chuyển hướng công tác – tập hợp lực lượng lật đổ chính quyền bù nhìn thân Mỹ"
+      "A": "Vì đạo đức xã hội luôn thay đổi, còn pháp luật thì không bao giờ thay đổi",
+      "B": "Vì pháp luật có tính bắt buộc chung — mọi tổ chức và cá nhân đều phải tôn trọng, vi phạm sẽ bị xử lý",
+      "C": "Vì pháp luật do Nhà nước ban hành nên có uy tín hơn đạo đức",
+      "D": "Vì đạo đức không thể điều chỉnh hành vi của con người trong xã hội hiện đại"
     },
-    "correct": "D",
-    "explanation": "Nghị quyết Bộ Chính trị (9/1954) nêu 3 nhiệm vụ: (1) Đấu tranh đòi thi hành Hiệp định; (2) Chuyển hướng công tác cho phù hợp điều kiện mới; (3) Tập hợp mọi lực lượng dân tộc, dân chủ, hòa bình đấu tranh nhằm lật đổ chính quyền bù nhìn thân Mỹ, hoàn thành thống nhất Tổ quốc."
+    "correct": "B",
+    "explanation": "Pháp luật có tính bắt buộc chung. Khi quyền con người được ghi nhận và bảo vệ bằng pháp luật, mọi tổ chức và cá nhân đều phải tôn trọng. Nếu ai vi phạm thì sẽ bị xử lý theo quy định — điều mà đạo đức xã hội không thể đảm bảo được."
   },
   {
     "id": 5,
-    "text": "Tháng 10/1954, Xứ ủy Nam Bộ được thành lập, do ai làm Bí thư?",
+    "text": "Nhà nước xã hội chủ nghĩa đóng vai trò gì trong việc bảo đảm quyền con người?",
     "options": {
-      "A": "Lê Duẩn",
-      "B": "Nguyễn Văn Linh",
-      "C": "Nguyễn Hữu Thọ",
-      "D": "Trường Chinh"
+      "A": "Nhà nước là người ban phát quyền cho công dân theo ý chí của lãnh đạo",
+      "B": "Nhà nước là công cụ để thực hiện quyền làm chủ của nhân dân, ban hành và tổ chức thực thi pháp luật bảo vệ quyền con người",
+      "C": "Nhà nước chỉ có nhiệm vụ phát triển kinh tế, còn quyền con người do tổ chức xã hội dân sự bảo vệ",
+      "D": "Nhà nước giữ quyền kiểm soát tuyệt đối mọi hoạt động của công dân"
     },
-    "correct": "A",
-    "explanation": "Tháng 10/1954, thực hiện Chỉ thị của Bộ Chính trị về tình hình và công tác của các đảng bộ miền Nam, Xứ ủy Nam Bộ được thành lập, do đồng chí Lê Duẩn, Ủy viên Bộ Chính trị, làm Bí thư."
+    "correct": "B",
+    "explanation": "Nhà nước xã hội chủ nghĩa là công cụ để thực hiện quyền làm chủ của nhân dân. Nhà nước ban hành pháp luật, tổ chức thực hiện pháp luật và xử lý các hành vi vi phạm pháp luật nhằm bảo vệ quyền, lợi ích hợp pháp của người dân."
   },
   {
     "id": 6,
-    "text": "Ngày 10/10/1954 đánh dấu sự kiện gì và điều đó nằm trong khuôn khổ nào?",
+    "text": "Trong Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam, con người giữ vị trí nào?",
     "options": {
-      "A": "Ký kết Hiệp định Giơnevơ – kết thúc chiến tranh Đông Dương",
-      "B": "Những lính Pháp cuối cùng rút khỏi Hà Nội – thực hiện Hiệp định Giơnevơ",
-      "C": "Hoàn thành cải cách ruộng đất ở đồng bằng Bắc Bộ",
-      "D": "Chính phủ ta tiếp quản toàn bộ miền Bắc từ tay Pháp"
+      "A": "Con người là phương tiện để Nhà nước đạt mục tiêu tăng trưởng kinh tế",
+      "B": "Con người vừa là mục tiêu, vừa là động lực của sự phát triển",
+      "C": "Con người là đối tượng cần được Nhà nước quản lý chặt chẽ",
+      "D": "Con người chỉ là mục tiêu phát triển, không phải động lực"
     },
     "correct": "B",
-    "explanation": "Ngày 10/10/1954, những lính Pháp cuối cùng rút khỏi Hà Nội trong khuôn khổ thực thi Hiệp định Giơnevơ. Đây là kết quả của cuộc đấu tranh của nhân dân ta đòi đối phương rút quân đúng thời hạn quy định."
+    "explanation": "Trong Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam, con người được xác định vừa là mục tiêu (mọi chính sách hướng đến nâng cao đời sống nhân dân), vừa là động lực (nhân dân trực tiếp học tập, lao động, sáng tạo, xây dựng đất nước)."
   },
   {
     "id": 7,
-    "text": "Hội nghị Trung Ương lần thứ 7 (3/1955) và lần thứ 8 (8/1955) nhận định điều gì và đề ra chủ trương cốt lõi nào?",
+    "text": "Đặc điểm quan trọng của Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam là gì?",
     "options": {
-      "A": "Pháp sắp rút hết, cần tranh thủ thương lượng để tổ chức tổng tuyển cử đúng hạn",
-      "B": "Phải tiến hành ngay khởi nghĩa vũ trang ở miền Nam để phản công Mỹ – Diệm",
-      "C": "Mỹ đã bắt chân Pháp, lập nhà nước riêng chống Hiệp định; cần củng cố miền Bắc và đẩy mạnh đấu tranh miền Nam",
-      "D": "Nên tập trung toàn bộ lực lượng vào xây dựng kinh tế miền Bắc, tạm gác miền Nam"
+      "A": "Quản lý xã hội bằng mệnh lệnh hành chính và ý chí của cơ quan lãnh đạo",
+      "B": "Quản lý xã hội bằng Hiến pháp và pháp luật, đồng thời bảo đảm quyền làm chủ của nhân dân",
+      "C": "Phân chia quyền lực giữa lập pháp, hành pháp và tư pháp độc lập hoàn toàn",
+      "D": "Nhà nước không can thiệp vào đời sống kinh tế xã hội của người dân"
     },
-    "correct": "C",
-    "explanation": "Hội nghị Trung Ương 7 và 8 (1955) nhận định Mỹ đã bắt chân Pháp ở miền Nam, công khai lập nhà nước riêng chống phá Hiệp định, đàn áp phong trào cách mạng. Chủ trương cốt lõi: phải ra sức củng cố miền Bắc, đồng thời giữ vững và đẩy mạnh cuộc đấu tranh của nhân dân miền Nam."
+    "correct": "B",
+    "explanation": "Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam có đặc điểm quan trọng là quản lý xã hội bằng Hiến pháp và pháp luật, đồng thời bảo đảm quyền làm chủ của nhân dân. Mọi hoạt động của Nhà nước, tổ chức và công dân đều phải tuân thủ Hiến pháp và pháp luật."
   },
   {
     "id": 8,
-    "text": "Ngày 16/5/1955 có ý nghĩa gì trong cuộc đấu tranh đòi Pháp rút quân?",
+    "text": "Quyền con người luôn gắn liền với điều gì trong chủ nghĩa xã hội?",
     "options": {
-      "A": "Những lính Pháp cuối cùng rút khỏi Hà Nội",
-      "B": "Pháp ký văn bản bàn giao chính quyền cho Chính phủ Việt Nam Dân chủ Cộng hòa",
-      "C": "Quân đội nhân dân Việt Nam tiến vào tiếp quản Hải Phòng",
-      "D": "Toàn bộ quân đội viễn chinh Pháp và tay sai rút khỏi hoàn toàn miền Bắc"
+      "A": "Quyền lợi cá nhân tuyệt đối, không bị bất kỳ ràng buộc nào",
+      "B": "Nghĩa vụ, trách nhiệm và pháp luật; mỗi người có quyền nhưng phải tôn trọng quyền người khác và lợi ích xã hội",
+      "C": "Địa vị giai cấp và thành phần xuất thân trong xã hội",
+      "D": "Sự đồng ý của đa số trong các cuộc biểu quyết trực tiếp"
     },
-    "correct": "D",
-    "explanation": "Ngày 16/5/1955, toàn bộ quân đội viễn chinh Pháp và tay sai phải rút khỏi hoàn toàn miền Bắc theo đúng thời gian quy định trong Hiệp định Giơnevơ – kết quả của cuộc đấu tranh kiên quyết của nhân dân ta."
+    "correct": "B",
+    "explanation": "Quyền con người luôn đi liền với nghĩa vụ, trách nhiệm và pháp luật. Mỗi người có quyền của mình, nhưng đồng thời cũng phải tôn trọng quyền của người khác và lợi ích chung của xã hội. Quyền con người không phải là 'muốn làm gì cũng được'."
   },
   {
     "id": 9,
-    "text": "Địch sử dụng quốc sách nào để đàn áp phong trào cách mạng và người yêu nước ở miền Nam từ sau 1954?",
+    "text": "Ví dụ nào sau đây thể hiện đúng nhất mối quan hệ giữa quyền tự do ngôn luận và trách nhiệm công dân trong chủ nghĩa xã hội?",
     "options": {
-      "A": "'Tố cộng, diệt cộng', lập 'khu trù mật', 'khu dinh điền'",
-      "B": "Luật 10/59 và Tòa án quân sự đặc biệt",
-      "C": "Chiến lược 'Chiến tranh đặc biệt' với cố vấn Mỹ",
-      "D": "Kế hoạch 'Bình định nông thôn' và 'Ấp chiến lược'"
+      "A": "Mỗi người có thể nói bất cứ điều gì vì đây là quyền tự do tuyệt đối",
+      "B": "Quyền tự do ngôn luận cho phép chỉ trích Nhà nước mà không chịu bất kỳ hậu quả nào",
+      "C": "Mỗi người có quyền tự do ngôn luận nhưng không được xúc phạm danh dự người khác, tung tin giả hay kích động bạo lực",
+      "D": "Chỉ có cán bộ, đảng viên mới có quyền phát ngôn về các vấn đề chính trị xã hội"
     },
-    "correct": "A",
-    "explanation": "Địch ráo riết thi hành quốc sách 'tố cộng, diệt cộng', lập 'khu trù mật', 'khu dinh điền' nhằm bắt bớ, trả thù người kháng chiến cũ, đàn áp phong trào đấu tranh đòi thi hành Hiệp định Giơnevơ, gây ra nhiều vụ thảm sát ở Bến Tre, Quảng Nam, Phú Yên."
+    "correct": "C",
+    "explanation": "Dân chủ đúng nghĩa là người dân được thực hiện quyền của mình trong khuôn khổ Hiến pháp và pháp luật. Quyền tự do ngôn luận không cho phép xúc phạm danh dự người khác, tung tin giả, kích động bạo lực hoặc gây chia rẽ xã hội."
   },
   {
     "id": 10,
-    "text": "Ngày 17/7/1955 và 23/10/1955, chính quyền Ngô Đình Diệm lần lượt làm gì để củng cố ách thống trị ở miền Nam?",
+    "text": "Tại sao bảo vệ quyền con người ở Việt Nam cần gắn với bảo vệ độc lập dân tộc và chủ quyền quốc gia?",
     "options": {
-      "A": "Ký hiệp ước quân sự với Mỹ (17/7) và thành lập quân đội VNCH (23/10)",
-      "B": "Tuyên bố không hiệp thương tổng tuyển cử (17/7) và tổ chức 'trưng cầu dân ý' phế truất Bảo Đại, lên Tổng thống (23/10)",
-      "C": "Đặt miền Nam trong tình trạng chiến tranh (17/7) và ban hành Luật 10/59 (23/10)",
-      "D": "Xây dựng khu trù mật (17/7) và tổ chức bầu cử Quốc hội VNCH (23/10)"
+      "A": "Vì Nhà nước có thể hạn chế quyền con người khi cần thiết vì lý do an ninh",
+      "B": "Vì quyền con người chỉ tồn tại trong phạm vi lãnh thổ quốc gia",
+      "C": "Vì muốn bảo đảm quyền con người bền vững thì đất nước phải có hòa bình, ổn định, độc lập và phát triển",
+      "D": "Vì quyền con người là vấn đề nội bộ, không liên quan đến quốc tế"
     },
-    "correct": "B",
-    "explanation": "Ngày 17/7/1955, theo chỉ đạo của Mỹ, Diệm tuyên bố không hiệp thương tổng tuyển cử. Ngày 23/10/1955, Diệm tổ chức 'trưng cầu dân ý' phế truất Bảo Đại, đưa Diệm lên làm Tổng thống Việt Nam Cộng hòa."
+    "correct": "C",
+    "explanation": "Nếu xã hội bất ổn, chiến tranh hay bị chia rẽ, thì quyền sống, quyền học tập, quyền lao động và quyền phát triển của người dân đều bị ảnh hưởng. Bảo vệ độc lập dân tộc chính là điều kiện tiên quyết để bảo đảm quyền con người bền vững."
   },
   {
     "id": 11,
-    "text": "Trong vòng 10 tháng (7/1955 – 5/1956), số người bị địch bắt và giết ở miền Nam là bao nhiêu?",
+    "text": "Chủ nghĩa xã hội đặt ra câu hỏi nào QUAN TRỌNG HƠN so với câu hỏi 'Con người có quyền gì?'",
     "options": {
-      "A": "Hơn 50.000 người",
-      "B": "Hơn 75.000 người",
-      "C": "Hơn 108.835 người",
-      "D": "Hơn 200.000 người"
+      "A": "Ai là người có quyền nhiều nhất trong xã hội?",
+      "B": "Làm thế nào để mọi người có thể thực hiện được những quyền đó trong thực tế?",
+      "C": "Quyền nào cần được ưu tiên hơn quyền nào?",
+      "D": "Quyền con người xuất phát từ tự nhiên hay do Nhà nước trao?"
     },
-    "correct": "C",
-    "explanation": "Trong vòng 10 tháng từ tháng 7/1955 đến tháng 5/1956, địch đã bắt và giết 108.835 người, gây ra nhiều vụ thảm sát đẫm máu ở Bến Tre, Quảng Nam, Phú Yên."
+    "correct": "B",
+    "explanation": "Chủ nghĩa xã hội không chỉ hỏi 'Con người có quyền gì?' mà quan trọng hơn là đặt ra câu hỏi 'Làm thế nào để mọi người có thể thực hiện được những quyền đó trong thực tế?' — điều này thể hiện tính nhân văn và thực chất của quan điểm XHCN về quyền con người."
   },
   {
     "id": 12,
-    "text": "Ngày 13/5/1957, Ngô Đình Diệm thăm Mỹ và tuyên bố câu gì thể hiện rõ bản chất bán nước?",
+    "text": "Quyền học tập chỉ thật sự có ý nghĩa thực chất khi nào, theo quan điểm của chủ nghĩa xã hội?",
     "options": {
-      "A": "'Việt Nam Cộng hòa là tiền đồn chống cộng của thế giới tự do'",
-      "B": "'Chúng tôi sẽ chiến đấu đến người Việt Nam cuối cùng'",
-      "C": "'Biên giới Hoa Kỳ kéo dài đến vĩ tuyến 17'",
-      "D": "'Miền Nam không thể tồn tại nếu không có sự hỗ trợ của Mỹ'"
+      "A": "Khi quyền đó được ghi rõ trong Hiến pháp",
+      "B": "Khi Nhà nước thành lập đủ số lượng trường học trên cả nước",
+      "C": "Khi mọi người có cơ hội tiếp cận giáo dục trong thực tế, không phân biệt giàu nghèo",
+      "D": "Khi giáo dục trở thành hàng hóa trong nền kinh tế thị trường"
     },
     "correct": "C",
-    "explanation": "Ngày 13/5/1957, Ngô Đình Diệm thăm Mỹ và tuyên bố: 'Biên giới Hoa Kỳ kéo dài đến vĩ tuyến 17' – đó là hành động bán nước trắng trợn, công khai biến miền Nam thành lãnh thổ bảo hộ của Mỹ."
+    "explanation": "Quyền học tập chỉ thật sự có ý nghĩa khi mọi người có cơ hội tiếp cận giáo dục trong thực tế. Nếu quyền học tập chỉ tồn tại trên giấy tờ mà người nghèo không có điều kiện đến trường, thì quyền đó chưa được bảo đảm đầy đủ."
   },
   {
     "id": 13,
-    "text": "Đến năm 1957, nông nghiệp miền Bắc đạt thành tựu nổi bật nào?",
+    "text": "Theo chủ nghĩa xã hội, 'giải phóng con người' có nghĩa là gì?",
     "options": {
-      "A": "Đạt năng suất và sản lượng của năm 1939 – năm cao nhất dưới thời Pháp thuộc – nạn đói bị đẩy lùi",
-      "B": "Hoàn thành cơ giới hóa toàn bộ nông nghiệp đồng bằng Bắc Bộ",
-      "C": "Xuất khẩu được lương thực lần đầu tiên sang các nước xã hội chủ nghĩa",
-      "D": "Vượt mức sản lượng năm 1945 trước Cách mạng tháng Tám"
+      "A": "Xóa bỏ mọi hình thức luật pháp để con người được tự do tuyệt đối",
+      "B": "Giải phóng con người khỏi áp bức, bất công và bóc lột; tạo điều kiện để con người phát triển toàn diện trong công bằng và bình đẳng",
+      "C": "Trao cho mỗi cá nhân quyền lực ngang bằng với Nhà nước",
+      "D": "Loại bỏ mọi sự khác biệt về điều kiện sống giữa các cá nhân"
     },
-    "correct": "A",
-    "explanation": "Đến năm 1957, nông nghiệp miền Bắc đã đạt được năng suất và sản lượng của năm 1939 – năm cao nhất dưới thời Pháp thuộc, nhờ đó nạn đói bị đẩy lùi, ổn định đời sống nhân dân và góp phần ổn định chính trị, trật tự xã hội."
+    "correct": "B",
+    "explanation": "Giải phóng con người trong chủ nghĩa xã hội có nghĩa là xây dựng một xã hội trong đó con người được sống trong công bằng, bình đẳng, được tôn trọng, được bảo vệ khỏi áp bức và bóc lột, và có điều kiện phát triển toàn diện."
   },
   {
     "id": 14,
-    "text": "Cải cách ruộng đất ở miền Bắc căn bản hoàn thành vào khi nào và đạt kết quả gì?",
+    "text": "Trong bối cảnh thời đại số, nhiệm vụ quan trọng nào được đặt ra cho sinh viên để bảo vệ quyền con người?",
     "options": {
-      "A": "9/1956 – hơn 7 triệu người được chia hơn 700.000 ha",
-      "B": "7/1956 – hơn 9 triệu người trong hơn 2 triệu hộ được chia hơn 810.000 ha",
-      "C": "12/1955 – hơn 5 triệu người được chia hơn 500.000 ha",
-      "D": "12/1957 – hơn 10 triệu người trong hơn 3 triệu hộ được chia hơn 1 triệu ha"
+      "A": "Không sử dụng mạng xã hội để tránh tiếp xúc với thông tin sai lệch",
+      "B": "Nâng cao bản lĩnh chính trị, tư duy phản biện và kỹ năng kiểm chứng thông tin trước khi chia sẻ",
+      "C": "Chỉ theo dõi các trang thông tin chính thống do Nhà nước quản lý",
+      "D": "Chia sẻ tất cả thông tin liên quan đến nhân quyền để nâng cao nhận thức cộng đồng"
     },
     "correct": "B",
-    "explanation": "Đến tháng 7/1956, cải cách ruộng đất căn bản hoàn thành, xóa bỏ chế độ chiếm hữu ruộng đất phong kiến. Hơn 9 triệu người trong hơn 2 triệu hộ nông dân lao động được chia hơn 810.000 ha ruộng đất."
+    "explanation": "Trong thời đại số, sinh viên cần nâng cao bản lĩnh chính trị và bộ lọc thông tin. Mạng xã hội có nhiều thông tin bị cắt ghép, xuyên tạc nhằm kích động về vấn đề dân chủ, nhân quyền. Sinh viên cần tư duy phản biện, kiểm chứng nguồn tin và không để cảm xúc bị dẫn dắt bởi các luận điệu sai trái."
   },
   {
     "id": 15,
-    "text": "Nguyên nhân chủ yếu dẫn đến sai lầm trong cải cách ruộng đất là gì?",
+    "text": "Nhà nước xã hội chủ nghĩa có trách nhiệm ngăn chặn và xử lý hành vi nào theo pháp luật?",
     "options": {
-      "A": "Thiếu cán bộ có kinh nghiệm, địch cài người phá hoại từ bên trong",
-      "B": "Áp dụng mô hình nước ngoài không phù hợp với điều kiện Việt Nam",
-      "C": "Thiếu sự chỉ đạo thống nhất từ Trung ương dẫn đến tình trạng cục bộ địa phương",
-      "D": "Chủ quan, giáo điều, không xuất phát từ thực tiễn; cường điệu hóa đấu tranh giai cấp, mở rộng quá mức đối tượng đấu tranh, xử lý oan cán bộ, đảng viên tốt"
+      "A": "Chỉ các hành vi vi phạm pháp luật hình sự nghiêm trọng như giết người, cướp của",
+      "B": "Bạo lực, lừa đảo, phân biệt đối xử, xúc phạm danh dự nhân phẩm, xâm phạm đời tư, phát tán thông tin sai sự thật",
+      "C": "Chỉ xử lý các hành vi do cơ quan nhà nước thực hiện",
+      "D": "Các hành vi vi phạm đạo đức xã hội nhưng chưa đến mức vi phạm pháp luật"
     },
-    "correct": "D",
-    "explanation": "Nguyên nhân chủ yếu là chủ quan, giáo điều, không xuất phát từ thực tiễn; cường điệu hóa đấu tranh giai cấp dẫn đến mở rộng quá mức đối tượng đấu tranh; nhận định sai về tổ chức cơ sở Đảng ở nông thôn, từ đó xử lý oan nhiều cán bộ, đảng viên tốt."
+    "correct": "B",
+    "explanation": "Nhà nước có trách nhiệm ngăn chặn và xử lý những hành vi xâm phạm quyền con người như bạo lực, lừa đảo, phân biệt đối xử, xúc phạm danh dự nhân phẩm, xâm phạm đời tư cá nhân hoặc phát tán thông tin sai sự thật — nhằm bảo vệ quyền con người trong thực tế."
   },
   {
     "id": 16,
-    "text": "Hội nghị Trung Ương lần thứ 10 (9/1956) xử lý sai lầm cải cách ruộng đất như thế nào?",
+    "text": "Sinh viên có thể thực hiện quyền con người ngay trong đời sống giảng đường bằng cách nào?",
     "options": {
-      "A": "Ra nghị quyết mật, xử lý nội bộ không công khai để tránh ảnh hưởng uy tín Đảng",
-      "B": "Giao cho Chính phủ xử lý, Đảng không trực tiếp can thiệp",
-      "C": "Thành lập ủy ban điều tra độc lập để làm rõ trách nhiệm cá nhân",
-      "D": "Nghiêm khắc kiểm điểm, công khai tự phê bình trước nhân dân, thi hành kỷ luật một số Ủy viên Bộ Chính trị và Ủy viên Trung Ương Đảng"
+      "A": "Chỉ tham gia các hoạt động học tập, không cần quan tâm đến quyền và nghĩa vụ công dân",
+      "B": "Thực hành quyền tự do ngôn luận bằng cách nói bất cứ điều gì mình nghĩ",
+      "C": "Học tập nghiêm túc, trung thực trong thi cử, tôn trọng người khác, sử dụng mạng xã hội có trách nhiệm",
+      "D": "Tập trung phát triển kỹ năng nghề nghiệp, không cần quan tâm đến các vấn đề xã hội"
     },
-    "correct": "D",
-    "explanation": "Hội nghị Trung Ương 10 (9/1956) nghiêm khắc kiểm điểm sai lầm, công khai tự phê bình trước nhân dân, thi hành kỷ luật một số Ủy viên Bộ Chính trị và Ủy viên Trung Ương Đảng. Công tác sửa sai được tiến hành kiên quyết, khẩn trương, thận trọng và có kế hoạch chặt chẽ."
+    "correct": "C",
+    "explanation": "Thực hành quyền con người bắt đầu từ những việc cụ thể: học tập nghiêm túc (thực hiện quyền học tập), trung thực trong thi cử, tôn trọng môi trường giáo dục, sử dụng mạng xã hội có trách nhiệm (thực hiện quyền tự do ngôn luận gắn với nghĩa vụ). Thực hành quyền con người chính là sống và làm việc theo Hiến pháp và pháp luật."
   },
   {
     "id": 17,
-    "text": "Tháng 8/1956, đồng chí Lê Duẩn dự thảo văn kiện nào và nêu rõ luận điểm cốt lõi nào về con đường của nhân dân miền Nam?",
+    "text": "Tại sao phát triển đất nước được coi là con đường cốt lõi để nâng cao chất lượng quyền con người ở Việt Nam?",
     "options": {
-      "A": "Đề cương đường lối cách mạng Việt Nam ở miền Nam – 'nhân dân miền Nam chỉ có con đường cách mạng, ngoài ra không có con đường nào khác'",
-      "B": "Nghị quyết Trung Ương 15 – xác định dùng bạo lực cách mạng kết hợp đấu tranh chính trị và vũ trang",
-      "C": "Chỉ thị về phương hướng và nhiệm vụ trước mắt ở miền Nam – ưu tiên giữ gìn lực lượng",
-      "D": "Báo cáo chính trị Đại hội III – xác định đường lối chung của cách mạng Việt Nam"
+      "A": "Vì khi đất nước giàu mạnh, Nhà nước có nhiều tiền hơn để chi trả lương cho cán bộ bảo vệ quyền con người",
+      "B": "Vì kinh tế phát triển tạo điều kiện vật chất để nâng cao chất lượng giáo dục, y tế, an sinh xã hội cho người dân",
+      "C": "Vì quyền con người chỉ cần thiết khi đất nước đã phát triển đầy đủ",
+      "D": "Vì đất nước nghèo có thể từ chối thực hiện các cam kết quốc tế về nhân quyền"
     },
-    "correct": "A",
-    "explanation": "Tháng 8/1956, Lê Duẩn dự thảo 'Đề cương đường lối cách mạng Việt Nam ở miền Nam', nêu rõ luận điểm cốt lõi: 'nhân dân miền Nam chỉ có con đường cứu nước và tự cứu mình, là con đường cách mạng. Ngoài con đường cách mạng không có một con đường khác'. Đây là văn kiện quan trọng góp phần hình thành đường lối cách mạng miền Nam."
+    "correct": "B",
+    "explanation": "Kinh tế phát triển chính là điều kiện vật chất nền tảng để Nhà nước nâng cao chất lượng hệ thống giáo dục, y tế, an sinh xã hội và bảo đảm môi trường sống tốt hơn cho nhân dân. Ngược lại, nếu đất nước nghèo nàn, lạc hậu thì việc hiện thực hóa các quyền cơ bản sẽ gặp nhiều rào cản thực tế."
   },
   {
     "id": 18,
-    "text": "Hội nghị Trung Ương 13 (12/1957) và Hội nghị Trung Ương 14 (11/1958) lần lượt có nội dung chính là gì?",
+    "text": "Dân chủ trong chủ nghĩa xã hội được hiểu đúng là gì?",
     "options": {
-      "A": "Trung Ương 13: ra Nghị quyết 15 về cách mạng miền Nam; Trung Ương 14: kế hoạch 5 năm xây dựng CNXH",
-      "B": "Trung Ương 13: đánh giá khôi phục kinh tế, đề ra nhiệm vụ đường lối giai đoạn mới; Trung Ương 14: đề ra kế hoạch 3 năm (1958–1960) cải tạo và phát triển kinh tế",
-      "C": "Trung Ương 13: hợp tác hóa nông nghiệp; Trung Ương 14: cải tạo công thương nghiệp tư doanh",
-      "D": "Trung Ương 13: sửa sai cải cách ruộng đất; Trung Ương 14: xây dựng lực lượng vũ trang miền Bắc"
+      "A": "Muốn nói gì cũng được, muốn làm gì cũng được mà không cần quan tâm đến người khác",
+      "B": "Người dân được thực hiện quyền của mình trong khuôn khổ Hiến pháp và pháp luật, tôn trọng quyền và lợi ích hợp pháp của người khác",
+      "C": "Số đông quyết định tất cả, kể cả khi quyết định đó xâm phạm quyền của thiểu số",
+      "D": "Mỗi cá nhân có quyền tự đặt ra luật lệ riêng cho bản thân"
     },
     "correct": "B",
-    "explanation": "Hội nghị Trung Ương 13 (12/1957) đánh giá thắng lợi khôi phục kinh tế (nông nghiệp đạt mốc 1939) và đề ra nhiệm vụ soạn thảo đường lối giai đoạn mới. Hội nghị Trung Ương 14 (11/1958) đề ra kế hoạch 3 năm (1958–1960) phát triển kinh tế, văn hóa và cải tạo XHCN, nhằm củng cố miền Bắc làm cơ sở vững mạnh cho đấu tranh thống nhất."
+    "explanation": "Dân chủ đúng nghĩa là người dân được thực hiện quyền của mình trong khuôn khổ Hiến pháp và pháp luật, đồng thời tôn trọng quyền và lợi ích hợp pháp của người khác. Dân chủ phải đi đôi với kỷ luật, kỷ cương và pháp luật."
   },
   {
     "id": 19,
-    "text": "Hội nghị Trung Ương 16 (4/1959) xác định ba nguyên tắc nào phải quán triệt trong suốt quá trình xây dựng hợp tác xã nông nghiệp?",
+    "text": "Theo chủ nghĩa xã hội, tại sao quyền lao động trở nên thực chất hơn khi người lao động có việc làm ổn định và môi trường làm việc an toàn?",
     "options": {
-      "A": "Đoàn kết – tiến bộ – phát triển bền vững",
-      "B": "Công bằng – kỷ luật – tập trung dân chủ",
-      "C": "Tự nguyện – cùng có lợi – quản lý dân chủ",
-      "D": "Bình đẳng – hợp tác – hiệu quả kinh tế"
+      "A": "Vì khi đó người lao động mới có đủ tiền đóng thuế cho Nhà nước",
+      "B": "Vì quyền chỉ có ý nghĩa thực sự khi con người có điều kiện để thực hiện quyền đó trong đời sống",
+      "C": "Vì doanh nghiệp chỉ hoạt động hiệu quả khi người lao động hài lòng",
+      "D": "Vì đây là yêu cầu của các tổ chức lao động quốc tế"
     },
-    "correct": "C",
-    "explanation": "Hội nghị Trung Ương 16 (4/1959) xác định ba nguyên tắc: tự nguyện, cùng có lợi và quản lý dân chủ. Hội nghị cũng xác định hợp tác hóa phải đi trước cơ giới hóa, gắn với thủy lợi hóa và tổ chức lại lao động để phát huy sức mạnh tập thể."
+    "correct": "B",
+    "explanation": "Trong chủ nghĩa xã hội, quyền không chỉ tồn tại trên lý thuyết mà phải được bảo đảm bằng điều kiện thực tế. Quyền lao động trở nên thực chất hơn khi người lao động có việc làm, thu nhập ổn định, môi trường làm việc an toàn và được pháp luật bảo vệ — tức là khi có đủ điều kiện để thực hiện quyền trong thực tế."
   },
   {
     "id": 20,
-    "text": "Địch leo thang đàn áp ở miền Nam năm 1959 bằng hai hành động nào, theo thứ tự thời gian?",
+    "text": "Để đóng góp vào sự phát triển của đất nước với tư cách là 'động lực', sinh viên cần tập trung vào điều gì?",
     "options": {
-      "A": "Ban hành Luật 10/59 (tháng 1) rồi tuyên bố tình trạng chiến tranh (tháng 3)",
-      "B": "Mở chiến dịch tố cộng quy mô lớn (tháng 1) rồi xây dựng ấp chiến lược (tháng 3)",
-      "C": "Thành lập quân đội VNCH 500.000 người (tháng 1) rồi ký hiệp ước phòng thủ với Mỹ (tháng 3)",
-      "D": "Tuyên bố tình trạng chiến tranh (tháng 3) rồi ban hành Luật 10/59 dùng tòa án quân sự đặc biệt bắn giết tại chỗ"
-    },
-    "correct": "D",
-    "explanation": "Tháng 3/1959, Diệm tuyên bố 'đặt miền Nam trong tình trạng chiến tranh'. Tiếp đó, Luật 10/59 dùng Tòa án quân sự đặc biệt để đưa những người bị bắt ra xét xử và bắn giết tại chỗ – địch khủng bố bằng cả súng đạn và máy chém lưu động khắp miền Nam."
-  },
-  {
-    "id": 21,
-    "text": "Nghị quyết Trung ương 15 (1/1959) xác định tinh thần cơ bản nào cho cách mạng miền Nam, mở đường cho Đồng khởi?",
-    "options": {
-      "A": "Tiếp tục cách mạng dân tộc dân chủ nhân dân; dùng bạo lực cách mạng với hai lực lượng chính trị và vũ trang; tiến tới khởi nghĩa vũ trang giành chính quyền",
-      "B": "Tiếp tục đấu tranh chính trị hòa bình thuần túy, kiên nhẫn chờ thời cơ quốc tế thuận lợi",
-      "C": "Tiến hành tổng khởi nghĩa vũ trang đồng loạt trên toàn miền Nam ngay lập tức",
-      "D": "Yêu cầu Liên Hợp Quốc và các nước XHCN can thiệp buộc Mỹ – Diệm thi hành Hiệp định"
-    },
-    "correct": "A",
-    "explanation": "Nghị quyết Trung Ương 15 (1/1959) xác định: tiếp tục cách mạng dân tộc dân chủ nhân dân ở miền Nam, sử dụng bạo lực cách mạng với hai lực lượng chính trị và vũ trang, kết hợp đấu tranh chính trị với đấu tranh quân sự, tiến tới khởi nghĩa vũ trang giành chính quyền – mở đường cho phong trào Đồng khởi."
-  },
-  {
-    "id": 22,
-    "text": "Đường Hồ Chí Minh trên bộ (đường 559) hình thành từ ngày nào, trong bối cảnh nào?",
-    "options": {
-      "A": "1/5/1959 – sau khi Đại hội III của Đảng thông qua Kế hoạch 5 năm",
-      "B": "19/5/1959 – thực hiện Nghị quyết Trung Ương 15 và chỉ đạo của Chủ tịch Hồ Chí Minh, nhằm chi viện cho cách mạng miền Nam",
-      "C": "23/10/1961 – sau khi Mặt trận Dân tộc Giải phóng miền Nam được thành lập",
-      "D": "20/12/1960 – đồng thời với việc thành lập Quân giải phóng miền Nam"
+      "A": "Chỉ cần tốt nghiệp đúng hạn và tìm được việc làm có lương cao",
+      "B": "Phát triển toàn diện: kiến thức chuyên môn, ngoại ngữ, kỹ năng công nghệ, tư duy phản biện, đạo đức và ý thức kỷ luật",
+      "C": "Tham gia nhiều hoạt động ngoại khóa để có hồ sơ đẹp",
+      "D": "Tập trung học để đạt GPA cao nhất có thể"
     },
     "correct": "B",
-    "explanation": "Đường Hồ Chí Minh trên bộ (đường 559) hình thành từ ngày 19/5/1959, thực hiện Nghị quyết Trung Ương 15 và chỉ đạo của Chủ tịch Hồ Chí Minh. Đây là tuyến đường chiến lược huyết mạch nối hậu phương với chiến trường, liên tục chi viện sức người và vũ khí cho cách mạng miền Nam."
-  },
-  {
-    "id": 23,
-    "text": "Phong trào Đồng khởi bùng nổ ngày 17/1/1960 ở đâu, do ai lãnh đạo, và từ đó lan rộng như thế nào?",
-    "options": {
-      "A": "Quảng Ngãi, do Nguyễn Văn Linh lãnh đạo, lan ra các tỉnh miền Trung",
-      "B": "Mỹ Tho, do Lê Duẩn chỉ đạo, lan ra đồng bằng sông Cửu Long",
-      "C": "Bến Tre, do Nguyễn Thị Định lãnh đạo ở huyện Mỏ Cày, rồi lan ra các huyện khác và nhanh chóng mở rộng ra khắp miền Nam",
-      "D": "Tây Ninh, do Nguyễn Hữu Thọ lãnh đạo, lan ra các tỉnh miền Đông Nam Bộ"
-    },
-    "correct": "C",
-    "explanation": "Ngày 17/1/1960, Đồng khởi bùng nổ ở huyện Mỏ Cày (Bến Tre) do đồng chí Nguyễn Thị Định lãnh đạo, sau đó lan ra các huyện Minh Tân, Giồng Trôm, Châu Thành, Ba Tri, Thạnh Phú; rồi nhanh chóng mở rộng ra khắp các tỉnh đồng bằng sông Cửu Long, Tây Nguyên và một số nơi ở Trung Bộ."
-  },
-  {
-    "id": 24,
-    "text": "Đến cuối 1960, phong trào Đồng khởi đạt kết quả và có ý nghĩa lịch sử gì?",
-    "options": {
-      "A": "850 xã lập chính quyền tự quản; đánh dấu thắng lợi hoàn toàn của cách mạng miền Nam",
-      "B": "2.000 xã lập chính quyền tự quản; buộc Mỹ – Diệm phải chấp nhận hiệp thương tổng tuyển cử",
-      "C": "500 xã lập chính quyền tự quản; mở đầu cho giai đoạn đấu tranh chính trị hòa bình mới",
-      "D": "1.383/9.627 xã lập chính quyền tự quản; là bước nhảy vọt chuyển cách mạng từ thế giữ gìn lực lượng sang thế tiến công"
-    },
-    "correct": "D",
-    "explanation": "Đến cuối 1960, có 1.383/9.627 xã nhân dân lập chính quyền tự quản; vùng giải phóng nối liền từ Tây Nguyên đến miền Tây Nam Bộ. Đồng khởi là bước nhảy vọt lịch sử: chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công, từ khởi nghĩa từng phần sang chiến tranh cách mạng."
-  },
-  {
-    "id": 25,
-    "text": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam được thành lập ngày 20/12/1960 ở đâu, ai làm Chủ tịch, theo chương trình bao nhiêu điểm và nhằm mục tiêu gì?",
-    "options": {
-      "A": "Tại xã Tân Lập (Tây Ninh), Nguyễn Hữu Thọ làm Chủ tịch, chương trình 10 điểm, nhằm đánh đổ chế độ thuộc địa trá hình của Mỹ và chính quyền độc tài Diệm, hướng tới thống nhất đất nước",
-      "B": "Tại Bến Tre, Nguyễn Thị Định làm Chủ tịch, chương trình 5 điểm, nhằm tiến hành tổng khởi nghĩa",
-      "C": "Tại Hà Nội, Hồ Chí Minh làm Chủ tịch, chương trình 8 điểm, nhằm yêu cầu Mỹ rút quân khỏi miền Nam",
-      "D": "Tại Quảng Ngãi, Lê Duẩn làm Chủ tịch, chương trình 7 điểm, nhằm thực hiện Nghị quyết Trung Ương 15"
-    },
-    "correct": "A",
-    "explanation": "Ngày 20/12/1960, tại xã Tân Lập (Tây Ninh), Mặt trận DTGP miền Nam Việt Nam thành lập do Luật sư Nguyễn Hữu Thọ làm Chủ tịch, theo chương trình hành động 10 điểm, nhằm đánh đổ chế độ thuộc địa trá hình của đế quốc Mỹ và chính quyền độc tài Ngô Đình Diệm, xây dựng miền Nam độc lập, dân chủ, hòa bình, trung lập, tiến tới thống nhất nước nhà."
+    "explanation": "Trong thời đại kinh tế số và đổi mới sáng tạo, sinh viên cần chủ động phát triển toàn diện: kiến thức chuyên môn, ngoại ngữ, kỹ năng công nghệ thông tin, tư duy phản biện và rèn luyện đạo đức, ý thức kỷ luật. Đây chính là cách thiết thực nhất để trở thành nguồn lực chất lượng cao cho đất nước."
   }
 ]

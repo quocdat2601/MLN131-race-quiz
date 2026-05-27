@@ -125,7 +125,7 @@ class GameRoom {
     this.roundAnswers    = [];
     this.betweenTimer    = null;
     this.betweenCountdown = null;
-    this.timerMax        = 25;
+    this.timerMax        = 30;
     this.currentEvent    = null; // 'storm' | 'fog' | 'golden' | null
     this.eventStartTime  = null; // epoch ms khi event bắt đầu
   }
@@ -227,8 +227,8 @@ class GameRoom {
       }
     }
 
-    // timerMax = thời gian câu hỏi (luôn 25s, trừ storm = 10s)
-    this.timerMax = this.currentEvent === 'storm' ? 10 : 25;
+    // timerMax = thời gian câu hỏi (luôn 30s, trừ storm = 10s)
+    this.timerMax = this.currentEvent === 'storm' ? 10 : 30;
 
     // eventDuration = thời gian hiệu lực event (riêng biệt, không liên quan timer câu hỏi)
     const eventDuration = this.currentEvent === 'storm'  ? 10
@@ -504,7 +504,7 @@ class GameRoom {
       effect = `Nút bấm của ${targetGroup} bị đóng băng! (Phải bấm 5 lần)`;
     } else if (item.id === 'blooper') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:blooper');
-      effect = `${targetGroup} bị che mắt 4 giây!`;
+      effect = `${targetGroup} bị Mực Che Mắt! Toàn bộ đáp án bị ẩn!`;
     } else if (item.id === 'banana') {
       io.to(this.roomCode + '_' + targetGroup).emit('effect:banana');
       effect = `Đáp án của ${targetGroup} bị xáo trộn!`;
@@ -777,8 +777,8 @@ io.on('connection', (socket) => {
     }
     const safeEvent = ['storm', 'fog', 'golden', 'clear'].includes(event) ? event : 'clear';
     currentRoom.currentEvent = safeEvent === 'clear' ? null : safeEvent;
-    // timerMax = thời gian câu hỏi (luôn 25s, trừ storm = 10s)
-    const newMax = safeEvent === 'storm' ? 10 : 25;
+    // timerMax = thời gian câu hỏi (luôn 30s, trừ storm = 10s)
+    const newMax = safeEvent === 'storm' ? 10 : 30;
     currentRoom.timerMax = newMax;
     // eventDuration riêng cho banner countdown
     const triggerEventDuration = safeEvent === 'storm' ? 10

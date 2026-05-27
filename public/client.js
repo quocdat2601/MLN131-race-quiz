@@ -6,7 +6,7 @@ let myScore           = 0;        // running total score
 let selectedGroup     = '';      // chosen group before joining
 let mySubmittedAnswer = null;    // tracks which answer this client submitted
 let inventory         = [];      // Array of item objects
-let timerMax          = 25;
+let timerMax          = 30;
 let gamePhase         = 'JOIN';  // JOIN | WAITING | QUESTION | ANSWERED | RESULT | BETWEEN | GAMEOVER
 let isFrozen          = false;
 let isButtonFrozen    = false;   // ice effect
@@ -188,9 +188,9 @@ function selectItem(itemId, itemType) {
 
 function itemDescription(id) {
   const desc = {
-    blooper: 'Màn hình bị phủ đen 4 giây',
+    blooper: 'Ẩn toàn bộ nội dung câu trả lời, chỉ còn ký hiệu ABCD',
     banana:  'Đáp án bị xáo trộn ngẫu nhiên',
-    brick:   'Câu tiếp điểm tối đa giảm 5, chỉ còn 20s đồng hồ hiển thị',
+    brick:   'Câu tiếp điểm tối đa giảm 5',    
     ice:     'Nạn nhân phải bấm 5 lần mới chọn được đáp án',
     mirror:  'Lật ngược khu vực đáp án',
     shield:  'Chặn 1 đòn tấn công',
@@ -273,9 +273,12 @@ socket.on('question:shown', ({ number, total, text, options, timeLimit, event, b
   tapCount = 0;
   lastTappedOption = null;
   document.body.classList.remove('ice-active');
-  // Remove any inline mirror transform
+  // Remove any inline mirror transform and blooper
   const optCont = $('options-container');
-  if (optCont) optCont.style.transform = '';
+  if (optCont) {
+    optCont.style.transform = '';
+    optCont.classList.remove('blooper-active');
+  }
 
   timerMax = timeLimit || 25;
 
@@ -397,10 +400,9 @@ socket.on('question:bricked', ({ displayTime }) => {
 });
 
 socket.on('effect:blooper', () => {
-  const overlay = $('blooper-overlay');
-  if (!overlay) return;
-  overlay.style.display = 'flex';
-  setTimeout(() => { overlay.style.display = 'none'; }, 4000);
+  const container = $('options-container');
+  if (container) container.classList.add('blooper-active');
+  showToast('🦑 Mực Che Mắt! Đáp án bị ẩn — hãy nhìn lên màn hình host!');
 });
 
 socket.on('effect:banana', () => {
