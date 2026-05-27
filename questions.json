@@ -238,5 +238,125 @@
     },
     "correct": "B",
     "explanation": "Trong thời đại kinh tế số và đổi mới sáng tạo, sinh viên cần chủ động phát triển toàn diện: kiến thức chuyên môn, ngoại ngữ, kỹ năng công nghệ thông tin, tư duy phản biện và rèn luyện đạo đức, ý thức kỷ luật. Đây chính là cách thiết thực nhất để trở thành nguồn lực chất lượng cao cho đất nước."
+  },
+  {
+    "id": 21,
+    "text": "Một bạn sinh viên lập luận: 'Đất nước ta đã ghi nhận quyền con người trong Hiến pháp, như vậy quyền con người đã được bảo đảm đầy đủ rồi.' Theo quan điểm của chủ nghĩa xã hội, lập luận này có vấn đề gì?",
+    "options": {
+      "A": "Lập luận này đúng, vì Hiến pháp là văn bản pháp lý cao nhất, ghi nhận trong Hiến pháp là đủ",
+      "B": "Lập luận này đúng một phần, nhưng cần thêm điều ước quốc tế để hoàn chỉnh",
+      "C": "Lập luận này sai vì Hiến pháp không có giá trị pháp lý, chỉ mang tính tuyên ngôn",
+      "D": "Lập luận này chưa đầy đủ vì ghi nhận trong Hiến pháp mới là điều kiện cần, không phải đủ — còn cần điều kiện kinh tế, xã hội thực tế để người dân thực sự thực hiện được quyền đó"
+    },
+    "correct": "D",
+    "explanation": "CNXH phân biệt rõ giữa quyền được 'ghi nhận' và quyền được 'bảo đảm thực chất'. Hiến pháp ghi nhận là điều kiện cần nhưng chưa đủ. Ví dụ, nếu quyền học tập được ghi trong Hiến pháp nhưng người nghèo không có tiền học phí, thì quyền đó vẫn chưa được bảo đảm thực chất. Cần tạo ra điều kiện kinh tế, xã hội phù hợp để quyền trở nên có ý nghĩa trong đời sống thực tế."
+  },
+  {
+    "id": 22,
+    "text": "Điểm nào SAU ĐÂY phân biệt đúng nhất giữa 'dân chủ là giá trị xã hội' và 'dân chủ là hình thái nhà nước' trong tư tưởng Mác - Lênin?",
+    "options": {
+      "A": "Dân chủ là giá trị xã hội thì vĩnh viễn; dân chủ là hình thái nhà nước thì gắn với giai cấp và mang tính lịch sử",
+      "B": "Dân chủ là giá trị xã hội chỉ tồn tại trong CNXH; dân chủ là hình thái nhà nước tồn tại trong mọi chế độ",
+      "C": "Cả hai đều là phạm trù lịch sử, không có sự phân biệt thực chất",
+      "D": "Dân chủ là giá trị xã hội do Nhà nước ban phát; dân chủ là hình thái nhà nước do nhân dân tự quyết định"
+    },
+    "correct": "A",
+    "explanation": "Khi dân chủ là giá trị xã hội (tự do, bình đẳng, quyền tham gia) thì nó mang tính phổ quát và vĩnh viễn — con người ở bất kỳ xã hội nào cũng hướng đến. Khi dân chủ là hình thái nhà nước (chế độ dân chủ chủ nô, dân chủ tư sản, dân chủ XHCN) thì nó gắn với giai cấp thống trị và mang tính lịch sử — sẽ tiêu vong khi Nhà nước tiêu vong."
+  },
+  {
+    "id": 23,
+    "text": "Trong các nhận định sau về mối quan hệ giữa phát triển kinh tế và quyền con người, nhận định nào phản ánh đúng quan điểm của CNXH khoa học?",
+    "options": {
+      "A": "Phải bảo đảm quyền con người trước, kinh tế sẽ tự động phát triển sau",
+      "B": "Phát triển kinh tế và bảo đảm quyền con người là hai mục tiêu độc lập, không liên quan nhau",
+      "C": "Phát triển kinh tế là điều kiện vật chất nền tảng để bảo đảm quyền con người; đồng thời con người được trao quyền và phát triển toàn diện lại chính là động lực thúc đẩy kinh tế",
+      "D": "Tăng trưởng kinh tế cao tự động dẫn đến bảo đảm đầy đủ quyền con người, không cần can thiệp của Nhà nước"
+    },
+    "correct": "C",
+    "explanation": "CNXH nhìn nhận mối quan hệ biện chứng: kinh tế phát triển tạo điều kiện vật chất (giáo dục, y tế, an sinh) để bảo đảm quyền con người. Ngược lại, con người được phát huy quyền làm chủ, học tập, lao động sáng tạo lại trở thành động lực phát triển kinh tế. Đây là mối quan hệ hai chiều, không phải một chiều hay độc lập nhau."
+  },
+  {
+    "id": 24,
+    "text": "Bạn A cho rằng: 'Vì nhân dân là chủ thể của quyền lực nhà nước, nên nhân dân có thể trực tiếp làm bất cứ điều gì mà không cần thông qua pháp luật.' Bạn B phản bác: 'Quyền làm chủ của nhân dân phải thực hiện thông qua cơ chế Nhà nước và pháp luật.' Theo quan điểm của dân chủ XHCN, ai đúng?",
+    "options": {
+      "A": "Bạn A đúng, vì chủ quyền nhân dân là tối thượng, cao hơn pháp luật",
+      "B": "Bạn B đúng, vì dân chủ XHCN phải đi đôi với kỷ cương và pháp luật; quyền làm chủ được thực hiện trong khuôn khổ Hiến pháp",
+      "C": "Cả hai đều đúng, vì trong CNXH không có mâu thuẫn giữa ý chí nhân dân và pháp luật",
+      "D": "Cả hai đều sai, vì trong CNXH chỉ có Đảng mới có quyền đưa ra quyết định cuối cùng"
+    },
+    "correct": "B",
+    "explanation": "Dân chủ XHCN không đồng nghĩa với việc nhân dân có thể làm bất cứ điều gì. Quyền làm chủ của nhân dân được thực hiện thông qua cơ chế Nhà nước, pháp luật và các tổ chức đại diện. Dân chủ phải đi đôi với kỷ luật, kỷ cương; tự do cá nhân không thể đứng trên Hiến pháp và lợi ích chung của xã hội."
+  },
+  {
+    "id": 25,
+    "text": "Một số tổ chức quốc tế chỉ trích Việt Nam về nhân quyền, lấy lý do hạn chế tự do ngôn luận. Lập trường nào sau đây thể hiện đúng quan điểm bảo vệ quyền con người gắn với bảo vệ chủ quyền quốc gia?",
+    "options": {
+      "A": "Chấp nhận tất cả tiêu chuẩn nhân quyền quốc tế mà không xét đến điều kiện, hoàn cảnh cụ thể của Việt Nam",
+      "B": "Phủ nhận hoàn toàn các tiêu chuẩn nhân quyền quốc tế vì đây là công cụ của các thế lực thù địch",
+      "C": "Khẳng định Việt Nam bảo đảm quyền con người trong khuôn khổ Hiến pháp và pháp luật; đồng thời cảnh giác với những luận điểm lợi dụng nhân quyền để can thiệp vào nội bộ, kích động chia rẽ",
+      "D": "Im lặng trước mọi chỉ trích từ bên ngoài vì đây là vấn đề nội bộ quốc gia"
+    },
+    "correct": "C",
+    "explanation": "Việt Nam không phủ nhận các giá trị nhân quyền, nhưng khẳng định quyền con người được thực hiện trong khuôn khổ Hiến pháp và pháp luật, gắn với điều kiện cụ thể của đất nước. Đồng thời cần cảnh giác với các luận điểm lợi dụng vấn đề nhân quyền, dân chủ để can thiệp nội bộ, chia rẽ khối đại đoàn kết dân tộc và làm suy yếu Nhà nước XHCN."
+  },
+  {
+    "id": 26,
+    "text": "Theo quan điểm của CNXH, điều nào KHÔNG PHẢI là biểu hiện của việc Nhà nước XHCN bảo đảm quyền con người?",
+    "options": {
+      "A": "Ban hành hệ thống pháp luật bảo vệ danh dự, nhân phẩm và đời tư của công dân",
+      "B": "Xây dựng hệ thống an sinh xã hội, bảo hiểm y tế để người dân tiếp cận dịch vụ chăm sóc sức khỏe",
+      "C": "Tập trung toàn bộ quyền lực vào một cơ quan duy nhất để đưa ra quyết định nhanh chóng hơn",
+      "D": "Xây dựng hệ thống giáo dục phổ cập để mọi người đều có cơ hội tiếp cận tri thức"
+    },
+    "correct": "C",
+    "explanation": "Tập trung quyền lực tuyệt đối vào một cơ quan là biểu hiện của chuyên quyền, độc đoán — đi ngược lại nguyên tắc dân chủ XHCN và Nhà nước pháp quyền. Nhà nước XHCN bảo đảm quyền con người thông qua hệ thống pháp luật, chính sách an sinh xã hội, giáo dục, y tế — chứ không phải bằng cách tập trung quyền lực không kiểm soát."
+  },
+  {
+    "id": 27,
+    "text": "Có ý kiến cho rằng: 'Trong CNXH, lợi ích tập thể luôn phải đặt trên lợi ích cá nhân, do đó quyền cá nhân có thể bị hạn chế vô điều kiện vì lợi ích chung.' Nhận định này đúng hay sai, và vì sao?",
+    "options": {
+      "A": "Đúng, vì CNXH lấy lợi ích tập thể làm nền tảng tuyệt đối",
+      "B": "Đúng, vì cá nhân phải phục tùng hoàn toàn Nhà nước trong mọi trường hợp",
+      "C": "Sai, vì CNXH hướng đến phát triển toàn diện của mỗi cá nhân; quyền cá nhân chỉ bị giới hạn khi vi phạm quyền người khác hoặc lợi ích xã hội, và phải có cơ sở pháp luật",
+      "D": "Sai, vì CNXH đặt quyền cá nhân tuyệt đối lên trên mọi lợi ích tập thể"
+    },
+    "correct": "C",
+    "explanation": "CNXH không phủ nhận quyền cá nhân, mà hướng đến phát triển toàn diện của mỗi con người. Mục tiêu 'giải phóng con người' chính là giải phóng từng cá nhân. Quyền cá nhân chỉ bị giới hạn khi nó xâm phạm quyền của người khác hoặc lợi ích chung, và sự giới hạn đó phải có cơ sở pháp luật — không phải bị hạn chế 'vô điều kiện'."
+  },
+  {
+    "id": 28,
+    "text": "So với quan điểm tự do cá nhân của chủ nghĩa tư bản, quan điểm của CNXH về quyền con người khác ở điểm cốt lõi nào?",
+    "options": {
+      "A": "CNXH phủ nhận hoàn toàn các quyền tự do cá nhân mà CNTB đã đề ra",
+      "B": "CNTB coi quyền con người là quyền tự nhiên, bất khả xâm phạm; CNXH coi đó là ân huệ do Nhà nước ban phát",
+      "C": "CNTB tập trung vào quyền hình thức (được ghi nhận); CNXH nhấn mạnh quyền thực chất (có điều kiện để thực hiện), đặc biệt là các quyền kinh tế - xã hội của người lao động",
+      "D": "CNXH và CNTB có cùng quan điểm về quyền con người, chỉ khác về phương thức thực hiện"
+    },
+    "correct": "C",
+    "explanation": "Điểm khác biệt cốt lõi: CNTB chú trọng quyền hình thức — quyền được ghi nhận trên giấy tờ, đặc biệt quyền tự do chính trị, sở hữu tư nhân. CNXH nhấn mạnh quyền thực chất — phải có điều kiện kinh tế, xã hội để thực hiện, đặc biệt các quyền về lao động, giáo dục, y tế. CNXH không phủ nhận quyền tự do cá nhân mà còn muốn làm cho chúng trở nên thực chất hơn với mọi tầng lớp nhân dân."
+  },
+  {
+    "id": 29,
+    "text": "Một người vì muốn 'bảo vệ nhân quyền' đã đăng tải và chia sẻ rộng rãi thông tin chưa được kiểm chứng, cáo buộc một cá nhân vi phạm quyền con người. Sau đó thông tin này được xác định là sai. Hành động đó dẫn đến hệ quả gì xét từ góc độ quyền con người trong CNXH?",
+    "options": {
+      "A": "Hành động này hoàn toàn đúng vì xuất phát từ thiện chí bảo vệ nạn nhân",
+      "B": "Hành động này vi phạm quyền con người của người bị cáo buộc (danh dự, nhân phẩm, đời tư) và vi phạm nghĩa vụ pháp lý về thông tin",
+      "C": "Hành động này chỉ sai về mặt đạo đức, không vi phạm bất kỳ quyền con người nào",
+      "D": "Hành động này không có hệ quả pháp lý vì được thực hiện trên không gian mạng"
+    },
+    "correct": "B",
+    "explanation": "Trong CNXH, quyền con người là một hệ thống toàn diện — bao gồm cả quyền của người bị cáo buộc (quyền được bảo vệ danh dự, nhân phẩm, đời tư). Việc lan truyền thông tin sai sự thật, dù xuất phát từ thiện chí, vẫn xâm phạm quyền của người bị cáo buộc và vi phạm nghĩa vụ pháp lý. Đây chính là lý do tại sao quyền con người phải gắn với trách nhiệm, không thể nhân danh bảo vệ quyền người này mà xâm phạm quyền người khác."
+  },
+  {
+    "id": 30,
+    "text": "Theo logic của quan điểm CNXH về quyền con người, phát biểu nào dưới đây về mối quan hệ giữa 'ổn định chính trị - xã hội' và 'bảo đảm quyền con người' là CHÍNH XÁC NHẤT?",
+    "options": {
+      "A": "Ổn định chính trị là lý do chính đáng để tạm thời đình chỉ mọi quyền con người khi cần thiết",
+      "B": "Quyền con người và ổn định chính trị là hai mục tiêu đối lập nhau; muốn có quyền con người thì phải chấp nhận bất ổn",
+      "C": "Ổn định chính trị - xã hội là điều kiện cần thiết để bảo đảm quyền con người bền vững; ngược lại bảo đảm quyền con người thực chất cũng góp phần củng cố sự ổn định xã hội",
+      "D": "Ổn định chính trị chỉ phục vụ lợi ích của giai cấp cầm quyền, không liên quan đến quyền con người của nhân dân"
+    },
+    "correct": "C",
+    "explanation": "CNXH nhìn nhận mối quan hệ biện chứng giữa ổn định và quyền con người: xã hội bất ổn, chiến tranh, bạo loạn thì quyền sống, học tập, lao động đều bị ảnh hưởng trực tiếp. Ngược lại, khi quyền con người được bảo đảm thực chất — người dân có việc làm, được học hành, được tôn trọng — thì niềm tin xã hội được củng cố và sự ổn định chính trị được duy trì bền vững hơn."
   }
 ]
