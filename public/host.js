@@ -75,7 +75,7 @@ function buildTrack(activeGroups) {
   raceTrack.appendChild(bubblesDiv);
 
   // Distance marker lines (every 100pts, z-index below ducks)
-  [100, 200, 300, 400, 500, 600].forEach(pts => {
+  [100, 200, 300, 400, 500, 600, 700, 800].forEach(pts => {
     const marker = document.createElement('div');
     marker.className = 'track-marker';
     marker.style.left = milestoneLeft(pts);
@@ -133,7 +133,7 @@ function buildTrack(activeGroups) {
 // ── Duck position ─────────────────────────────────────────────
 // Absolute scale: max possible = 30pts * 30q = 900
 const MAX_TOTAL_SCORE = 30 * 30;
-const MILESTONES_DISPLAY = [100, 200, 300, 400, 500, 600];
+const MILESTONES_DISPLAY = [100, 200, 300, 400, 500, 600, 700, 800];
 function duckLeft(steps) {
   return (5 + (steps / MAX_TOTAL_SCORE) * 88) + '%';
 }
@@ -593,7 +593,7 @@ socket.on('milestone:reached', ({ groupName, milestoneIndex, item }) => {
     box.classList.add('collected');
     setTimeout(() => box.remove(), 500);
   }
-  const MILESTONE_PTS = ['50', '100', '150', '200', '250'];
+  const MILESTONE_PTS = ['100', '200', '300', '400', '500', '600', '700', '800'];
   toast(`🎁 <strong>${groupName}</strong> đạt mốc ${MILESTONE_PTS[milestoneIndex]} điểm! Nhận ${item.emoji} ${item.name}!`);
 });
 

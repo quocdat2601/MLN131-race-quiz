@@ -22,7 +22,7 @@ const ITEMS = [
   { id: 'mirror',  emoji: '🙃', name: 'Gương Thần',   type: 'offensive' },
   { id: 'shield',  emoji: '🛡️', name: 'Khiên',        type: 'self'      },
 ];
-const MILESTONES = [100, 200, 300, 400, 500, 600];
+const MILESTONES = [100, 200, 300, 400, 500, 600, 700, 800];
 
 // Weighted item pool — mirror rare (8%), shield/brick most common
 const ITEM_WEIGHTS = [
